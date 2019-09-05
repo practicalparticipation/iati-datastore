@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Selecting Data for CSV output &mdash; IATI Datastore 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="IATI Datastore 0.0 documentation" href="../../" />
+    <link rel="up" title="User Guide" href="../" />
+    <link rel="next" title="Tips, pitfalls and warnings" href="../tips-pitfalls-and-warnings/" />
+    <link rel="prev" title="How is the CSV data displayed?" href="../how-is-the-csv-data-displayed/" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../tips-pitfalls-and-warnings/" title="Tips, pitfalls and warnings"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../how-is-the-csv-data-displayed/" title="How is the CSV data displayed?"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../sitemap/">IATI Datastore 0.0 documentation</a> &raquo;</li>
+          <li><a href="../" accesskey="U">User Guide</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="selecting-data-for-csv-output">
+<h1>Selecting Data for CSV output<a class="headerlink" href="#selecting-data-for-csv-output" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="method">
+<h2>Method<a class="headerlink" href="#method" title="Permalink to this headline">¶</a></h2>
+<p>CSV data can be retrieved directly via the API. The basic form that we have constructed builds a query for you by displaying a paramaterised link to the API. So …</p>
+<ul class="simple">
+<li>Build a query by selecting from the check boxes and dropdowns</li>
+<li>Click on ‘Submit’</li>
+<li>Click on the link that appears at the top of the page</li>
+<li>The resulting csv file will be downloaded</li>
+<li>Depending on the settings on your computer the file will be automatically opened in your spreadsheet application.</li>
+</ul>
+</div>
+<div class="section" id="format-check-boxes-mandatory">
+<h2>Format Check Boxes (Mandatory)<a class="headerlink" href="#format-check-boxes-mandatory" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><div class="first line-block">
+<div class="line">Dataset</div>
+<div class="line">Choose whether each row in your spreadsheet will contain a single activity, transaction or budget period. See <a class="reference internal" href="../how-is-the-csv-data-displayed/"><em>How is the CSV data displayed?</em></a> for more information on these three different table outputs.</div>
+</div>
+<p>Tip! If you are looking to analyse activity finances by year you need to select “Transactions” and calculate the year from the transaction date.</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Dataset Format</div>
+<div class="line">By default, choose “Summary”. The sector and country boxes are not sort options, but handle multiple values within a single activity or transaction.</div>
+</div>
+<p>IATI allows for activities to be classified with multiple sectors and for the costs of the activity to be split proportionately across these sectors. If you are specifically looking to do sectoral analysis choose “By Sector”. This will repeat each row of your chosen dataset for each reported sector value. The percentage split for each sector is also displayed in a separate column which allows you to perform arithmetic on the financial values.</p>
+<p>Similarly IATI allows for individual activities to be reported in multiple countries with percentage splits between them. The above sector logic applies if you choose “By Country” .</p>
+<p>Warning! Choosing sector or country will duplicate rows of data. Do not add up financial values without introducing arithmetic to apply the relevant percentage to each row.</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Sample Size</div>
+<div class="line">By default choose “Entire selection”</div>
+</div>
+<p>If you want to check your selection by seeing a preview, choose “50 rows”.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="filters-optional">
+<h2>Filters (Optional)<a class="headerlink" href="#filters-optional" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><div class="first line-block">
+<div class="line">Overview</div>
+<div class="line">The form contains five dropdown lists for you to filter your query. Any logical combination of filters can be applied.</div>
+</div>
+<div class="line-block">
+<div class="line">Multiple selections can be made in each dropdown using holding down the Ctrl key.</div>
+<div class="line">AND relations are applied between dropdowns</div>
+<div class="line">OR relations are applied within dropdowns</div>
+</div>
+<p>Warning! If you don’t add at least one filter to your query you will download the entire dataset. The Datastore currently holds over 200,000 activities and 1,000,000 transactions. This number increases on a daily basis.</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Reporting Organisation</div>
+<div class="line">The reporting organisation is the publisher of the IATI data. You would choose this filter to analyse a particular donor or agency’s data. This might typically be used in conjunction with a country and/or a sector.</div>
+</div>
+<p>Warning! The Datastore contains activities reported by both primary and secondary sources. A secondary source, such as the UNOCHA Financial Tracking Service, reports data it holds about other agencies’ activities. An agency may well report activities to IATI and FTS, which in turn reports the same activities to IATI.</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Type of Reporting Organisation</div>
+<div class="line">This allows you to filter by the type of organisation. To access data on NGOs only you would select International NGO and/or National NGO and/or Regional NGO</div>
+</div>
+</li>
+<li><p class="first">Sector</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Country</div>
+<div class="line">Choose the recipient country or countries you are looking for. See Region notes below for potential pitfalls.</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">Region</div>
+<div class="line">Selecting a region will return activities that publishers have been unable to allocate to specific countries.</div>
+</div>
+<p>Warning! Choosing a Region AND a Country will not return data as most publishers report either a Country or a Region. There is no way, currently of creating a filter that will return all activities for, say, Southern Africa. You can choose all the countries you would like to include, but you will need to run a separate query for the region.</p>
+<p>Warning! There is no international consensus on the definition of regions. IATI currently uses to OECD DAC rules, but is about to add a second vocabulary that is maintained by the UN. IATI has more work to do to create a cross-mapping between different region codes and map countries to regions.</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Future Options</div>
+<div class="line">In future filters will be available on all IATI fields. A number of these are already available via the API. Watch this space…</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../sitemap/">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Selecting Data for CSV output</a><ul>
+<li><a class="reference internal" href="#method">Method</a></li>
+<li><a class="reference internal" href="#format-check-boxes-mandatory">Format Check Boxes (Mandatory)</a></li>
+<li><a class="reference internal" href="#filters-optional">Filters (Optional)</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../how-is-the-csv-data-displayed/"
+                        title="previous chapter">How is the CSV data displayed?</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../tips-pitfalls-and-warnings/"
+                        title="next chapter">Tips, pitfalls and warnings</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/user-guide/selecting-data-for-csv-output.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../tips-pitfalls-and-warnings/" title="Tips, pitfalls and warnings"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../how-is-the-csv-data-displayed/" title="How is the CSV data displayed?"
+             >previous</a> |</li>
+        <li><a href="../../sitemap/">IATI Datastore 0.0 documentation</a> &raquo;</li>
+          <li><a href="../" >User Guide</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Development Initiatives.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
