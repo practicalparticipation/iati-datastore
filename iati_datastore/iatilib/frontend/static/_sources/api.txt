@@ -94,7 +94,7 @@ reporting-org.type
 Returns activities where the value contained within a `reporting-org <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/reporting-org/>`__ @type attribute matches your specified value.
 
 Parameters:
-    @recipient-org.type: 2-digit value which appears on the `organisation type codelist<http://iatistandard.org/201/codelists/OrganisationType/>`__
+    @recipient-org.type: 2-digit value which appears on the `organisation type codelist <http://iatistandard.org/201/codelists/OrganisationType/>`__
 
 Example API call:
     `/api/1/access/activity.xml?reporting-org.type=10 </api/1/access/activity.xml?reporting-org.type=10>`__
@@ -118,7 +118,7 @@ policy-marker
 Returns activities containing a `policy-marker <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/policy-marker/>`__ element which matches a your specified policy-marker value.
 
 Parameters:
-    @policy-marker: 1-digit value which appears on the `policy marker codelist<http://iatistandard.org/201/codelists/PolicyMarker/>`__
+    @policy-marker: 1-digit value which appears on the `policy marker codelist <http://iatistandard.org/201/codelists/PolicyMarker/>`__
 
 Example API call:
     `/api/1/access/activity.xml?policy-marker=1 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?policy-marker=1>`__
