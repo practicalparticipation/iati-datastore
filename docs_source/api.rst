@@ -15,20 +15,20 @@ IATI activity data is available in the following formats:
 
 Technical formats
 ~~~~~~~~~~~~~~~~~
--  XML - using endpoint: `/api/1/access/activity.xml <http://datastore.iatistandard.org/api/1/access/activity.xml>`__
--  JSON - using endpoint: `/api/1/access/activity.json <http://datastore.iatistandard.org/api/1/access/activity.json>`__
+-  XML - using endpoint: `/api/1/access/activity.xml <https://iati-datastore.codeforiati.org/api/1/access/activity.xml>`__
+-  JSON - using endpoint: `/api/1/access/activity.json <https://iati-datastore.codeforiati.org/api/1/access/activity.json>`__
 
 CSV formats
 ~~~~~~~~~~~
--  List of activities `/api/1/access/activity.csv <http://datastore.iatistandard.org/api/1/access/activity.csv>`__
--  Activities by sector `/api/1/access/activity/by_sector.csv <http://datastore.iatistandard.org/api/1/access/activity/by_sector.csv>`__
--  Activities by country `/api/1/access/activity/by_country.csv <http://datastore.iatistandard.org/api/1/access/activity/by_country.csv>`__
--  List of transactions `/api/1/access/transaction.csv <http://datastore.iatistandard.org/api/1/access/transaction.csv>`__
--  Transactions by sector `/api/1/access/transaction/by_sector.csv <http://datastore.iatistandard.org/api/1/access/transaction/by_sector.csv>`__
--  Transactions by country `/api/1/access/transaction/by_country.csv <http://datastore.iatistandard.org/api/1/access/transaction/by_country.csv>`__
--  List of budgets `/api/1/access/budget.csv <http://datastore.iatistandard.org/api/1/access/budget.csv>`__
--  Budgets by sector `/api/1/access/budget/by_sector.csv <http://datastore.iatistandard.org/api/1/access/budget/by_sector.csv>`__
--  Budgets by country `/api/1/access/budget/by_country.csv <http://datastore.iatistandard.org/api/1/access/budget/by_country.csv>`__
+-  List of activities `/api/1/access/activity.csv <https://iati-datastore.codeforiati.org/api/1/access/activity.csv>`__
+-  Activities by sector `/api/1/access/activity/by_sector.csv <https://iati-datastore.codeforiati.org/api/1/access/activity/by_sector.csv>`__
+-  Activities by country `/api/1/access/activity/by_country.csv <https://iati-datastore.codeforiati.org/api/1/access/activity/by_country.csv>`__
+-  List of transactions `/api/1/access/transaction.csv <https://iati-datastore.codeforiati.org/api/1/access/transaction.csv>`__
+-  Transactions by sector `/api/1/access/transaction/by_sector.csv <https://iati-datastore.codeforiati.org/api/1/access/transaction/by_sector.csv>`__
+-  Transactions by country `/api/1/access/transaction/by_country.csv <https://iati-datastore.codeforiati.org/api/1/access/transaction/by_country.csv>`__
+-  List of budgets `/api/1/access/budget.csv <https://iati-datastore.codeforiati.org/api/1/access/budget.csv>`__
+-  Budgets by sector `/api/1/access/budget/by_sector.csv <https://iati-datastore.codeforiati.org/api/1/access/budget/by_sector.csv>`__
+-  Budgets by country `/api/1/access/budget/by_country.csv <https://iati-datastore.codeforiati.org/api/1/access/budget/by_country.csv>`__
 
 
 
@@ -49,7 +49,7 @@ Parameters:
     @iati-identifier: String denoting an individual IATI activity
 
 Example API call:
-    `/api/1/access/activity.xml?iati-identifier=NL-KVK-41177206-C-002350 <http://datastore.iatistandard.org/api/1/access/activity.xml?iati-identifier=NL-KVK-41177206-C-002350>`__
+    `/api/1/access/activity.xml?iati-identifier=NL-KVK-41177206-C-002350 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?iati-identifier=NL-KVK-41177206-C-002350>`__
 
 
 recipient-country
@@ -61,7 +61,7 @@ Parameters:
     @recipient-country: 2-digit ISO country code which appears on the `country codelist <http://iatistandard.org/201/codelists/Country/>`__
 
 Example API call:
-    `/api/1/access/activity.xml?recipient-country=SS <http://datastore.iatistandard.org/api/1/access/activity.xml?recipient-country=SS>`__
+    `/api/1/access/activity.xml?recipient-country=SS <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?recipient-country=SS>`__
 
 
 recipient-region
@@ -73,7 +73,7 @@ Parameters:
     @recipient-region: 3-digit DAC region code which appears on the `region codelist <http://iatistandard.org/201/codelists/Region/>`__
 
 Example API call:
-    `/api/1/access/activity.xml?recipient-region=298 <http://datastore.iatistandard.org/api/1/access/activity.xml?recipient-region=298>`__
+    `/api/1/access/activity.xml?recipient-region=298 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?recipient-region=298>`__
 
 
 reporting-org
@@ -85,7 +85,7 @@ Parameters:
     @reporting-org: Organisation identifier string.
 
 Example API call:
-    `/api/1/access/activity.xml?reporting-org=NL-KVK-41177206 <http://datastore.iatistandard.org/api/1/access/activity.xml?reporting-org=NL-KVK-41177206>`__
+    `/api/1/access/activity.xml?reporting-org=NL-KVK-41177206 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?reporting-org=NL-KVK-41177206>`__
 
 
 reporting-org.type
@@ -109,7 +109,7 @@ Parameters:
     @sector: 5-digit DAC sector code which appears on the `sector codelist <http://iatistandard.org/201/codelists/Sector/>`__
 
 Example API call:
-    `/api/1/access/activity.xml?sector=11110 <http://datastore.iatistandard.org/api/1/access/activity.xml?sector=11110>`__
+    `/api/1/access/activity.xml?sector=11110 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?sector=11110>`__
 
 
 policy-marker
@@ -121,7 +121,7 @@ Parameters:
     @policy-marker: 1-digit value which appears on the `policy marker codelist<http://iatistandard.org/201/codelists/PolicyMarker/>`__
 
 Example API call:
-    `/api/1/access/activity.xml?policy-marker=1 <http://datastore.iatistandard.org/api/1/access/activity.xml?policy-marker=1>`__
+    `/api/1/access/activity.xml?policy-marker=1 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?policy-marker=1>`__
 
 
 participating-org
@@ -133,7 +133,7 @@ Parameters:
     @participating-org: Identification string for the organisation who is participating
 
 Example API call:
-    `/api/1/access/activity.xml?participating-org=NL-KVK-41177206 <http://datastore.iatistandard.org/api/1/access/activity.xml?participating-org=NL-KVK-41177206>`__
+    `/api/1/access/activity.xml?participating-org=NL-KVK-41177206 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?participating-org=NL-KVK-41177206>`__
 
 
 participating-org.role
@@ -145,7 +145,7 @@ Parameters:
     @participating-org.role: 1-digit value which appears on the organisation role codelist
 
 Example API call:
-    `/api/1/access/activity.xml?participating-org.role=1 <http://datastore.iatistandard.org/api/1/access/activity.xml?participating-org.role=1>`__
+    `/api/1/access/activity.xml?participating-org.role=1 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?participating-org.role=1>`__
 
 
 related-activity
@@ -157,7 +157,7 @@ Parameters:
     @related-activity: String denoting an `IATI activity identifier <http://iatistandard.org/201/activity-standard/overview/iati-identifier/>`__
 
 Example API call:
-    `/api/1/access/activity.xml?related-activity=US-7-GB-10-e76c5505 <http://datastore.iatistandard.org/api/1/access/activity.xml?related-activity=US-7-GB-10-e76c5505>`__
+    `/api/1/access/activity.xml?related-activity=US-7-GB-10-e76c5505 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?related-activity=US-7-GB-10-e76c5505>`__
 
 
 transaction
@@ -169,7 +169,7 @@ Parameters:
     @transaction: String denoting an `transaction @ref attribute <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/#attributes>`__
 
 Example API call:
-    `/api/1/access/activity.xml?transaction=15458 <http://datastore.iatistandard.org/api/1/access/activity.xml?transaction=15458>`__
+    `/api/1/access/activity.xml?transaction=15458 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?transaction=15458>`__
 
 
 transaction_provider-org
@@ -181,7 +181,7 @@ Parameters:
     @transaction_provider-org: `Organisation identifier string <http://iatistandard.org/201/organisation-identifiers/>`__ for the organisation issuing who provided transaction funds
 
 Example API call:
-    `/api/1/access/activity.xml?transaction_provider-org=GB-1 <http://datastore.iatistandard.org/api/1/access/activity.xml?transaction_provider-org=GB-1>`__
+    `/api/1/access/activity.xml?transaction_provider-org=GB-1 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?transaction_provider-org=GB-1>`__
 
 
 transaction_provider-org.provider-activity-id
@@ -193,7 +193,7 @@ Parameters:
     @transaction_provider-org.provider-activity-id: String denoting an `IATI activity identifier <http://iatistandard.org/201/activity-standard/overview/iati-identifier/>`__
 
 Example API call:
-    `/api/1/access/activity.xml?transaction_provider-org.provider-activity-id=GB-1-202505 <http://datastore.iatistandard.org/api/1/access/activity.xml?transaction_provider-org.provider-activity-id=GB-1-202505>`__
+    `/api/1/access/activity.xml?transaction_provider-org.provider-activity-id=GB-1-202505 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?transaction_provider-org.provider-activity-id=GB-1-202505>`__
 
 
 transaction_receiver-org
@@ -205,7 +205,7 @@ Parameters:
     @transaction_receiver-org: `Organisation identifier string <http://iatistandard.org/201/organisation-identifiers/>`__ for the organisation issuing who received transaction funds
 
 Example API call:
-    `/api/1/access/activity.xml?transaction_receiver-org=GB-CHC-1108464 <http://datastore.iatistandard.org/api/1/access/activity.xml?transaction_receiver-org=GB-CHC-1108464>`__
+    `/api/1/access/activity.xml?transaction_receiver-org=GB-CHC-1108464 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?transaction_receiver-org=GB-CHC-1108464>`__
 
 
 transaction_receiver-org.receiver-activity-id
@@ -218,7 +218,7 @@ Parameters:
     @transaction_receiver-org.receiver-activity-id: String denoting an `IATI activity identifier <http://iatistandard.org/201/activity-standard/overview/iati-identifier/>`__
 
 Example API call:
-    `/api/1/access/activity.xml?transaction_receiver-org.receiver-activity-id=GB-CHC-1099776-B8 <http://datastore.iatistandard.org/api/1/access/activity.xml?transaction_receiver-org.receiver-activity-id=GB-CHC-1099776-B8>`__
+    `/api/1/access/activity.xml?transaction_receiver-org.receiver-activity-id=GB-CHC-1099776-B8 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?transaction_receiver-org.receiver-activity-id=GB-CHC-1099776-B8>`__
 
 
 start-date
@@ -229,11 +229,11 @@ Returns activities where the date with in @activity-date element (with type equi
 This API element has two sub-elements: to return activities less than your specified date, use start-date__lt, or to return activities less than your specified date use start-date__gt
 
 Parameters:
-    @start-date: ISO format date (YYYY-MM-DD). 
+    @start-date: ISO format date (YYYY-MM-DD).
 
 Example API calls:
-    `/api/1/access/activity.xml?start-date__lt=2015-01-01 <http://datastore.iatistandard.org/api/1/access/activity.xml?start-date__lt=2015-01-01>`__
-    `/api/1/access/activity.xml?start-date__gt=2015-01-01 <http://datastore.iatistandard.org/api/1/access/activity.xml?start-date__gt=2015-01-01>`__
+    `/api/1/access/activity.xml?start-date__lt=2015-01-01 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?start-date__lt=2015-01-01>`__
+    `/api/1/access/activity.xml?start-date__gt=2015-01-01 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?start-date__gt=2015-01-01>`__
 
 
 end-date
@@ -244,11 +244,11 @@ Returns activities where the @activity-date element (with type equivalent to end
 This API element has two sub-elements: to return activities less than your specified date, use end-date__lt, or to return activities less than your specified date use end-date__gt
 
 Parameters:
-    @end-date: ISO format date (YYYY-MM-DD). 
+    @end-date: ISO format date (YYYY-MM-DD).
 
 Example API call:
-    `/api/1/access/activity.xml?end-date__lt=2015-01-01 <http://datastore.iatistandard.org/api/1/access/activity.xml?end-date__lt=2015-01-01>`__
-    `/api/1/access/activity.xml?end-date__gt=2015-01-01 <http://datastore.iatistandard.org/api/1/access/activity.xml?end-date__gt=2015-01-01>`__
+    `/api/1/access/activity.xml?end-date__lt=2015-01-01 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?end-date__lt=2015-01-01>`__
+    `/api/1/access/activity.xml?end-date__gt=2015-01-01 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?end-date__gt=2015-01-01>`__
 
 
 .. _`last-change`:
@@ -256,18 +256,18 @@ Example API call:
 last-change
 ```````````
 
-Returns activities where the observed last change the of an activity is less or greater than your specified query.  
+Returns activities where the observed last change the of an activity is less or greater than your specified query.
 
 This differs from the `last-updated-datetime`_. filter, as the last-date filter is based on when the Datastore process observed a change in data. The `last-updated-datetime`_. filter returns data based on the @last-updated-datetime attribute contained within the data itself.
 
 This API element has two sub-elements: to return activities less than your specified date, use last-change__lt, or to return activities less than your specified date use last-change__gt
 
 Parameters:
-    @last-change: ISO format date (YYYY-MM-DD). 
+    @last-change: ISO format date (YYYY-MM-DD).
 
 Example API calls:
-    `/api/1/access/activity.xml?last-change__lt=2009-01-01 <http://datastore.iatistandard.org/api/1/access/activity.xml?last-change__lt=2009-01-01>`__
-    `/api/1/access/activity.xml?last-change__gt=2009-01-01 <http://datastore.iatistandard.org/api/1/access/activity.xml?last-change__gt=2009-01-01>`__
+    `/api/1/access/activity.xml?last-change__lt=2009-01-01 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?last-change__lt=2009-01-01>`__
+    `/api/1/access/activity.xml?last-change__gt=2009-01-01 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?last-change__gt=2009-01-01>`__
 
 
 .. _`last-updated-datetime`:
@@ -282,11 +282,11 @@ This differs from the `last-change`_. filter, as the last-updated-datetime filte
 This API element has two sub-elements: to return activities less than your specified date, use last-updated-datetime__lt, or to return activities less than your specified date use last-updated-datetime__gt
 
 Parameters:
-    @last-updated-datetime: ISO format date (YYYY-MM-DD). 
+    @last-updated-datetime: ISO format date (YYYY-MM-DD).
 
 Example API calls:
-    `/api/1/access/activity.xml?last-updated-datetime__lt=2015-01-01 <http://datastore.iatistandard.org/api/1/access/activity.xml?last-updated-datetime__lt=2015-01-01>`__
-    `/api/1/access/activity.xml?last-updated-datetime__gt=2010-01-01 <http://datastore.iatistandard.org/api/1/access/activity.xml?last-updated-datetime__gt=2010-01-01>`__
+    `/api/1/access/activity.xml?last-updated-datetime__lt=2015-01-01 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?last-updated-datetime__lt=2015-01-01>`__
+    `/api/1/access/activity.xml?last-updated-datetime__gt=2010-01-01 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?last-updated-datetime__gt=2010-01-01>`__
 
 
 registry-dataset
@@ -298,7 +298,7 @@ Parameters:
     @registry-dataset: string name of the specified registry dataset
 
 Example API call:
-    `/api/1/access/activity.xml?registry-dataset=dfid-af <http://datastore.iatistandard.org/api/1/access/activity.xml?registry-dataset=dfid-af>`__
+    `/api/1/access/activity.xml?registry-dataset=dfid-af <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?registry-dataset=dfid-af>`__
 
 
 
@@ -309,7 +309,7 @@ Combining filters
 All of the above filters can be combined using the & character.  The resulting query will return activities which match all of the specified criteria.
 
 Example API call:
-    `/api/1/access/activity.xml?reporting-org=GB-1&recipient-country=CD <http://datastore.iatistandard.org/api/1/access/activity.xml?reporting-org=GB-1&recipient-country=CD>`__
+    `/api/1/access/activity.xml?reporting-org=GB-1&recipient-country=CD <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?reporting-org=GB-1&recipient-country=CD>`__
     *This would respond with all the DFID (GB-1) data for the Democratic Republic of Congo (CD).*
 
 
@@ -320,7 +320,7 @@ Complex Filtering
 Each individual filter can be filtered for alternate values using the | character.
 
 Example API call:
-    `/api/1/access/activity.xml?reporting-org=GB-1&recipient-country=CD|UG <http://datastore.iatistandard.org/api/1/access/activity.xml?reporting-org=GB-1&recipient-country=CD%7CUG>`__
+    `/api/1/access/activity.xml?reporting-org=GB-1&recipient-country=CD|UG <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?reporting-org=GB-1&recipient-country=CD%7CUG>`__
     This would return activities for DFID (GB-1) where the recipient-country is either Democratic Republic of Congo (CD) OR Uganda (UG)
 
 
@@ -333,10 +333,10 @@ Paging through results
 
 By default, data is returned from the first result matching your API query.  Incrementing the offset parameter will return data beginning at the *nth* activity.
 
-    `/api/1/access/activity.xml <http://datastore.iatistandard.org/api/1/access/activity.xml>`__
+    `/api/1/access/activity.xml <https://iati-datastore.codeforiati.org/api/1/access/activity.xml>`__
     *This will return all activities, beginning with the first result.*
 
-    `/api/1/access/activity.xml?offset=20 <http://datastore.iatistandard.org/api/1/access/activity.xml?offset=20>`__
+    `/api/1/access/activity.xml?offset=20 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?offset=20>`__
     *This will return all activities, beginning with the 20th result.*
 
 The datastore will respond with an HTTP 404 when you have asked for the page beyond the last page.
@@ -352,7 +352,7 @@ Parameters:
     @limit: Maximum number of activities to be returned
 
 Example API call:
-    `/api/1/access/activity.xml?limit=100 <http://datastore.iatistandard.org/api/1/access/activity.xml?limit=100>`__
+    `/api/1/access/activity.xml?limit=100 <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?limit=100>`__
 
 The default behaviour is 50. Trying to fetch more than about 1000 activities with this this call is likely to result in an error.
 
@@ -364,10 +364,10 @@ Getting all the results at once
 The CSV and XML formats support returning all results at once in a ‘stream’. To request all available results, add ‘stream=True’ to your parameters.
 
 Example API calls:
-    `/api/1/access/transaction.csv?reporting-org.ref=GB-1&stream=True <http://datastore.iatistandard.org/api/1/access/transaction.csv?reporting-org.ref=GB-1&stream=True>`__
+    `/api/1/access/transaction.csv?reporting-org.ref=GB-1&stream=True <https://iati-datastore.codeforiati.org/api/1/access/transaction.csv?reporting-org.ref=GB-1&stream=True>`__
     *This will return all the DFID transactions data as CSV.*
 
-    `/api/1/access/activity.xml?reporting-org.ref=GB-1&stream=True <http://datastore.iatistandard.org/api/1/access/activity.xml?reporting-org.ref=GB-1&stream=True>`__
+    `/api/1/access/activity.xml?reporting-org.ref=GB-1&stream=True <https://iati-datastore.codeforiati.org/api/1/access/activity.xml?reporting-org.ref=GB-1&stream=True>`__
     *This will return all the DFID transactions data as XML.*
 
 

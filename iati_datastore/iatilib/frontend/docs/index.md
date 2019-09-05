@@ -1,1 +1,0 @@
-The datastore API documentation is now maintained in reStructuredText format at https://github.com/codeforIATI/IATI-Datastore/blob/master/docs_source/api.rst and can be seen on the web at https://iati-datastore.codeforiati.org/api/

@@ -1,15 +1,14 @@
 import os
 
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask.ext.rq import RQ
 from flask.ext.heroku import Heroku
-from flaskext.markdown import Markdown
 
 from iatilib import db, redis
 
 
 def create_app(**config):
-    app = Flask('iatilib.frontend')
+    app = Flask('iatilib.frontend', static_url_path='/docs')
 
     app.config.update(config)
 
@@ -26,21 +25,14 @@ def create_app(**config):
     redis.init_app(app)
 
     RQ(app)
-    Markdown(app, extensions=['tables'])
 
     @app.route('/')
     def homepage():
-        from flask import render_template
-        with app.open_resource('docs/index.md') as f:
-            contents = f.read()
-        return render_template('doc.html', doc=contents)
+        return redirect(url_for('static', filename='api/index.html'))
 
     @app.route('/error')
     def error():
-        from flask import render_template
-        with app.open_resource('docs/error.md') as f:
-            contents = f.read()
-        return render_template('doc.html', doc=contents)
+        return redirect(url_for('static', filename='api/index.html'))
 
     from .api1 import api
 

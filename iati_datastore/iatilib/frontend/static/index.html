@@ -1,68 +1,331 @@
-<!doctype html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>IATI API</title>
-    <link rel="stylesheet" type="text/css" href="static/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="static/style.css" />
-    <script src="static/jquery-1.7.2.js"></script>
-    <script src="static/bootstrap.min.js"></script>
-    <script>
-     $(function() {
-      $('.example a').tooltip();
-     });
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Home &mdash; IATI Datastore 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
     </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="IATI Datastore 0.0 documentation" href="#" />
+    <link rel="next" title="CSV query builder" href="csv-query-builder/" />
+    <link rel="prev" title="Sitemap" href="sitemap/" /> 
   </head>
   <body>
-    <div class="container">
-      <div class="subcontainer">
-        <header>
-          <h1>IATI API</h1>
-        </header>
-<hr/>
-<b>Data Source:</b> <a href="http://iatiregistry.org/">http://iatiregistry.org/</a><br/>
-<b>For more information:</b> <a href="http://iatistandard.org/">http://iatistandard.org/</a>
-<hr/>
-        <h3>Version 1 Reference</h3><br/>
-        <h4>About</h4>
-        <p class="description">Human-readable information about the API.</p>
-        <div class="example"><a href="/api/1/about" title="Human-readable information about the API.">/api/1/about</a></div>
-        <hr/>
-        <h4>Activity: Basic Query</h4>
-        <p class="description">List activity objects. Note fields such as <em>total</em> (number of results), <em>last_page</em>, <em>per_page</em> etc.</p>
-        <div class="example"><a href="/api/1/access/activities" title="All activities">/api/1/access/activities</a></div>
-        <div class="example"><a title="Fifty activities per page" href="/api/1/access/activities?per_page=50">/api/1/access/activities?per_page=50</a></div>
-        <div class="example"><a title="Twenty activities per page. Start on page&nbsp;seven." href="/api/1/access/activities?per_page=20&page=7">/api/1/access/activities?per_page=20&page=7</a></div>
-        <hr/>
-        <h4>Activity: Query by Country</h4>
-            <p class="description">Search <code>&lt;recipient-country&gt;</code> text, or look up by ISO code.</p>
-        <div class="example"><a title="Fetch activities using Libya's country code." href="/api/1/access/activities?country_code=LY">/api/1/access/activities?country_code=LY</a></div>
-        <div class="example"><a title="Case-insensitive text-search for 'libya'" href="/api/1/access/activities?country=libya">/api/1/access/activities?country=libya</a></div>
-        <hr/>
-        <h4>Activity: Query by Reporting Organisation</h4>
-            <p class="description">Search <code>&lt;reporting-org&gt;</code> text, or look up by <code>ref</code> attribute.</p>
-        <div class="example"><a title="Fetch activities reported by World&nbsp;Vision&nbsp;UK." href="/api/1/access/activities?reporting_org_ref=GB-CHC-285908">/api/1/access/activities?reporting_org_ref=GB-CHC-285908</a></div>
-        <div class="example"><a title="Case-insensitive text-search activities reported by 'world bank' related organisations." href="/api/1/access/activities?reporting_org=world%20bank">/api/1/access/activities?reporting_org=world%20bank</a></div>
-        <hr/>
-        <h4>Activity: Query by Participating Organisation</h4>
-            <p class="description">Search <code>&lt;participating-org&gt;</code> text, or look up by <code>ref</code> attribute.</p>
-            <p class="description">query <Query>&lt;participating-org&gt;</code> text, or look up by <code>ref</code> attribute.</p>
-        <div class="example"><a title="Fetch activities involving the International Development Association." href="/api/1/access/activities?participating_org_ref=44002">/api/1/access/activities?participating_org_ref=44002</a></div>
-        <div class="example"><a title="Case-insensitive text-search activities involving 'peace' related organisations." href="/api/1/access/activities?participating_org=peace">/api/1/access/activities?participating_org=peace</a></div>
-        <hr/>
-        <h4>Activity: Query by Sector</h4>
-            <p class="description">Search for activities in a given sector.</p>
-        <div class="example"><a title="Case-insensitive text-search for activities in the sanitation sector." href="/api/1/access/activities?sector=sanitation">/api/1/access/activities?sector=sanitation</a></div>
-        <div class="example"><a title="Fetch activities in the 'Basic Health Infrastructure' sector." href="/api/1/access/activities?sector_code=12230">/api/1/access/activities?sector_code=12230</a></div>
-        <hr/>
-        <h4>Activity: Query by Date</h4>
-        <p class="description">Search for activities occurring on a given date. The date must fall between <code>start-actual</code> (or <code>start-planned</code>) and <code>end-actual</code> (or <code>end-planned</code>).</p>
-        <div class="example"><a title="Activities happening in the middle of 2009." href="/api/1/access/activities?date=2009-05-09">/api/1/access/activities?date=2009-05-09</a></div>
-        <div class="example"><a title="Activities which were occurring at the start of 1995." href="/api/1/access/activities?date=1995-01-01Z15:30:00">/api/1/access/activities?date=1995-01-01Z15:30:00</a></div>
-        <footer>
-          <p>The IATI API is updated nightly. This is a collaboration between <a href="http://www.aidtransparency.net/">IATI</a>, <a href="http://www.aidinfo.org/">aidinfo</a> and the <a href="http://okfn.org">Open Knowledge Foundation</a>.
-        </footer>
-      </div>
-    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="csv-query-builder/" title="CSV query builder"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="sitemap/" title="Sitemap"
+             accesskey="P">previous</a> |</li>
+        <li><a href="sitemap/">IATI Datastore 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
 
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="home">
+<h1>Home<a class="headerlink" href="#home" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-is-the-iati-datastore">
+<h2>What is the IATI Datastore?<a class="headerlink" href="#what-is-the-iati-datastore" title="Permalink to this headline">¶</a></h2>
+<p>The IATI Datastore is an online service that gathers all data published to the IATI standard into a single queryable source. This can deliver selections of IATI data in JSON or XML formats, or CSV (spreadsheet) for less-technical users.</p>
+</div>
+<div class="section" id="how-does-it-work">
+<h2>How does it work?<a class="headerlink" href="#how-does-it-work" title="Permalink to this headline">¶</a></h2>
+<p>Data that is recorded on the <a class="reference external" href="http://iatiregistry.org/">IATI Registry</a>, and is valid against the standard, is pulled into the Datastore on a nightly basis. This enables people to query for IATI activities across several facets (eg: country, publisher, sector). Activities that satisfy the criteria can then be access in XML, JSON or CSV (spreadsheet) format.</p>
+</div>
+<div class="section" id="who-is-it-for">
+<h2>Who is it for?<a class="headerlink" href="#who-is-it-for" title="Permalink to this headline">¶</a></h2>
+<p>The store is a service for analysts, data journalists, infomediaries and developers. IATI is providing this ‘back-end’ service to streamline the work of the growing community of open data and transparency technologists who are beginning to build applications that can deliver accessible and usable information to a wide range of users.</p>
+</div>
+<div class="section" id="why-a-store">
+<h2>Why a store?<a class="headerlink" href="#why-a-store" title="Permalink to this headline">¶</a></h2>
+<p>This repository is called a store, not a database, because it cannot be used as a single dataset. IATI is a publishing standard, not an integral information system. One activity can be reported through IATI by a donor, an implementing organisation and a third-party (secondary-source publisher): in other words you cannot simply add everything together.</p>
+</div>
+<div class="section" id="how-to-access-the-datastore">
+<h2>How to access the Datastore<a class="headerlink" href="#how-to-access-the-datastore" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="api/"><em>An API</em></a> is available that enables people to construct queries.</li>
+<li>For those wishing to just access the data in CSV format, an <a class="reference internal" href="csv-query-builder/"><em>online form</em></a> is available to assist with queries</li>
+</ul>
+</div>
+<div class="section" id="are-there-any-limitations-on-the-datastore">
+<h2>Are there any limitations on the Datastore?<a class="headerlink" href="#are-there-any-limitations-on-the-datastore" title="Permalink to this headline">¶</a></h2>
+<p>In its current format the store allows you to filter IATI activities by publisher, organisation type, sector, or country as well as by the date of the most recent update. In future all fields will be queryable.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="54%" />
+<col width="15%" />
+<col width="15%" />
+<col width="15%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Query</td>
+<td>XML</td>
+<td>JSON</td>
+<td>CSV</td>
+</tr>
+<tr class="row-even"><td>iati-identifier</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-odd"><td>reporting-org</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-even"><td>title</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-odd"><td>description</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-even"><td>participating-org</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-odd"><td>other-identifier</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-even"><td>activity-status</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-odd"><td>activity-date</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-even"><td>contact-info</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-odd"><td>activity-scope</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-even"><td>recipient-country</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-odd"><td>recipient-region</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-even"><td>location</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-odd"><td>sector</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-even"><td>country-budget-items</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-odd"><td>humanitarian-scope</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-even"><td>policy-marker</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-odd"><td>collaboration-type</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-even"><td>default-flow-type</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-odd"><td>default-finance-type</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-even"><td>default-aid-type</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-odd"><td>default-tied-status</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-even"><td>budget</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-odd"><td>planned-disbursement</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-even"><td>capital-spend</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-odd"><td>transaction</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-even"><td>document-link</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-odd"><td>related-activity</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-even"><td>legacy-data</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-odd"><td>conditions</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-even"><td>result</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-odd"><td>crs-add</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-even"><td>fss</td>
+<td>no</td>
+<td>no</td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p>In its current CSV format the store allows three different row outputs: where each row represents an activity, transaction or budget item. In future sub-national geographic information and results reporting will also be available.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="sitemap/">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Home</a><ul>
+<li><a class="reference internal" href="#what-is-the-iati-datastore">What is the IATI Datastore?</a></li>
+<li><a class="reference internal" href="#how-does-it-work">How does it work?</a></li>
+<li><a class="reference internal" href="#who-is-it-for">Who is it for?</a></li>
+<li><a class="reference internal" href="#why-a-store">Why a store?</a></li>
+<li><a class="reference internal" href="#how-to-access-the-datastore">How to access the Datastore</a></li>
+<li><a class="reference internal" href="#are-there-any-limitations-on-the-datastore">Are there any limitations on the Datastore?</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="sitemap/"
+                        title="previous chapter">Sitemap</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="csv-query-builder/"
+                        title="next chapter">CSV query builder</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="csv-query-builder/" title="CSV query builder"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="sitemap/" title="Sitemap"
+             >previous</a> |</li>
+        <li><a href="sitemap/">IATI Datastore 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Development Initiatives.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
   </body>
 </html>

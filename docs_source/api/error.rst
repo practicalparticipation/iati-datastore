@@ -53,8 +53,8 @@ In plaintext
 ~~~~~~~~~~~~
 
 You can also fetch a list of datasets
-``wget http://datastore.iatistandard.org/api/1/error/dataset.log``
+``wget https://iati-datastore.codeforiati.org/api/1/error/dataset.log``
 
 Detailed logs can be recreated using
-``wget http://datastore.iatistandard.org/api/1/error/dataset.log/<dataset_id>``
+``wget https://iati-datastore.codeforiati.org/api/1/error/dataset.log/<dataset_id>``
 sorted by date \`
