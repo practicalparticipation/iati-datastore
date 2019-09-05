@@ -384,4 +384,4 @@ Source code
 
 The IATI Datastore is still under development. You can `browse the
 source code on GitHub and report bugs on
-Github <https://github.com/IATI/iati-datastore>`__ using the '`Issues <https://github.com/IATI/iati-datastore/issues>`__' features.
+Github <https://github.com/codeforIATI/IATI-Datastore>`__ using the '`Issues <https://github.com/codeforIATI/IATI-Datastore/issues>`__' features.
