@@ -28,7 +28,7 @@ flask-heroku==0.1.9
 Flask-And-Redis==0.4
 Flask-Markdown==0.3
 xmltodict==0.7.0
-gevent==0.13.8
+gevent==1.2.2
 """
 
 tests_require = """
