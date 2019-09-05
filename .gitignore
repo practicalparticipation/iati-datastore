@@ -7,5 +7,5 @@ _testdata
 1
 pyenv/
 *.egg-info
-docs/_build
+docs_source/_build
 pyenv/

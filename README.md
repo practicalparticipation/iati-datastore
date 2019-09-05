@@ -123,5 +123,5 @@ Generation of Documentation
 
 API documentation in the docs folder is generated using [Spinx](http://www.sphinx-doc.org).
 
-    cd iati-datastore/docs
+    cd docs_source
     make dirhtml
