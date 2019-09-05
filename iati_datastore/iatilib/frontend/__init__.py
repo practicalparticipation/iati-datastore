@@ -32,7 +32,7 @@ def create_app(**config):
 
     @app.route('/error')
     def error():
-        return redirect(url_for('static', filename='api/index.html'))
+        return redirect(url_for('static', filename='api/error/index.html'))
 
     from .api1 import api
 
