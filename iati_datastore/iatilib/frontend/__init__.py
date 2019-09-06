@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, send_from_directory
 from flask.ext.rq import RQ
 from flask.ext.heroku import Heroku
 
@@ -8,7 +8,7 @@ from iatilib import db, redis
 
 
 def create_app(**config):
-    app = Flask('iatilib.frontend', static_url_path='/docs')
+    app = Flask('iatilib.frontend')
 
     app.config.update(config)
 
@@ -28,11 +28,18 @@ def create_app(**config):
 
     @app.route('/')
     def homepage():
-        return redirect(url_for('static', filename='api/index.html'))
+        return redirect(url_for('docs', path='api/'))
 
     @app.route('/error')
     def error():
-        return redirect(url_for('static', filename='api/error/index.html'))
+        return redirect(url_for('docs', path='api/error/'))
+
+    @app.route('/docs/<path:path>')
+    def docs(path):
+        folder = os.path.join(os.path.dirname(__file__), 'docs')
+        if path.endswith('/'):
+            path += 'index.html'
+        return send_from_directory(folder, path)
 
     from .api1 import api
 
