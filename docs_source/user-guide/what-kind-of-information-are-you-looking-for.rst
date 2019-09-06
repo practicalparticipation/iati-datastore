@@ -4,7 +4,7 @@ What kind of information are you looking for?
 Are you a developer or tech-savvy infomediary?
 ----------------------------------------------
 
-The Datastore does not have its own front end. All access is through its API which is :doc:`documented here </api/>` with additional information on :doc:`errors here </api/error>`. Source code and further discussion is available on `Github <https://github.com/codeforIATI/IATI-Datastore>`__.
+The Datastore does not have its own front end. All access is through its API which is :doc:`documented here </api/>` with additional information on :doc:`errors here </api/error>`. Source code and further discussion is available on `Github <https://github.com/codeforIATI/iati-datastore>`__.
 
 Please be sure to read the guidance in this user guide to understand the scope, and potential pitfalls, of using the data.
 

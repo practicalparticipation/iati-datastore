@@ -1,9 +1,9 @@
 IATI Datastore
 ==============
 
-[![Build Status](https://travis-ci.com/codeforIATI/IATI-Datastore.svg?branch=master)](https://travis-ci.com/codeforIATI/IATI-Datastore)
-[![Coverage Status](https://img.shields.io/coveralls/codeforIATI/IATI-Datastore.svg)](https://coveralls.io/r/codeforIATI/IATI-Datastore?branch=master)
-[![License: MIT](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://github.com/codeforIATI/IATI-Datastore/blob/master/LICENSE.txt)
+[![Build Status](https://travis-ci.com/codeforIATI/iati-datastore.svg?branch=master)](https://travis-ci.com/codeforIATI/iati-datastore)
+[![Coverage Status](https://img.shields.io/coveralls/codeforIATI/iati-datastore.svg)](https://coveralls.io/r/codeforIATI/iati-datastore?branch=master)
+[![License: MIT](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://github.com/codeforIATI/iati-datastore/blob/master/LICENSE.txt)
 
 
 Introduction
@@ -33,7 +33,7 @@ Installing for development
 
 ```
 # Clone the source
-git clone https://github.com/codeforIATI/IATI-Datastore.git
+git clone https://github.com/codeforIATI/iati-datastore.git
 
 # Install development dependencies 
 pip install -r requirements_dev.txt
