@@ -3,6 +3,7 @@ import os
 from flask import Flask, redirect, url_for, send_from_directory
 from flask.ext.rq import RQ
 from flask.ext.heroku import Heroku
+from flask_sslify import SSLify
 
 from iatilib import db, redis
 
@@ -13,6 +14,7 @@ def create_app(**config):
     app.config.update(config)
 
     Heroku(app)
+    SSLify(app)
 
     if "REDISTOGO_URL" in os.environ:
         app.config.update({

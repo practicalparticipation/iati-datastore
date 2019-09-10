@@ -5,6 +5,7 @@ Flask==0.10.1
 Jinja2==2.10
 SQLAlchemy==0.8.7
 Flask-SQLAlchemy==1.0
+Flask-SSLify==0.1.5
 Werkzeug==0.8.3
 ckanapi==4.1
 iso8601==0.1.12
