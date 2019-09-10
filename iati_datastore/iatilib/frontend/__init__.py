@@ -36,10 +36,15 @@ def create_app(**config):
 
     @app.route('/docs/<path:path>')
     def docs(path):
-        folder = os.path.join(os.path.dirname(__file__), 'docs')
+        folder = os.path.join(app.root_path, 'docs')
         if path.endswith('/'):
             path += 'index.html'
         return send_from_directory(folder, path)
+
+    @app.route('/favicon.ico')
+    def favicon():
+        return send_from_directory(
+            os.path.join(app.root_path, 'static'), 'favicon.ico')
 
     from .api1 import api
 
