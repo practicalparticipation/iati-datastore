@@ -30,7 +30,8 @@ class AppTestCase(unittest.TestCase):
                 SQLALCHEMY_DATABASE_URI=os.environ.get(
                     "TEST_DATABASE_URL",
                     'sqlite:///:memory:',
-                )
+                ),
+                DEBUG=True
             )
             _app.app_context().push()
 
