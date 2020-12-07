@@ -18,4 +18,3 @@ gevent>=20.9.0
 Markdown==3.3.3
 Flask-RQ2==18.3
 psycopg2==2.8.6
-

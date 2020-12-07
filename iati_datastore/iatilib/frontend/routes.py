@@ -1,26 +1,28 @@
-from flask import Blueprint, current_app
+from os.path import join
+
+from flask import Blueprint, redirect, current_app, \
+    send_from_directory, Markup, url_for
 import markdown
 import markdown.extensions.tables
-from flask import Markup
 
 routes = Blueprint('routes', __name__, template_folder='templates')
 
 @routes.route('/')
 def homepage():
-    from flask import render_template
-    with current_app.open_resource('frontend/docs/index.md') as f:
-        contents = f.read().decode("utf-8")
-    markdown_string = markdown.markdown(
-        contents, extensions=["tables"]
-    )
-    return render_template('doc.html', markdown_string=Markup(markdown_string))
+    return redirect(url_for('routes.docs', path='api/'))
 
 @routes.route('/error')
 def error():
-    from flask import render_template
-    with current_app.open_resource('frontend/docs/error.md') as f:
-        contents = f.read().decode("utf-8")
-    markdown_string = markdown.markdown(
-        contents, extensions=["tables"]
-    )
-    return render_template('doc.html', markdown_string=Markup(markdown_string))
+    return redirect(url_for('routes.docs', path='api/error/'))
+
+@routes.route('/docs/<path:path>')
+def docs(path):
+    folder = join('frontend', 'docs')
+    if path.endswith('/'):
+        path += 'index.html'
+    return send_from_directory(folder, path)
+
+@routes.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        join('frontend', 'static'), 'favicon.ico')

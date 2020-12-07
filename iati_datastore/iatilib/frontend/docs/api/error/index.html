@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Data Error API &mdash; IATI Datastore 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="IATI Datastore 0.0 documentation" href="../../" />
+    <link rel="up" title="API" href="../" />
+    <link rel="next" title="User Guide" href="../../user-guide/" />
+    <link rel="prev" title="API" href="../" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../user-guide/" title="User Guide"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../" title="API"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../sitemap/">IATI Datastore 0.0 documentation</a> &raquo;</li>
+          <li><a href="../" accesskey="U">API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="data-error-api">
+<h1>Data Error API<a class="headerlink" href="#data-error-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general-data">
+<h2>General data<a class="headerlink" href="#general-data" title="Permalink to this headline">¶</a></h2>
+<p>To retrieve metadata on the datasets known to the datastore.</p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">/api/1/about/dataset</span></tt> retrieves the list of datasets currently in
+the datastore</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">/api/1/about/dataset/&lt;dataset&gt;</span></tt> retrieves specific details on the
+dataset
+-  <tt class="docutils literal"><span class="pre">last_modified</span></tt> - the date stamp that the dataset was updated in</p>
+<blockquote>
+<div><p>the IATI registry.</p>
+</div></blockquote>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">resources</span></tt><ul>
+<li><tt class="docutils literal"><span class="pre">url</span></tt> - url datastore used to fetch the resource</li>
+<li><tt class="docutils literal"><span class="pre">last_fetch</span></tt> - last time a fetch was attempted</li>
+<li><tt class="docutils literal"><span class="pre">last_successful_fetch</span></tt> - latest date the datastore
+successfully fetched the resource</li>
+<li><tt class="docutils literal"><span class="pre">last_status_code</span></tt> - last http status code on fetch</li>
+<li><tt class="docutils literal"><span class="pre">last_parsed</span></tt> - last date resource was successfully parsed</li>
+<li><tt class="docutils literal"><span class="pre">num_of_activities</span></tt> number of activities datastore has
+successfully parsed and stored</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="errors">
+<h2>Errors<a class="headerlink" href="#errors" title="Permalink to this headline">¶</a></h2>
+<p>To retrieve detailed data on the errors encountered by the parser</p>
+<div class="section" id="in-json">
+<h3>In JSON<a class="headerlink" href="#in-json" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">/api/1/error/dataset</span></tt> retrieves the list of datasets that have
+errored (in no order)<ul>
+<li><tt class="docutils literal"><span class="pre">dataset</span></tt> - name of dataset that contains errors</li>
+<li><tt class="docutils literal"><span class="pre">logger</span></tt> - &#8216;queue&#8217; indicates dataset errored whilst fetching and
+storing the resource whilst &#8216;Parser&#8217; indicates that the resource
+was successfully fetched but failed whilst parsing activities</li>
+</ul>
+</li>
+<li><tt class="docutils literal"><span class="pre">/api/1/error/dataset/&lt;dataset_id&gt;</span></tt> retrieves the list of datasets
+that have errored (in no order)<ul>
+<li><tt class="docutils literal"><span class="pre">datestamp</span></tt> - date/time that the error occurred</li>
+<li><tt class="docutils literal"><span class="pre">resource_url</span></tt> - url of the errored resource/dataset</li>
+<li><tt class="docutils literal"><span class="pre">msg</span></tt> - error message</li>
+<li><tt class="docutils literal"><span class="pre">traceback</span></tt> - detailed traceback of error, useful if you are a
+developer, please include this any reports on errors</li>
+<li><tt class="docutils literal"><span class="pre">logger</span></tt> - logger that reported the error</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="in-plaintext">
+<h3>In plaintext<a class="headerlink" href="#in-plaintext" title="Permalink to this headline">¶</a></h3>
+<p>You can also fetch a list of datasets
+<tt class="docutils literal"><span class="pre">wget</span> <span class="pre">https://iati-datastore.codeforiati.org/api/1/error/dataset.log</span></tt></p>
+<p>Detailed logs can be recreated using
+<tt class="docutils literal"><span class="pre">wget</span> <span class="pre">https://iati-datastore.codeforiati.org/api/1/error/dataset.log/&lt;dataset_id&gt;</span></tt>
+sorted by date `</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../sitemap/">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Data Error API</a><ul>
+<li><a class="reference internal" href="#general-data">General data</a></li>
+<li><a class="reference internal" href="#errors">Errors</a><ul>
+<li><a class="reference internal" href="#in-json">In JSON</a></li>
+<li><a class="reference internal" href="#in-plaintext">In plaintext</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../"
+                        title="previous chapter">API</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../../user-guide/"
+                        title="next chapter">User Guide</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/api/error.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../user-guide/" title="User Guide"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../" title="API"
+             >previous</a> |</li>
+        <li><a href="../../sitemap/">IATI Datastore 0.0 documentation</a> &raquo;</li>
+          <li><a href="../" >API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Development Initiatives.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

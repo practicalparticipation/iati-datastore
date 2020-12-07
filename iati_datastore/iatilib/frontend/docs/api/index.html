@@ -1,0 +1,528 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API &mdash; IATI Datastore 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="IATI Datastore 0.0 documentation" href="../" />
+    <link rel="next" title="Data Error API" href="error/" />
+    <link rel="prev" title="CSV query builder" href="../csv-query-builder/" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="error/" title="Data Error API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../csv-query-builder/" title="CSV query builder"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../sitemap/">IATI Datastore 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="api">
+<h1><a class="toc-backref" href="#id3">API</a><a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#api" id="id3">API</a><ul>
+<li><a class="reference internal" href="#available-data" id="id4">Available data</a><ul>
+<li><a class="reference internal" href="#technical-formats" id="id5">Technical formats</a></li>
+<li><a class="reference internal" href="#csv-formats" id="id6">CSV formats</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#filtering" id="id7">Filtering</a><ul>
+<li><a class="reference internal" href="#available-filters" id="id8">Available filters</a><ul>
+<li><a class="reference internal" href="#iati-identifier" id="id9">iati-identifier</a></li>
+<li><a class="reference internal" href="#recipient-country" id="id10">recipient-country</a></li>
+<li><a class="reference internal" href="#recipient-region" id="id11">recipient-region</a></li>
+<li><a class="reference internal" href="#reporting-org" id="id12">reporting-org</a></li>
+<li><a class="reference internal" href="#reporting-org-type" id="id13">reporting-org.type</a></li>
+<li><a class="reference internal" href="#sector" id="id14">sector</a></li>
+<li><a class="reference internal" href="#policy-marker" id="id15">policy-marker</a></li>
+<li><a class="reference internal" href="#participating-org" id="id16">participating-org</a></li>
+<li><a class="reference internal" href="#participating-org-role" id="id17">participating-org.role</a></li>
+<li><a class="reference internal" href="#related-activity" id="id18">related-activity</a></li>
+<li><a class="reference internal" href="#transaction" id="id19">transaction</a></li>
+<li><a class="reference internal" href="#transaction-provider-org" id="id20">transaction_provider-org</a></li>
+<li><a class="reference internal" href="#transaction-provider-org-provider-activity-id" id="id21">transaction_provider-org.provider-activity-id</a></li>
+<li><a class="reference internal" href="#transaction-receiver-org" id="id22">transaction_receiver-org</a></li>
+<li><a class="reference internal" href="#transaction-receiver-org-receiver-activity-id" id="id23">transaction_receiver-org.receiver-activity-id</a></li>
+<li><a class="reference internal" href="#start-date" id="id24">start-date</a></li>
+<li><a class="reference internal" href="#end-date" id="id25">end-date</a></li>
+<li><a class="reference internal" href="#last-change" id="id26">last-change</a></li>
+<li><a class="reference internal" href="#last-updated-datetime" id="id27">last-updated-datetime</a></li>
+<li><a class="reference internal" href="#registry-dataset" id="id28">registry-dataset</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#combining-filters" id="id29">Combining filters</a></li>
+<li><a class="reference internal" href="#complex-filtering" id="id30">Complex Filtering</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#results-options" id="id31">Results options</a><ul>
+<li><a class="reference internal" href="#paging-through-results" id="id32">Paging through results</a></li>
+<li><a class="reference internal" href="#setting-a-number-of-maximum-results" id="id33">Setting a number of maximum results</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#getting-all-the-results-at-once" id="id34">Getting all the results at once</a></li>
+<li><a class="reference internal" href="#checking-the-data" id="id35">Checking the Data</a></li>
+<li><a class="reference internal" href="#source-code" id="id36">Source code</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="error/">Data Error API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="error/#general-data">General data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error/#errors">Errors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="error/#in-json">In JSON</a></li>
+<li class="toctree-l3"><a class="reference internal" href="error/#in-plaintext">In plaintext</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="available-data">
+<h2><a class="toc-backref" href="#id4">Available data</a><a class="headerlink" href="#available-data" title="Permalink to this headline">¶</a></h2>
+<p>IATI activity data is available in the following formats:</p>
+<div class="section" id="technical-formats">
+<h3><a class="toc-backref" href="#id5">Technical formats</a><a class="headerlink" href="#technical-formats" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>XML - using endpoint: <a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml">/api/1/access/activity.xml</a></li>
+<li>JSON - using endpoint: <a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.json">/api/1/access/activity.json</a></li>
+</ul>
+</div>
+<div class="section" id="csv-formats">
+<h3><a class="toc-backref" href="#id6">CSV formats</a><a class="headerlink" href="#csv-formats" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>List of activities <a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.csv">/api/1/access/activity.csv</a></li>
+<li>Activities by sector <a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity/by_sector.csv">/api/1/access/activity/by_sector.csv</a></li>
+<li>Activities by country <a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity/by_country.csv">/api/1/access/activity/by_country.csv</a></li>
+<li>List of transactions <a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/transaction.csv">/api/1/access/transaction.csv</a></li>
+<li>Transactions by sector <a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/transaction/by_sector.csv">/api/1/access/transaction/by_sector.csv</a></li>
+<li>Transactions by country <a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/transaction/by_country.csv">/api/1/access/transaction/by_country.csv</a></li>
+<li>List of budgets <a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/budget.csv">/api/1/access/budget.csv</a></li>
+<li>Budgets by sector <a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/budget/by_sector.csv">/api/1/access/budget/by_sector.csv</a></li>
+<li>Budgets by country <a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/budget/by_country.csv">/api/1/access/budget/by_country.csv</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="filtering">
+<h2><a class="toc-backref" href="#id7">Filtering</a><a class="headerlink" href="#filtering" title="Permalink to this headline">¶</a></h2>
+<p>The following filters are available, which enable you to construct a query for the data that you are looking for.</p>
+<div class="section" id="available-filters">
+<h3><a class="toc-backref" href="#id8">Available filters</a><a class="headerlink" href="#available-filters" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="iati-identifier">
+<h4><a class="toc-backref" href="#id9">iati-identifier</a><a class="headerlink" href="#iati-identifier" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities matching the specified <a class="reference external" href="http://iatistandard.org/activity-standard/iati-identifier/">IATI Identifier</a> element.  In practice this should return one activity, as each activity should contain a <a class="reference external" href="http://iatistandard.org/activity-standard/iati-identifier/">IATI Identifier</a> value.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;iati-identifier: String denoting an individual IATI activity</dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?iati-identifier=NL-KVK-41177206-C-002350">/api/1/access/activity.xml?iati-identifier=NL-KVK-41177206-C-002350</a></dd>
+</dl>
+</div>
+<div class="section" id="recipient-country">
+<h4><a class="toc-backref" href="#id10">recipient-country</a><a class="headerlink" href="#recipient-country" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities where the country contained within a <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/recipient-country/">recipient-country</a> element matches a specified ISO country code.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;recipient-country: 2-digit ISO country code which appears on the <a class="reference external" href="http://iatistandard.org/201/codelists/Country/">country codelist</a></dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?recipient-country=SS">/api/1/access/activity.xml?recipient-country=SS</a></dd>
+</dl>
+</div>
+<div class="section" id="recipient-region">
+<h4><a class="toc-backref" href="#id11">recipient-region</a><a class="headerlink" href="#recipient-region" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities where the contained within with a <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/recipient-region/">recipient-region</a> element matches a specified DAC region code.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;recipient-region: 3-digit DAC region code which appears on the <a class="reference external" href="http://iatistandard.org/201/codelists/Region/">region codelist</a></dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?recipient-region=298">/api/1/access/activity.xml?recipient-region=298</a></dd>
+</dl>
+</div>
+<div class="section" id="reporting-org">
+<h4><a class="toc-backref" href="#id12">reporting-org</a><a class="headerlink" href="#reporting-org" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities where the value contained within a <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/reporting-org/">reporting-org</a> element matches your specified <a class="reference external" href="http://iatistandard.org/201/organisation-identifiers/">Organisation identifier</a> string.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;reporting-org: Organisation identifier string.</dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?reporting-org=NL-KVK-41177206">/api/1/access/activity.xml?reporting-org=NL-KVK-41177206</a></dd>
+</dl>
+</div>
+<div class="section" id="reporting-org-type">
+<h4><a class="toc-backref" href="#id13">reporting-org.type</a><a class="headerlink" href="#reporting-org-type" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities where the value contained within a <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/reporting-org/">reporting-org</a> &#64;type attribute matches your specified value.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;recipient-org.type: 2-digit value which appears on the <a class="reference external" href="http://iatistandard.org/201/codelists/OrganisationType/">organisation type codelist</a></dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="/api/1/access/activity.xml?reporting-org.type=10">/api/1/access/activity.xml?reporting-org.type=10</a></dd>
+</dl>
+</div>
+<div class="section" id="sector">
+<h4><a class="toc-backref" href="#id14">sector</a><a class="headerlink" href="#sector" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities where the value contained within a <a class="reference external" href="http://iatistandard.org/201/codelists/Sector/">sector</a> element matches a specified DAC sector code.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;sector: 5-digit DAC sector code which appears on the <a class="reference external" href="http://iatistandard.org/201/codelists/Sector/">sector codelist</a></dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?sector=11110">/api/1/access/activity.xml?sector=11110</a></dd>
+</dl>
+</div>
+<div class="section" id="policy-marker">
+<h4><a class="toc-backref" href="#id15">policy-marker</a><a class="headerlink" href="#policy-marker" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities containing a <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/policy-marker/">policy-marker</a> element which matches a your specified policy-marker value.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;policy-marker: 1-digit value which appears on the <a class="reference external" href="http://iatistandard.org/201/codelists/PolicyMarker/">policy marker codelist</a></dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?policy-marker=1">/api/1/access/activity.xml?policy-marker=1</a></dd>
+</dl>
+</div>
+<div class="section" id="participating-org">
+<h4><a class="toc-backref" href="#id16">participating-org</a><a class="headerlink" href="#participating-org" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities where the the value contained within the <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/reporting-org/">participating-org</a> element matches your specified participating-org identification string.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;participating-org: Identification string for the organisation who is participating</dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?participating-org=NL-KVK-41177206">/api/1/access/activity.xml?participating-org=NL-KVK-41177206</a></dd>
+</dl>
+</div>
+<div class="section" id="participating-org-role">
+<h4><a class="toc-backref" href="#id17">participating-org.role</a><a class="headerlink" href="#participating-org-role" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities where the value contained within the <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/participating-org/">participating-org</a> &#64;role attribute matches your specified value.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;participating-org.role: 1-digit value which appears on the organisation role codelist</dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?participating-org.role=1">/api/1/access/activity.xml?participating-org.role=1</a></dd>
+</dl>
+</div>
+<div class="section" id="related-activity">
+<h4><a class="toc-backref" href="#id18">related-activity</a><a class="headerlink" href="#related-activity" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities where the value contained within at least one <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/related-activity/">related-activity</a> element within an activity matches a specified <a class="reference external" href="http://iatistandard.org/201/activity-standard/overview/iati-identifier/">IATI activity identifier</a> string.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;related-activity: String denoting an <a class="reference external" href="http://iatistandard.org/201/activity-standard/overview/iati-identifier/">IATI activity identifier</a></dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?related-activity=US-7-GB-10-e76c5505">/api/1/access/activity.xml?related-activity=US-7-GB-10-e76c5505</a></dd>
+</dl>
+</div>
+<div class="section" id="transaction">
+<h4><a class="toc-backref" href="#id19">transaction</a><a class="headerlink" href="#transaction" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities containing at least one <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/">transaction element</a> where the &#64;ref attribute matches your given string.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;transaction: String denoting an <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/#attributes">transaction &#64;ref attribute</a></dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?transaction=15458">/api/1/access/activity.xml?transaction=15458</a></dd>
+</dl>
+</div>
+<div class="section" id="transaction-provider-org">
+<h4><a class="toc-backref" href="#id20">transaction_provider-org</a><a class="headerlink" href="#transaction-provider-org" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities containing at least one <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/">transaction element</a> where the provider-org element matches your specified organisation identifier string.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;transaction_provider-org: <a class="reference external" href="http://iatistandard.org/201/organisation-identifiers/">Organisation identifier string</a> for the organisation issuing who provided transaction funds</dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?transaction_provider-org=GB-1">/api/1/access/activity.xml?transaction_provider-org=GB-1</a></dd>
+</dl>
+</div>
+<div class="section" id="transaction-provider-org-provider-activity-id">
+<h4><a class="toc-backref" href="#id21">transaction_provider-org.provider-activity-id</a><a class="headerlink" href="#transaction-provider-org-provider-activity-id" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities containing at least one <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/">transaction element</a> where the <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/provider-org/#attributes">provider-activity-id</a> element matches a specified <a class="reference external" href="http://iatistandard.org/201/activity-standard/overview/iati-identifier/">IATI activity identifier</a> string.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;transaction_provider-org.provider-activity-id: String denoting an <a class="reference external" href="http://iatistandard.org/201/activity-standard/overview/iati-identifier/">IATI activity identifier</a></dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?transaction_provider-org.provider-activity-id=GB-1-202505">/api/1/access/activity.xml?transaction_provider-org.provider-activity-id=GB-1-202505</a></dd>
+</dl>
+</div>
+<div class="section" id="transaction-receiver-org">
+<h4><a class="toc-backref" href="#id22">transaction_receiver-org</a><a class="headerlink" href="#transaction-receiver-org" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities containing at least one <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/">transaction element</a> where funds have been transferred to an organisation with the specified <a class="reference external" href="http://iatistandard.org/201/organisation-identifiers/">Organisation identifier</a> string.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;transaction_receiver-org: <a class="reference external" href="http://iatistandard.org/201/organisation-identifiers/">Organisation identifier string</a> for the organisation issuing who received transaction funds</dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?transaction_receiver-org=GB-CHC-1108464">/api/1/access/activity.xml?transaction_receiver-org=GB-CHC-1108464</a></dd>
+</dl>
+</div>
+<div class="section" id="transaction-receiver-org-receiver-activity-id">
+<h4><a class="toc-backref" href="#id23">transaction_receiver-org.receiver-activity-id</a><a class="headerlink" href="#transaction-receiver-org-receiver-activity-id" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities containing at least one <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/">transaction element</a> where the <a class="reference external" href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/receiver-org/#attributes">receiver-org</a>
+element has an &#64;receiver-activity-id attribute which matches the specified <a class="reference external" href="http://iatistandard.org/201/activity-standard/overview/iati-identifier/">IATI activity identifier string</a>.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;transaction_receiver-org.receiver-activity-id: String denoting an <a class="reference external" href="http://iatistandard.org/201/activity-standard/overview/iati-identifier/">IATI activity identifier</a></dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?transaction_receiver-org.receiver-activity-id=GB-CHC-1099776-B8">/api/1/access/activity.xml?transaction_receiver-org.receiver-activity-id=GB-CHC-1099776-B8</a></dd>
+</dl>
+</div>
+<div class="section" id="start-date">
+<h4><a class="toc-backref" href="#id24">start-date</a><a class="headerlink" href="#start-date" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities where the date with in &#64;activity-date element (with type equivalent to start-planned or start-actual) of an activity is less or greater than your specified query.</p>
+<p>This API element has two sub-elements: to return activities less than your specified date, use start-date__lt, or to return activities less than your specified date use start-date__gt</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;start-date: ISO format date (YYYY-MM-DD).</dd>
+<dt>Example API calls:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?start-date__lt=2015-01-01">/api/1/access/activity.xml?start-date__lt=2015-01-01</a>
+<a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?start-date__gt=2015-01-01">/api/1/access/activity.xml?start-date__gt=2015-01-01</a></dd>
+</dl>
+</div>
+<div class="section" id="end-date">
+<h4><a class="toc-backref" href="#id25">end-date</a><a class="headerlink" href="#end-date" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities where the &#64;activity-date element (with type equivalent to end-planned or end-actual) of an activity is less or greater than your specified query.</p>
+<p>This API element has two sub-elements: to return activities less than your specified date, use end-date__lt, or to return activities less than your specified date use end-date__gt</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;end-date: ISO format date (YYYY-MM-DD).</dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?end-date__lt=2015-01-01">/api/1/access/activity.xml?end-date__lt=2015-01-01</a>
+<a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?end-date__gt=2015-01-01">/api/1/access/activity.xml?end-date__gt=2015-01-01</a></dd>
+</dl>
+</div>
+<div class="section" id="last-change">
+<span id="id1"></span><h4><a class="toc-backref" href="#id26">last-change</a><a class="headerlink" href="#last-change" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities where the observed last change the of an activity is less or greater than your specified query.</p>
+<p>This differs from the <a class="reference internal" href="#last-updated-datetime">last-updated-datetime</a>. filter, as the last-date filter is based on when the Datastore process observed a change in data. The <a class="reference internal" href="#last-updated-datetime">last-updated-datetime</a>. filter returns data based on the &#64;last-updated-datetime attribute contained within the data itself.</p>
+<p>This API element has two sub-elements: to return activities less than your specified date, use last-change__lt, or to return activities less than your specified date use last-change__gt</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;last-change: ISO format date (YYYY-MM-DD).</dd>
+<dt>Example API calls:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?last-change__lt=2009-01-01">/api/1/access/activity.xml?last-change__lt=2009-01-01</a>
+<a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?last-change__gt=2009-01-01">/api/1/access/activity.xml?last-change__gt=2009-01-01</a></dd>
+</dl>
+</div>
+<div class="section" id="last-updated-datetime">
+<span id="id2"></span><h4><a class="toc-backref" href="#id27">last-updated-datetime</a><a class="headerlink" href="#last-updated-datetime" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities where the &#64;last-updated-datetime attribute of an activity is less or greater than your specified query.</p>
+<p>This differs from the <a class="reference internal" href="#last-change">last-change</a>. filter, as the last-updated-datetime filter returns data based on the &#64;last-updated-datetime attribute contained within the data itself.  The <a class="reference internal" href="#last-change">last-change</a>. filter is based on when the Datastore process observed a change in data.</p>
+<p>This API element has two sub-elements: to return activities less than your specified date, use last-updated-datetime__lt, or to return activities less than your specified date use last-updated-datetime__gt</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;last-updated-datetime: ISO format date (YYYY-MM-DD).</dd>
+<dt>Example API calls:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?last-updated-datetime__lt=2015-01-01">/api/1/access/activity.xml?last-updated-datetime__lt=2015-01-01</a>
+<a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?last-updated-datetime__gt=2010-01-01">/api/1/access/activity.xml?last-updated-datetime__gt=2010-01-01</a></dd>
+</dl>
+</div>
+<div class="section" id="registry-dataset">
+<h4><a class="toc-backref" href="#id28">registry-dataset</a><a class="headerlink" href="#registry-dataset" title="Permalink to this headline">¶</a></h4>
+<p>Returns activities contained within a specified registry dataset.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;registry-dataset: string name of the specified registry dataset</dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?registry-dataset=dfid-af">/api/1/access/activity.xml?registry-dataset=dfid-af</a></dd>
+</dl>
+</div>
+</div>
+<div class="section" id="combining-filters">
+<h3><a class="toc-backref" href="#id29">Combining filters</a><a class="headerlink" href="#combining-filters" title="Permalink to this headline">¶</a></h3>
+<p>All of the above filters can be combined using the &amp; character.  The resulting query will return activities which match all of the specified criteria.</p>
+<dl class="docutils">
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?reporting-org=GB-1&amp;recipient-country=CD">/api/1/access/activity.xml?reporting-org=GB-1&amp;recipient-country=CD</a>
+<em>This would respond with all the DFID (GB-1) data for the Democratic Republic of Congo (CD).</em></dd>
+</dl>
+</div>
+<div class="section" id="complex-filtering">
+<h3><a class="toc-backref" href="#id30">Complex Filtering</a><a class="headerlink" href="#complex-filtering" title="Permalink to this headline">¶</a></h3>
+<p>Each individual filter can be filtered for alternate values using the | character.</p>
+<dl class="docutils">
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?reporting-org=GB-1&amp;recipient-country=CD%7CUG">/api/1/access/activity.xml?reporting-org=GB-1&amp;recipient-country=CD|UG</a>
+This would return activities for DFID (GB-1) where the recipient-country is either Democratic Republic of Congo (CD) OR Uganda (UG)</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="results-options">
+<h2><a class="toc-backref" href="#id31">Results options</a><a class="headerlink" href="#results-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="paging-through-results">
+<h3><a class="toc-backref" href="#id32">Paging through results</a><a class="headerlink" href="#paging-through-results" title="Permalink to this headline">¶</a></h3>
+<p>By default, data is returned from the first result matching your API query.  Incrementing the offset parameter will return data beginning at the <em>nth</em> activity.</p>
+<blockquote>
+<div><p><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml">/api/1/access/activity.xml</a>
+<em>This will return all activities, beginning with the first result.</em></p>
+<p><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?offset=20">/api/1/access/activity.xml?offset=20</a>
+<em>This will return all activities, beginning with the 20th result.</em></p>
+</div></blockquote>
+<p>The datastore will respond with an HTTP 404 when you have asked for the page beyond the last page.</p>
+</div>
+<div class="section" id="setting-a-number-of-maximum-results">
+<h3><a class="toc-backref" href="#id33">Setting a number of maximum results</a><a class="headerlink" href="#setting-a-number-of-maximum-results" title="Permalink to this headline">¶</a></h3>
+<p>The maximum number of results to be returned on a ‘page’ can be set using the limit parameter.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>&#64;limit: Maximum number of activities to be returned</dd>
+<dt>Example API call:</dt>
+<dd><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?limit=100">/api/1/access/activity.xml?limit=100</a></dd>
+</dl>
+<p>The default behaviour is 50. Trying to fetch more than about 1000 activities with this this call is likely to result in an error.</p>
+</div>
+</div>
+<div class="section" id="getting-all-the-results-at-once">
+<h2><a class="toc-backref" href="#id34">Getting all the results at once</a><a class="headerlink" href="#getting-all-the-results-at-once" title="Permalink to this headline">¶</a></h2>
+<p>The CSV and XML formats support returning all results at once in a ‘stream’. To request all available results, add ‘stream=True’ to your parameters.</p>
+<dl class="docutils">
+<dt>Example API calls:</dt>
+<dd><p class="first"><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/transaction.csv?reporting-org.ref=GB-1&amp;stream=True">/api/1/access/transaction.csv?reporting-org.ref=GB-1&amp;stream=True</a>
+<em>This will return all the DFID transactions data as CSV.</em></p>
+<p class="last"><a class="reference external" href="https://iati-datastore.codeforiati.org/api/1/access/activity.xml?reporting-org.ref=GB-1&amp;stream=True">/api/1/access/activity.xml?reporting-org.ref=GB-1&amp;stream=True</a>
+<em>This will return all the DFID transactions data as XML.</em></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="checking-the-data">
+<h2><a class="toc-backref" href="#id35">Checking the Data</a><a class="headerlink" href="#checking-the-data" title="Permalink to this headline">¶</a></h2>
+<p>General information is available on datasets contained within the datastore, as well as datasets where errors were encountered during the process of fetching and parsing. Full information on this is available on the <a class="reference external" href="error/#general-data">General API</a> and <a class="reference external" href="error/#errors">Error API</a> documentation.</p>
+</div>
+<div class="section" id="source-code">
+<h2><a class="toc-backref" href="#id36">Source code</a><a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
+<p>The IATI Datastore is still under development. You can <a class="reference external" href="https://github.com/codeforIATI/iati-datastore">browse the
+source code on GitHub and report bugs on
+Github</a> using the &#8216;<a class="reference external" href="https://github.com/codeforIATI/iati-datastore/issues">Issues</a>&#8216; features.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../sitemap/">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API</a><ul>
+<li><a class="reference internal" href="#available-data">Available data</a><ul>
+<li><a class="reference internal" href="#technical-formats">Technical formats</a></li>
+<li><a class="reference internal" href="#csv-formats">CSV formats</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#filtering">Filtering</a><ul>
+<li><a class="reference internal" href="#available-filters">Available filters</a><ul>
+<li><a class="reference internal" href="#iati-identifier">iati-identifier</a></li>
+<li><a class="reference internal" href="#recipient-country">recipient-country</a></li>
+<li><a class="reference internal" href="#recipient-region">recipient-region</a></li>
+<li><a class="reference internal" href="#reporting-org">reporting-org</a></li>
+<li><a class="reference internal" href="#reporting-org-type">reporting-org.type</a></li>
+<li><a class="reference internal" href="#sector">sector</a></li>
+<li><a class="reference internal" href="#policy-marker">policy-marker</a></li>
+<li><a class="reference internal" href="#participating-org">participating-org</a></li>
+<li><a class="reference internal" href="#participating-org-role">participating-org.role</a></li>
+<li><a class="reference internal" href="#related-activity">related-activity</a></li>
+<li><a class="reference internal" href="#transaction">transaction</a></li>
+<li><a class="reference internal" href="#transaction-provider-org">transaction_provider-org</a></li>
+<li><a class="reference internal" href="#transaction-provider-org-provider-activity-id">transaction_provider-org.provider-activity-id</a></li>
+<li><a class="reference internal" href="#transaction-receiver-org">transaction_receiver-org</a></li>
+<li><a class="reference internal" href="#transaction-receiver-org-receiver-activity-id">transaction_receiver-org.receiver-activity-id</a></li>
+<li><a class="reference internal" href="#start-date">start-date</a></li>
+<li><a class="reference internal" href="#end-date">end-date</a></li>
+<li><a class="reference internal" href="#last-change">last-change</a></li>
+<li><a class="reference internal" href="#last-updated-datetime">last-updated-datetime</a></li>
+<li><a class="reference internal" href="#registry-dataset">registry-dataset</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#combining-filters">Combining filters</a></li>
+<li><a class="reference internal" href="#complex-filtering">Complex Filtering</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#results-options">Results options</a><ul>
+<li><a class="reference internal" href="#paging-through-results">Paging through results</a></li>
+<li><a class="reference internal" href="#setting-a-number-of-maximum-results">Setting a number of maximum results</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#getting-all-the-results-at-once">Getting all the results at once</a></li>
+<li><a class="reference internal" href="#checking-the-data">Checking the Data</a></li>
+<li><a class="reference internal" href="#source-code">Source code</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../csv-query-builder/"
+                        title="previous chapter">CSV query builder</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="error/"
+                        title="next chapter">Data Error API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="error/" title="Data Error API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../csv-query-builder/" title="CSV query builder"
+             >previous</a> |</li>
+        <li><a href="../sitemap/">IATI Datastore 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Development Initiatives.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

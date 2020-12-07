@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>How is the CSV data displayed? &mdash; IATI Datastore 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="IATI Datastore 0.0 documentation" href="../../" />
+    <link rel="up" title="User Guide" href="../" />
+    <link rel="next" title="Selecting Data for CSV output" href="../selecting-data-for-csv-output/" />
+    <link rel="prev" title="How is the data updated?" href="../how-is-the-data-updated/" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../selecting-data-for-csv-output/" title="Selecting Data for CSV output"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../how-is-the-data-updated/" title="How is the data updated?"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../sitemap/">IATI Datastore 0.0 documentation</a> &raquo;</li>
+          <li><a href="../" accesskey="U">User Guide</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="how-is-the-csv-data-displayed">
+<h1>How is the CSV data displayed?<a class="headerlink" href="#how-is-the-csv-data-displayed" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="formats-choose-format-options">
+<h2>Formats (Choose Format options)<a class="headerlink" href="#formats-choose-format-options" title="Permalink to this headline">¶</a></h2>
+<p>There are three main output formats</p>
+<ul class="simple">
+<li>Activity – each row contains a unique activity. Financial information is aggregated. Budget information is excluded. Other potentially repeating fields (such as sectors) are reported in a single cell, delimited by semi-colons.</li>
+<li>Transaction – each row contains a unique financial transaction. The parent activity identifier and other activity-level fields are repeated for each transaction.</li>
+<li>Budget – each row contains a budget-period entry. Transaction data is not included. The parent activity identifier and other activity-level fields are repeated for each budget line.</li>
+</ul>
+</div>
+<div class="section" id="sub-formats-repeat-row-options">
+<h2>Sub-formats (Repeat Row? options)<a class="headerlink" href="#sub-formats-repeat-row-options" title="Permalink to this headline">¶</a></h2>
+<p>In addition each of these three formats has two sub-formats which allows for analysis of percentage splits where multiple sectors or countries are reported for a single activity.</p>
+<ul class="simple">
+<li>Sector – each Activity, Transaction or Budget row is repeated for each separate Sector reported. The corresponding percentage for the sector split is reported in a separate column. This allows you to easily add arithmetic to your spreadsheet to calculate values proportionately.</li>
+<li>Country – each Activity, Transaction or Budget row is repeated for each separate Country reported. The corresponding percentage for the sector split is reported in a separate column. This allows you to easily add arithmetic to your spreadsheet to calculate values proportionately.</li>
+</ul>
+<p><strong>Warning!</strong> The standard requires that percentage splits that add up to 100% are reported whenever multiple sectors or countries are used. This rule is not enforced through validation so caution should be practiced when using these formats.</p>
+</div>
+<div class="section" id="columns">
+<h2>Columns<a class="headerlink" href="#columns" title="Permalink to this headline">¶</a></h2>
+<p>Each of the above formats have a different selection of columns. This table describes the description and occurrence of columns. The sub-formats are similar to their parent format with the addition of Sector/Country and Percentage columns on the left-hand side of the sheet.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../sitemap/">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">How is the CSV data displayed?</a><ul>
+<li><a class="reference internal" href="#formats-choose-format-options">Formats (Choose Format options)</a></li>
+<li><a class="reference internal" href="#sub-formats-repeat-row-options">Sub-formats (Repeat Row? options)</a></li>
+<li><a class="reference internal" href="#columns">Columns</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../how-is-the-data-updated/"
+                        title="previous chapter">How is the data updated?</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../selecting-data-for-csv-output/"
+                        title="next chapter">Selecting Data for CSV output</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/user-guide/how-is-the-csv-data-displayed.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../selecting-data-for-csv-output/" title="Selecting Data for CSV output"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../how-is-the-data-updated/" title="How is the data updated?"
+             >previous</a> |</li>
+        <li><a href="../../sitemap/">IATI Datastore 0.0 documentation</a> &raquo;</li>
+          <li><a href="../" >User Guide</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Development Initiatives.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
