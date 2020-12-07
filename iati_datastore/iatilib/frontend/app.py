@@ -1,9 +1,8 @@
 import os
 
 from flask import Flask
-from flask_rq import RQ
 
-from iatilib import db, redis
+from iatilib import db, rq
 
 from .api1 import api
 from iatilib.frontend.routes import routes
@@ -25,5 +24,4 @@ def register_blueprints(app):
 
 def register_extensions(app):
     db.init_app(app)
-    redis.init_app(app)
-    RQ(app)
+    rq.init_app(app)
