@@ -1,8 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_redis import Redis
+#from flask_redis import Redis
+from flask_rq2 import RQ
 
 db = SQLAlchemy()
-redis = Redis()
+#redis = Redis()
+rq = RQ()
 
 _logger = None
 
