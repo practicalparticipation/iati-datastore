@@ -15,10 +15,8 @@ requests==2.25.0
 xmltodict==0.12.0
 gevent>=20.9.0
 Markdown==3.3.3
-Flask-RQ==0.2
-Flask-And-Redis==1.0.0
-redis==3.5.3
-rq==1.7.0
+Flask-RQ2==18.3
+psycopg2==2.8.6
 """
 
 tests_require = """
