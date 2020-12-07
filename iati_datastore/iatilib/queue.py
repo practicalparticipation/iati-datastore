@@ -1,9 +1,8 @@
 import traceback
 
-from flask_rq import get_worker as _get_worker, get_queue
 import click
-from . import db
-from .model import Log, Resource
+from iatilib import db, rq
+from iatilib.model import Log, Resource
 from flask import Blueprint
 
 
@@ -38,8 +37,8 @@ def db_log_exception(job, exc_type, exc_value, tb):
 def get_worker():
     # Set up the worker to log errors to the db rather than pushing them
     # into the failed queue.
-    worker = _get_worker()
-    worker.pop_exc_handler()
+    worker = rq.get_worker()
+    #worker.pop_exc_handler()
     worker.push_exc_handler(db_log_exception)
     return worker
 
@@ -59,5 +58,5 @@ def background():
 @manager.cli.command('empty')
 def empty():
     "Clear all jobs from queue"
-    rq = get_queue()
-    rq.empty()
+    queue = rq.get_queue()
+    queue.empty()
