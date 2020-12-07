@@ -121,7 +121,7 @@ Updating activities after changing import code
 Generation of Documentation
 ---------------------------
 
-API documentation in the docs folder is generated using [Spinx](http://www.sphinx-doc.org).
+API documentation in the docs folder is generated using [Sphinx](http://www.sphinx-doc.org).
 
     cd docs_source
     make dirhtml
