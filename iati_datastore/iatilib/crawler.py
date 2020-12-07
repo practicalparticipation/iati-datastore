@@ -7,10 +7,9 @@ import sqlalchemy as sa
 import requests
 import ckanapi
 from dateutil.parser import parse as date_parser
-from .queue import get_queue
 from werkzeug.http import http_date
 
-from iatilib import db, parse
+from iatilib import db, parse, rq
 from iatilib.model import Dataset, Resource, Activity, Log, DeletedActivity
 from iatilib.loghandlers import DatasetMessage as _
 from flask import Blueprint
@@ -170,14 +169,17 @@ def fetch_resource(resource):
     if resource.last_succ:
         headers['If-Modified-Since'] = http_date(resource.last_succ)
     if resource.etag:
-        headers["If-None-Match"] = resource.etag.encode('ascii')
+        headers["If-None-Match"] = resource.etag
     resp = requests.get(resource.url, headers=headers)
     resource.last_status_code = resp.status_code
     resource.last_fetch = datetime.datetime.utcnow()
     if resp.status_code == 200:
-        resource.document = resp.content.encode()
+        if isinstance(resp.content, bytes):
+            resource.document = resp.content
+        else:
+            resource.document = resp.content.encode()
         if "etag" in resp.headers:
-            resource.etag = resp.headers.get('etag').decode('ascii')
+            resource.etag = resp.headers.get('etag')
         else:
             resource.etag = None
         resource.last_succ = datetime.datetime.utcnow()
@@ -331,12 +333,12 @@ def update_resource(resource_url):
     )).delete(synchronize_session=False)
     db.session.commit()
 
-    rq = get_queue()
+    queue = rq.get_queue()
     resource = fetch_resource(Resource.query.get(resource_url))
     db.session.commit()
 
     if resource.last_status_code == 200:
-        rq.enqueue(update_activities, args=(resource.url,), result_ttl=0, timeout=100000)
+        queue.enqueue(update_activities, args=(resource.url,), result_ttl=0, timeout=100000)
 
 
 def update_dataset(dataset_name):
@@ -353,7 +355,7 @@ def update_dataset(dataset_name):
     )).delete(synchronize_session=False)
     db.session.commit()
 
-    rq = get_queue()
+    queue = rq.get_queue()
     dataset = Dataset.query.get(dataset_name)
 
     fetch_dataset_metadata(dataset)
@@ -363,7 +365,7 @@ def update_dataset(dataset_name):
     need_update = [r for r in dataset.resources
                    if not r.last_succ or r.last_succ < dataset.last_modified]
     for resource in need_update:
-        rq.enqueue(update_resource, args=(resource.url,), result_ttl=0)
+        queue.enqueue(update_resource, args=(resource.url,), result_ttl=0)
 
 
 @manager.cli.command('dataset_list')
@@ -431,7 +433,7 @@ def manual_update(dataset=None):
 @manager.cli.command('status')
 def status():
     """Show status of current jobs"""
-    print("%d jobs on queue" % get_queue().count)
+    print("%d jobs on queue" % rq.get_queue().count)
 
     print(status_line(
             "datasets have no metadata",
@@ -505,9 +507,9 @@ def status():
 
 @manager.cli.command('enqueue')
 def enqueue(careful=False):
-    rq = get_queue()
-    if careful and rq.count > 0:
-        print ("%d jobs on queue, not adding more" % rq.count)
+    queue = rq.get_queue()
+    if careful and queue.count > 0:
+        print ("%d jobs on queue, not adding more" % queue.count)
         return
 
     yesterday = datetime.datetime.utcnow() - datetime.timedelta(days=1)
@@ -523,7 +525,7 @@ def enqueue(careful=False):
             unfetched_resources.count()
     ))
     for resource in unfetched_resources:
-        rq.enqueue(
+        queue.enqueue(
                 update_resource,
                 args=(resource.url,),
                 result_ttl=0)
@@ -537,7 +539,7 @@ def enqueue(careful=False):
             ood_resources.count()
     ))
     for resource in ood_resources:
-        rq.enqueue(
+        queue.enqueue(
                 update_activities,
                 args=(resource.url,),
                 result_ttl=0,
@@ -557,15 +559,15 @@ def update(verbose=False, limit=None, dataset=None, timedelta=None):
     This is done by adding to the dataset table, and then adding an update command to
     the Flask job queue. See fetch_dataset_list, then update_dataset for next actions.
     """
-    rq = get_queue()
+    queue = rq.get_queue()
 
     if dataset:
         print ("Enqueing {0} for update".format(dataset))
-        rq.enqueue(update_dataset, args=(dataset,), result_ttl=0)
+        queue.enqueue(update_dataset, args=(dataset,), result_ttl=0)
         res = Resource.query.filter(Resource.dataset_id == dataset)
         for resource in res:
-            rq.enqueue(update_resource, args=(resource.url,), result_ttl=0)
-            rq.enqueue(update_activities, args=(resource.url,), result_ttl=0,
+            queue.enqueue(update_resource, args=(resource.url,), result_ttl=0)
+            queue.enqueue(update_activities, args=(resource.url,), result_ttl=0,
                        timeout=1000)
     else:
         if timedelta:
@@ -584,5 +586,5 @@ def update(verbose=False, limit=None, dataset=None, timedelta=None):
         for dataset in datasets:
             if verbose:
                 print ("Enquing %s" % dataset.name)
-            rq.enqueue(update_dataset, args=(dataset.name,), result_ttl=0)
+            queue.enqueue(update_dataset, args=(dataset.name,), result_ttl=0)
     db.session.close()
