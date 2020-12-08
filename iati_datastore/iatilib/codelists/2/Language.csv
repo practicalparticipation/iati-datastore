@@ -1,182 +1,182 @@
-code,name,description,category,url
-aa,Afar,,,
-ab,Abkhazian,,,
-ae,Avestan,,,
-af,Afrikaans,,,
-ak,Akan,,,
-am,Amharic,,,
-an,Aragonese,,,
-ar,Arabic,,,
-as,Assamese,,,
-av,Avaric,,,
-ay,Aymara,,,
-az,Azerbaijani,,,
-ba,Bashkir,,,
-be,Belarusian,,,
-bg,Bulgarian,,,
-bh,Bihari languages,,,
-bi,Bislama,,,
-bm,Bambara,,,
-bn,Bengali,,,
-bo,Tibetan,,,
-br,Breton,,,
-bs,Bosnian,,,
-ca,Catalan; Valencian,,,
-ce,Chechen,,,
-ch,Chamorro,,,
-co,Corsican,,,
-cr,Cree,,,
-cs,Czech,,,
-cv,Chuvash,,,
-cy,Welsh,,,
-da,Danish,,,
-de,German,,,
-dv,Divehi; Dhivehi; Maldivian,,,
-dz,Dzongkha,,,
-ee,Ewe,,,
-el,Greek,,,
-en,English,,,
-eo,Esperanto,,,
-es,Spanish; Castilian,,,
-et,Estonian,,,
-eu,Basque,,,
-fa,Persian,,,
-ff,Fulah,,,
-fi,Finnish,,,
-fj,Fijian,,,
-fo,Faroese,,,
-fr,French,,,
-fy,Western Frisian,,,
-ga,Irish,,,
-gd,Gaelic; Scottish Gaelic,,,
-gl,Galician,,,
-gn,Guarani,,,
-gu,Gujarati,,,
-gv,Manx,,,
-ha,Hausa,,,
-he,Hebrew,,,
-hi,Hindi,,,
-ho,Hiri Motu,,,
-hr,Croatian,,,
-ht,Haitian; Haitian Creole,,,
-hu,Hungarian,,,
-hy,Armenian,,,
-hz,Herero,,,
-id,Indonesian,,,
-ig,Igbo,,,
-ii,Sichuan Yi; Nuosu,,,
-ik,Inupiaq,,,
-io,Ido,,,
-is,Icelandic,,,
-it,Italian,,,
-iu,Inuktitut,,,
-ja,Japanese,,,
-jv,Javanese,,,
-ka,Georgian,,,
-kg,Kongo,,,
-ki,Kikuyu; Gikuyu,,,
-kj,Kuanyama; Kwanyama,,,
-kk,Kazakh,,,
-kl,Kalaallisut; Greenlandic,,,
-km,Central Khmer,,,
-kn,Kannada,,,
-ko,Korean,,,
-kr,Kanuri,,,
-ks,Kashmiri,,,
-ku,Kurdish,,,
-kv,Komi,,,
-kw,Cornish,,,
-ky,Kirghiz; Kyrgyz,,,
-la,Latin,,,
-lb,Luxembourgish; Letzeburgesch,,,
-lg,Ganda,,,
-li,Limburgan; Limburger; Limburgish,,,
-ln,Lingala,,,
-lo,Lao,,,
-lt,Lithuanian,,,
-lu,Luba-Katanga,,,
-lv,Latvian,,,
-mg,Malagasy,,,
-mh,Marshallese,,,
-mi,Maori,,,
-mk,Macedonian,,,
-ml,Malayalam,,,
-mn,Mongolian,,,
-mr,Marathi,,,
-ms,Malay,,,
-mt,Maltese,,,
-my,Burmese,,,
-na,Nauru,,,
-nb,"BokmÃ¥l, Norwegian; Norwegian BokmÃ¥l",,,
-nd,"Ndebele, North; North Ndebele",,,
-ne,Nepali,,,
-ng,Ndonga,,,
-nl,Dutch; Flemish,,,
-nn,"Norwegian Nynorsk; Nynorsk, Norwegian",,,
-no,Norwegian,,,
-nr,"Ndebele, South; South Ndebele",,,
-nv,Navajo; Navaho,,,
-ny,Chichewa; Chewa; Nyanja,,,
-oc,Occitan (post 1500),,,
-oj,Ojibwa,,,
-om,Oromo,,,
-or,Oriya,,,
-os,Ossetian; Ossetic,,,
-pa,Panjabi; Punjabi,,,
-pi,Pali,,,
-pl,Polish,,,
-ps,Pushto; Pashto,,,
-pt,Portuguese,,,
-qu,Quechua,,,
-rm,Romansh,,,
-rn,Rundi,,,
-ro,Romanian; Moldavian; Moldovan,,,
-ru,Russian,,,
-rw,Kinyarwanda,,,
-sa,Sanskrit,,,
-sc,Sardinian,,,
-sd,Sindhi,,,
-se,Northern Sami,,,
-sg,Sango,,,
-si,Sinhala; Sinhalese,,,
-sk,Slovak,,,
-sl,Slovenian,,,
-sm,Samoan,,,
-sn,Shona,,,
-so,Somali,,,
-sq,Albanian,,,
-sr,Serbian,,,
-ss,Swati,,,
-st,"Sotho, Southern",,,
-su,Sundanese,,,
-sv,Swedish,,,
-sw,Swahili,,,
-ta,Tamil,,,
-te,Telugu,,,
-tg,Tajik,,,
-th,Thai,,,
-ti,Tigrinya,,,
-tk,Turkmen,,,
-tl,Tagalog,,,
-tn,Tswana,,,
-to,Tonga (Tonga Islands),,,
-tr,Turkish,,,
-ts,Tsonga,,,
-tt,Tatar,,,
-tw,Twi,,,
-ty,Tahitian,,,
-ug,Uighur; Uyghur,,,
-uk,Ukrainian,,,
-ur,Urdu,,,
-uz,Uzbek,,,
-ve,Venda,,,
-vi,Vietnamese,,,
-vo,VolapÃ¼k,,,
-wa,Walloon,,,
-wo,Wolof,,,
-xh,Xhosa,,,
-yi,Yiddish,,,
-yo,Yoruba,,,
-za,Zhuang; Chuang,,,
-zh,Chinese,,,
-zu,Zulu,,,
+code,name,description,category,url,status
+aa,Afar,,,,active
+ab,Abkhazian,,,,active
+ae,Avestan,,,,active
+af,Afrikaans,,,,active
+ak,Akan,,,,active
+am,Amharic,,,,active
+an,Aragonese,,,,active
+ar,Arabic,,,,active
+as,Assamese,,,,active
+av,Avaric,,,,active
+ay,Aymara,,,,active
+az,Azerbaijani,,,,active
+ba,Bashkir,,,,active
+be,Belarusian,,,,active
+bg,Bulgarian,,,,active
+bh,Bihari languages,,,,active
+bi,Bislama,,,,active
+bm,Bambara,,,,active
+bn,Bengali,,,,active
+bo,Tibetan,,,,active
+br,Breton,,,,active
+bs,Bosnian,,,,active
+ca,Catalan; Valencian,,,,active
+ce,Chechen,,,,active
+ch,Chamorro,,,,active
+co,Corsican,,,,active
+cr,Cree,,,,active
+cs,Czech,,,,active
+cv,Chuvash,,,,active
+cy,Welsh,,,,active
+da,Danish,,,,active
+de,German,,,,active
+dv,Divehi; Dhivehi; Maldivian,,,,active
+dz,Dzongkha,,,,active
+ee,Ewe,,,,active
+el,Greek,,,,active
+en,English,,,,active
+eo,Esperanto,,,,active
+es,Spanish; Castilian,,,,active
+et,Estonian,,,,active
+eu,Basque,,,,active
+fa,Persian,,,,active
+ff,Fulah,,,,active
+fi,Finnish,,,,active
+fj,Fijian,,,,active
+fo,Faroese,,,,active
+fr,French,,,,active
+fy,Western Frisian,,,,active
+ga,Irish,,,,active
+gd,Gaelic; Scottish Gaelic,,,,active
+gl,Galician,,,,active
+gn,Guarani,,,,active
+gu,Gujarati,,,,active
+gv,Manx,,,,active
+ha,Hausa,,,,active
+he,Hebrew,,,,active
+hi,Hindi,,,,active
+ho,Hiri Motu,,,,active
+hr,Croatian,,,,active
+ht,Haitian; Haitian Creole,,,,active
+hu,Hungarian,,,,active
+hy,Armenian,,,,active
+hz,Herero,,,,active
+id,Indonesian,,,,active
+ig,Igbo,,,,active
+ii,Sichuan Yi; Nuosu,,,,active
+ik,Inupiaq,,,,active
+io,Ido,,,,active
+is,Icelandic,,,,active
+it,Italian,,,,active
+iu,Inuktitut,,,,active
+ja,Japanese,,,,active
+jv,Javanese,,,,active
+ka,Georgian,,,,active
+kg,Kongo,,,,active
+ki,Kikuyu; Gikuyu,,,,active
+kj,Kuanyama; Kwanyama,,,,active
+kk,Kazakh,,,,active
+kl,Kalaallisut; Greenlandic,,,,active
+km,Central Khmer,,,,active
+kn,Kannada,,,,active
+ko,Korean,,,,active
+kr,Kanuri,,,,active
+ks,Kashmiri,,,,active
+ku,Kurdish,,,,active
+kv,Komi,,,,active
+kw,Cornish,,,,active
+ky,Kirghiz; Kyrgyz,,,,active
+la,Latin,,,,active
+lb,Luxembourgish; Letzeburgesch,,,,active
+lg,Ganda,,,,active
+li,Limburgan; Limburger; Limburgish,,,,active
+ln,Lingala,,,,active
+lo,Lao,,,,active
+lt,Lithuanian,,,,active
+lu,Luba-Katanga,,,,active
+lv,Latvian,,,,active
+mg,Malagasy,,,,active
+mh,Marshallese,,,,active
+mi,Maori,,,,active
+mk,Macedonian,,,,active
+ml,Malayalam,,,,active
+mn,Mongolian,,,,active
+mr,Marathi,,,,active
+ms,Malay,,,,active
+mt,Maltese,,,,active
+my,Burmese,,,,active
+na,Nauru,,,,active
+nb,"Bokmål, Norwegian; Norwegian Bokmål",,,,active
+nd,"Ndebele, North; North Ndebele",,,,active
+ne,Nepali,,,,active
+ng,Ndonga,,,,active
+nl,Dutch; Flemish,,,,active
+nn,"Norwegian Nynorsk; Nynorsk, Norwegian",,,,active
+no,Norwegian,,,,active
+nr,"Ndebele, South; South Ndebele",,,,active
+nv,Navajo; Navaho,,,,active
+ny,Chichewa; Chewa; Nyanja,,,,active
+oc,Occitan (post 1500),,,,active
+oj,Ojibwa,,,,active
+om,Oromo,,,,active
+or,Oriya,,,,active
+os,Ossetian; Ossetic,,,,active
+pa,Panjabi; Punjabi,,,,active
+pi,Pali,,,,active
+pl,Polish,,,,active
+ps,Pushto; Pashto,,,,active
+pt,Portuguese,,,,active
+qu,Quechua,,,,active
+rm,Romansh,,,,active
+rn,Rundi,,,,active
+ro,Romanian; Moldavian; Moldovan,,,,active
+ru,Russian,,,,active
+rw,Kinyarwanda,,,,active
+sa,Sanskrit,,,,active
+sc,Sardinian,,,,active
+sd,Sindhi,,,,active
+se,Northern Sami,,,,active
+sg,Sango,,,,active
+si,Sinhala; Sinhalese,,,,active
+sk,Slovak,,,,active
+sl,Slovenian,,,,active
+sm,Samoan,,,,active
+sn,Shona,,,,active
+so,Somali,,,,active
+sq,Albanian,,,,active
+sr,Serbian,,,,active
+ss,Swati,,,,active
+st,"Sotho, Southern",,,,active
+su,Sundanese,,,,active
+sv,Swedish,,,,active
+sw,Swahili,,,,active
+ta,Tamil,,,,active
+te,Telugu,,,,active
+tg,Tajik,,,,active
+th,Thai,,,,active
+ti,Tigrinya,,,,active
+tk,Turkmen,,,,active
+tl,Tagalog,,,,active
+tn,Tswana,,,,active
+to,Tonga (Tonga Islands),,,,active
+tr,Turkish,,,,active
+ts,Tsonga,,,,active
+tt,Tatar,,,,active
+tw,Twi,,,,active
+ty,Tahitian,,,,active
+ug,Uighur; Uyghur,,,,active
+uk,Ukrainian,,,,active
+ur,Urdu,,,,active
+uz,Uzbek,,,,active
+ve,Venda,,,,active
+vi,Vietnamese,,,,active
+vo,Volapük,,,,active
+wa,Walloon,,,,active
+wo,Wolof,,,,active
+xh,Xhosa,,,,active
+yi,Yiddish,,,,active
+yo,Yoruba,,,,active
+za,Zhuang; Chuang,,,,active
+zh,Chinese,,,,active
+zu,Zulu,,,,active
