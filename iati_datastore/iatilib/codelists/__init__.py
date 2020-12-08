@@ -24,7 +24,7 @@ def iati_url(name):
     return {
         '1': ("https://iatistandard.org/reference_downloads/105/codelists/downloads/clv2/csv/en/" +
               "%s.csv" % (name)),
-        '2': ("https://iatistandard.org/reference_downloads/203/codelists/downloads/clv2/csv/en/" +
+        '2': ("https://codelists.codeforiati.org/api/clv2/csv/en/" +
               "%s.csv" % (name)),
     }
 
