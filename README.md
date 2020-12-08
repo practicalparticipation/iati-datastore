@@ -25,7 +25,7 @@ Requirements
 
 You will need [Redis](http://redis.io), [Postgres](http://postgresql.org), python, pip and develpment libraries (for libpq, libxml2 and libxslt) to run the full setup.
 For example, on Ubuntu:
-    
+
     sudo aptitude install postgresql redis-server python-pip libpq-dev libxml2-dev libxslt-dev libevent-dev python-dev
 
 Installing for development
@@ -35,7 +35,7 @@ Installing for development
 # Clone the source
 git clone https://github.com/codeforIATI/iati-datastore.git
 
-# Install development dependencies 
+# Install development dependencies
 pip install -r requirements_dev.txt
 
 # Run the tests  (these tests use an in-memory sqlite db)
@@ -44,11 +44,11 @@ nosetests iati_datastore
 # Create a new PostgreSQL database
 sudo -u postgres psql -c "CREATE DATABASE iati_datastore"
 
-# Set an environment variable for `DATABASE_URL` linking to the database created
-export DATABASE_URL=postgres:///iati_datastore
+# Set an environment variable for `IATI_DATASTORE_DATABASE_URL` linking to the database created
+export IATI_DATASTORE_DATABASE_URL=postgres:///iati_datastore
 
 # Create the db tables
-iati create_database
+iati create-database
 
 # Note: To create the tables the new database may need access privileges granted to your system user
 # See http://dba.stackexchange.com/questions/117109/how-to-manage-default-privileges-for-users-on-a-database-vs-schema/117661#117661
@@ -59,7 +59,7 @@ sudo -u postgres psql -c "GRANT ALL ON DATABASE iati_datastore TO [SYSTEM USER]"
 iati crawl update
 
 # Start a development server – this should be run in a seperate terminal window
-iati runserver
+iati run
 
 # Run a worker. This will download and index the datafiles
 iati queue background
@@ -89,7 +89,7 @@ Deploying with apache
 
 * Run `iati create_database` to create the db tables
 * Set up a cron job for updates. (Add the following line after running `crontab -e`)
- 
+
         0 0 * * * export DATABASE_URL='postgres:///iati-datastore'; /usr/local/bin/iati crawl update
 
 * Run a worker with `iati queue background`
@@ -121,7 +121,7 @@ Updating activities after changing import code
 Generation of Documentation
 ---------------------------
 
-API documentation in the docs folder is generated using [Spinx](http://www.sphinx-doc.org).
+API documentation in the docs folder is generated using [Sphinx](http://www.sphinx-doc.org).
 
     cd docs_source
     make dirhtml

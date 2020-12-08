@@ -9,3 +9,5 @@ pyenv/
 *.egg-info
 docs_source/_build
 pyenv/
+.DS_Store
+*.sublime-*
