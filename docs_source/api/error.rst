@@ -10,6 +10,7 @@ To retrieve metadata on the datasets known to the datastore.
    the datastore
 -  ``/api/1/about/dataset/<dataset>`` retrieves specific details on the
    dataset
+
    -  ``last_modified`` - the date stamp that the dataset was updated in
       the IATI registry.
    -  ``resources``
