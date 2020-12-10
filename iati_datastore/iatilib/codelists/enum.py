@@ -1,6 +1,7 @@
 # http://techspot.zzzeek.org/2011/01/14/the-enum-recipe/
-from sqlalchemy.types import SchemaType, TypeDecorator, Enum
+from sqlalchemy.types import SchemaType, TypeDecorator, UnicodeText
 import re
+import six
 from requests.structures import CaseInsensitiveDict
 
 
@@ -12,6 +13,19 @@ class EnumSymbol(object):
         self.name = name
         self.value = value
         self.description = description
+
+    def __hash__(self):
+        return hash(self.value)
+
+    def __eq__(self, other):
+        if other is None:
+            return False
+        return self.value == other.value
+
+    def __ne__(self, other):
+        if other is None:
+            return True
+        return self.value != other.value
 
     def __reduce__(self):
         """Allow unpickling to return the symbol
@@ -40,10 +54,9 @@ class EnumMeta(type):
         return iter(cls._reg.values())
 
 
-class DeclEnum(object):
+class DeclEnum(object, metaclass=EnumMeta):
     """Declarative enumeration."""
 
-    __metaclass__ = EnumMeta
     _reg = CaseInsensitiveDict()
 
     @classmethod
@@ -51,10 +64,7 @@ class DeclEnum(object):
         try:
             return cls._reg[value]
         except (KeyError, AttributeError):
-            raise ValueError(
-                    "Invalid value for %r: %r" %
-                    (cls.__name__, value)
-                )
+            return EnumSymbol(cls, None, value, None)
 
     @classmethod
     def values(cls):
@@ -65,19 +75,10 @@ class DeclEnum(object):
         return DeclEnumType(cls)
 
 
-class DeclEnumType(SchemaType, TypeDecorator):
+class DeclEnumType(TypeDecorator):
     def __init__(self, enum):
         self.enum = enum
-        self.impl = Enum(
-                        *enum.values(),
-                        name="ck%s" % re.sub(
-                                    '([A-Z])',
-                                    lambda m:"_" + m.group(1).lower(),
-                                    enum.__name__)
-                    )
-
-    def _set_table(self, table, column):
-        self.impl._set_table(table, column)
+        self.impl = UnicodeText()
 
     def copy(self):
         return DeclEnumType(self.enum)
@@ -85,6 +86,8 @@ class DeclEnumType(SchemaType, TypeDecorator):
     def process_bind_param(self, value, dialect):
         if value is None:
             return None
+        elif isinstance(value, six.string_types):
+            return value
         return value.value
 
     def process_result_value(self, value, dialect):

@@ -5,7 +5,7 @@ from flask import (request, Response, Blueprint, jsonify, abort,
                    render_template, make_response)
 from flask.views import MethodView
 from werkzeug.datastructures import MultiDict
-from flask.ext.sqlalchemy import Pagination
+from flask_sqlalchemy import Pagination
 
 from iatilib import db
 from iatilib.model import (Activity, Resource, Transaction, Dataset,
@@ -53,6 +53,8 @@ def datasets():
 @api.route('/about/dataset/<dataset>')
 def about_dataset(dataset):
     dataset = db.session.query(Dataset).get(dataset)
+    if dataset is None:
+        abort(404)
     resources = []
     for r in dataset.resources:
         resources.append({
@@ -61,26 +63,54 @@ def about_dataset(dataset):
             'last_status_code': r.last_status_code,
             'last_successful_fetch': r.last_succ.isoformat() if r.last_succ else None,
             'last_parsed': r.last_parsed.isoformat() if r.last_parsed else None,
-            'num_of_activities': len(r.activities),
-        }) 
-        
+            'num_of_activities': r.activities.count(),
+        })
+
     return jsonify(
             dataset=dataset.name,
-            last_modified=dataset.last_modified.isoformat(),
+            last_modified=None if dataset.last_modified is None else dataset.last_modified.isoformat(),
             num_resources=len(dataset.resources),
             resources=resources,
     )
+
+
+@api.route('/about/datasets/fetch_status')
+def fetch_status_about_dataset():
+    """Output a JSON formatted list of dataset dictionaries containing their resource details.
+
+    Warning:
+        This is an experimental API call and not intended for general use.
+
+    """
+    dataset_resources = db.session.query(Dataset).options(db.subqueryload(Dataset.resources))
+    datasets = dict()
+
+    for dataset in dataset_resources:
+        if len(dataset.resources) == 0:
+            continue
+        ds_r = dataset.resources[0]
+        resources = {
+            'url': ds_r.url,
+            'last_fetch': ds_r.last_fetch.isoformat() if ds_r.last_fetch else None,
+            'last_status_code': ds_r.last_status_code,
+            'last_successful_fetch': ds_r.last_succ.isoformat() if ds_r.last_succ else None,
+            'last_parsed': ds_r.last_parsed.isoformat() if ds_r.last_parsed else None,
+        }
+        datasets[dataset.name] = resources
+
+    return jsonify(datasets=[{dataset: datasets[dataset]} for dataset in datasets])
+
 
 @api.route('/about/deleted')
 def deleted_activities():
     deleted_activities = db.session.query(DeletedActivity)\
                                    .order_by(DeletedActivity.deletion_date)
     return jsonify(
-        deleted_activities=[ 
+        deleted_activities=[
           {
             'iati_identifier' : da.iati_identifier,
             'deletion_date' : da.deletion_date.isoformat(),
-          } 
+          }
           for da in deleted_activities
         ],
     )
@@ -136,7 +166,7 @@ def dataset_error(dataset_id):
 def dataset_log():
     logs = db.session.query(Log.dataset).distinct()
     return render_template('datasets.log', logs=logs)
-    
+
 @api.route('/error/dataset.log/<dataset_id>')
 def dataset_log_error(dataset_id):
     error_logs = db.session.query(Log).order_by(sa.desc(Log.created_at)).\
@@ -158,8 +188,13 @@ class Stream(object):
     """
     Wrapper to make a query object quack like a pagination object
     """
+
+    limit = ''
+    offset = ''
+
     def __init__(self, query):
-        self.items = query
+        self.items = query.all()
+        self.total = query.count()
 
 class DataStoreView(MethodView):
     filter = None
@@ -172,7 +207,7 @@ class DataStoreView(MethodView):
     def paginate(self, query, offset, limit):
         if offset < 0:
             abort(404)
-        items = query.limit(limit).offset(offset).all()
+        items = query.order_by('iati_identifier').limit(limit).offset(offset).all()
         if not items and offset != 0:
             abort(404)
         return Scrollination(query, offset, limit, query.count(), items)
@@ -188,7 +223,7 @@ class DataStoreView(MethodView):
 
         try:
             valid_args = self.validate_args()
-        except (validators.MultipleInvalid, validators.Invalid), e:
+        except (validators.MultipleInvalid, validators.Invalid) as e:
             return make_response(render_template('invalid_filter.html', errors=e), 400)
         query = self.filter(valid_args)
 
@@ -201,7 +236,7 @@ class DataStoreView(MethodView):
                 valid_args.get("offset", 0),
                 valid_args.get("limit", 50),
             )
-            body = u"".join(serializer(pagination))
+            body = u"".join(list(serializer(pagination)))
         return Response(body, mimetype=mimetype)
 
 
@@ -221,8 +256,8 @@ class ActivityView(DataStoreView):
 
 
 class DataStoreCSVView(DataStoreView):
-    def get(self, format=".csv"):
-        if not request.path.endswith("csv"):
+    def get(self, format):
+        if format != ".csv":
             abort(404)
         return self.get_response()
 
@@ -266,16 +301,19 @@ class BudgetsBySectorView(DataStoreCSVView):
     filter = staticmethod(dsfilter.budgets_by_sector)
     serializer = staticmethod(serialize.csv_budget_by_sector)
 
+# Must declare this, instead of creating it twice,
+# to avoid the anti-duplication errors of Flask 0.10
+activity_view = ActivityView.as_view('activity')
 
 api.add_url_rule(
     '/access/activity',
     defaults={"format": ".json"},
-    view_func=ActivityView.as_view('activity')
+    view_func=activity_view
 )
 
 api.add_url_rule(
     '/access/activity<format>',
-    view_func=ActivityView.as_view('activity')
+    view_func=activity_view
 )
 
 api.add_url_rule(

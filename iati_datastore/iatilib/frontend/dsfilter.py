@@ -1,5 +1,6 @@
 from datetime import datetime
 from functools import partial
+import six
 from sqlalchemy import or_, and_
 from sqlalchemy.sql.operators import eq, gt, lt
 from iatilib import codelists, db
@@ -57,7 +58,7 @@ def _filter(query, args):
 
     def reporting_org_type(organisation_type):
         return Activity.reporting_org.has(
-            Organisation.type == organisation_type 
+            Organisation.type == organisation_type
         )
 
     def participating_org(organisation):
@@ -66,7 +67,7 @@ def _filter(query, args):
                 Organisation.ref == organisation
             )
         )
- 
+
     def participating_org_text(organisation):
         return Activity.participating_orgs.any(
             Participation.organisation.has(
@@ -76,17 +77,21 @@ def _filter(query, args):
 
     def participating_org_role(role):
         return Activity.participating_orgs.any(
-            Participation.role == role 
+            Participation.role == role
         )
 
     def sector(sector_code):
-        return Activity.sector_percentages.any(
+        return or_(Activity.sector_percentages.any(
             SectorPercentage.sector == sector_code
-        )
+        ), Activity.transactions.any(
+            Transaction.sector_percentages.any(
+                SectorPercentage.sector == sector_code
+            )
+        ))
 
     def sector_text(sector):
         return Activity.sector_percentages.any(
-            SectorPercentage.text == sector 
+            SectorPercentage.text == sector
         )
 
     def transaction_ref(transaction):
@@ -202,7 +207,7 @@ def _filter(query, args):
     for filter, search_string in args.items():
         filter_condition = filter_conditions.get(filter, None)
         if filter_condition:
-            if isinstance(search_string, basestring):
+            if isinstance(search_string, six.string_types):
                 terms = search_string.split('|')
                 if len(terms) >= 1:
                     conditions = tuple([ filter_condition(term) for term in terms ])
@@ -247,7 +252,7 @@ def transactions(args):
 def transactions_by_country(args):
     return _filter(
         db.session.query(Transaction, CountryPercentage)
-        .join(Activity)
+        .join(Activity, Activity.iati_identifier==Transaction.activity_id)
         .join(CountryPercentage),
         args
     )
@@ -256,7 +261,7 @@ def transactions_by_country(args):
 def transactions_by_sector(args):
     return _filter(
         db.session.query(Transaction, SectorPercentage)
-        .join(Activity)
+        .join(Activity, Activity.iati_identifier==Transaction.activity_id)
         .join(SectorPercentage),
         args
     )
@@ -269,7 +274,7 @@ def budgets(args):
 def budgets_by_country(args):
     return _filter(
         db.session.query(Budget, CountryPercentage)
-        .join(Activity)
+        .join(Activity, Activity.iati_identifier==Budget.activity_id)
         .join(CountryPercentage),
         args
     )
@@ -278,7 +283,7 @@ def budgets_by_country(args):
 def budgets_by_sector(args):
     return _filter(
         db.session.query(Budget, SectorPercentage)
-        .join(Activity)
+        .join(Activity, Activity.iati_identifier==Budget.activity_id)
         .join(SectorPercentage),
         args
     )

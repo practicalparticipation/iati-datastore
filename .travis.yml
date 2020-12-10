@@ -1,7 +1,8 @@
 language: python
 python:
-  - "2.7"
+  - "3.8"
 before_install:
   sudo apt-get install -y libevent-dev
-install: "pip install -r requirements_dev.txt --use-mirrors"
-script: nosetests iati_datastore
+install: "pip install -r requirements_dev.txt"
+script: nosetests iati_datastore --with-coverage --cover-package iati_datastore
+after_success: coveralls

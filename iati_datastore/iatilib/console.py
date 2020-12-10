@@ -1,77 +1,77 @@
-import os
+from os.path import dirname, realpath, join
 import codecs
 import logging
 import datetime as dt
+import subprocess
 
+import click
+from flask.cli import FlaskGroup, with_appcontext
 import requests
-from flask.ext.script import Manager
 from sqlalchemy import not_
 
-from iatilib.frontend import create_app
-from iatilib import parse, codelists, model, db, redis
-from iatilib.crawler import manager as crawler_manager
-from iatilib.queue import manager as queue_manager
+from iatilib import parse, codelists, model, db
+from iatilib.frontend.app import create_app
 
 
-manager = Manager(create_app(DEBUG=False))
-manager.add_command("crawl", crawler_manager)
-manager.add_command("queue", queue_manager)
+@click.group(cls=FlaskGroup, create_app=create_app)
+def cli():
+    """Management script for the IATI application."""
+    pass
 
 
-@manager.shell
-def make_shell_context():
-    return dict(
-        app=manager.app,
-        db=db,
-        rdb=redis,
-        model=model,
-        codelists=codelists)
-
-
-@manager.command
+@cli.command()
+@with_appcontext
 def download_codelists():
     "Download CSV codelists from IATI"
-    for name, url in codelists.urls.items():
-        filename = "iati_datastore/iatilib/codelists/%s.csv" % name
-        if os.path.exists(filename) and os.path.getsize(filename) > 0:
-            print filename, "exists, skipping"
-        else:
-            print "Downloading", name
-            resp = requests.get(url)
+    for major_version in ['1', '2']:
+        for name, url in codelists.urls[major_version].items():
+            filename = "iati_datastore/iatilib/codelists/%s/%s.csv" % (major_version, name)
+            print("Downloading %s.xx %s" % (major_version, name))
+            resp = requests.get(url[major_version])
             resp.raise_for_status()
+            resp.encoding = "utf-8"
             assert len(resp.text) > 0, "Response is empty"
-            with codecs.open(filename, "w", encoding="utf-8") as cl:
+            with codecs.open(filename, "w", encoding=resp.encoding) as cl:
                 cl.write(resp.text)
 
 
-@manager.command
+@cli.command()
+@with_appcontext
 def cleanup():
     from iatilib.model import Log
     db.session.query(Log).filter(
-        Log.created_at < dt.datetime.utcnow() - dt.timedelta(days=5)
+            Log.created_at < dt.datetime.utcnow() - dt.timedelta(days=5)
     ).filter(not_(Log.logger.in_(
-        ['activity_importer', 'failed_activity', 'xml_parser']),
+            ['activity_importer', 'failed_activity', 'xml_parser']),
     )).delete('fetch')
     db.session.commit()
     db.engine.dispose()
-    
 
-@manager.option(
-    '-x', '--fail-on-xml-errors',
-    action="store_true", dest="fail_xml")
-@manager.option(
-    '-s', '--fail-on-spec-errors',
-    action="store_true", dest="fail_spec")
-@manager.option('-v', '--verbose', action="store_true")
-@manager.option('filenames', nargs='+')
+
+@cli.command()
+def build_docs():
+    """Build documentation from source."""
+    current_path = dirname(dirname(realpath(__file__)))
+    cwd = join(current_path, 'docs_source')
+    subprocess.run(['make', 'dirhtml'], cwd=cwd)
+
+
+@click.option(
+        '-x', '--fail-on-xml-errors', "fail_xml")
+@click.option(
+        '-s', '--fail-on-spec-errors', "fail_spec")
+@click.option('-v', '--verbose', "verbose")
+@click.argument('filenames', nargs=-1)
+@cli.command()
+@with_appcontext
 def parse_file(filenames, verbose=False, fail_xml=False, fail_spec=False):
     for filename in filenames:
         if verbose:
-            print "Parsing", filename
+            print("Parsing", filename)
         try:
             db.session.add_all(parse.document(filename))
             db.session.commit()
-        except parse.ParserError, exc:
+        except parse.ParserError as exc:
             logging.error("Could not parse file %r", filename)
             db.session.rollback()
             if isinstance(exc, parse.XMLError) and fail_xml:
@@ -80,14 +80,13 @@ def parse_file(filenames, verbose=False, fail_xml=False, fail_spec=False):
                 raise
 
 
-@manager.command
+@cli.command()
+@with_appcontext
 def create_database():
     db.create_all()
 
 
-def main():
-    manager.run()
-
-if __name__ == "__main__":
-    main()
-
+@cli.command()
+@with_appcontext
+def empty_database():
+    db.drop_all()

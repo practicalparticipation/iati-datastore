@@ -56,8 +56,14 @@ class TestActivityFilter(AppTestCase):
         self.assertNotIn(act_not, activities.all())
 
     def test_by_reporting_org_ref(self):
-        act_in = fac.ActivityFactory.create(reporting_org__ref=u"AAA")
-        act_not = fac.ActivityFactory.create(reporting_org__ref=u"ZZZ")
+        act_in = fac.ActivityFactory.create(
+            reporting_org=fac.OrganisationFactory.build(
+                ref=u"AAA"
+            ))
+        act_not = fac.ActivityFactory.create(
+            reporting_org=fac.OrganisationFactory.build(
+                ref=u"ZZZ"
+            ))
         activities = dsfilter.activities({
             "reporting-org": u"AAA"
         })
@@ -65,8 +71,16 @@ class TestActivityFilter(AppTestCase):
         self.assertNotIn(act_not, activities.all())
 
     def test_by_reporting_org_text(self):
-        act_in = fac.ActivityFactory.create(reporting_org__ref=u"AAA", reporting_org__name="aaa")
-        act_not = fac.ActivityFactory.create(reporting_org__ref=u"ZZZ", reporting_org__name="zzz")
+        act_in = fac.ActivityFactory.create(
+            reporting_org=fac.OrganisationFactory.build(
+                ref=u"AAA",
+                name=u"aaa"
+            ))
+        act_not = fac.ActivityFactory.create(
+            reporting_org=fac.OrganisationFactory.build(
+                ref=u"ZZZ",
+                name=u"zzz"
+            ))
         activities = dsfilter.activities({
             "reporting-org.text": u"aaa"
         })
@@ -76,9 +90,13 @@ class TestActivityFilter(AppTestCase):
 
     def test_by_reporting_org_type(self):
         act_in = fac.ActivityFactory.create(
-            reporting_org__type=cl.OrganisationType.government)
+            reporting_org=fac.OrganisationFactory.build(
+                type=cl.OrganisationType.government
+            ))
         act_not = fac.ActivityFactory.create(
-            reporting_org__type=cl.OrganisationType.foundation)
+            reporting_org=fac.OrganisationFactory.build(
+                type=cl.OrganisationType.foundation
+            ))
         activities = dsfilter.activities({
             "reporting-org.type": cl.OrganisationType.from_string(u"10")
         })
@@ -103,10 +121,33 @@ class TestActivityFilter(AppTestCase):
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
 
+    def test_by_recipient_region_code_not_in_list(self):
+        # https://github.com/IATI/iati-datastore/issues/184
+        act_not = fac.ActivityFactory.create(
+            recipient_region_percentages=[
+                fac.RegionPercentageFactory.build(
+                    region=cl.Region.oceania_regional
+                ),
+            ])
+        activities = dsfilter.activities({
+            "recipient-region": cl.Region.from_string(u"xxx")
+        })
+        self.assertEquals([], activities.all())
+        self.assertNotIn(act_not, activities.all())
+
     def test_or_filter(self):
-        act_a = fac.ActivityFactory.create(reporting_org__ref=u"AAA")
-        act_b = fac.ActivityFactory.create(reporting_org__ref=u"BBB")
-        act_not = fac.ActivityFactory.create(reporting_org__ref=u"ZZZ")
+        act_a = fac.ActivityFactory.create(
+            reporting_org=fac.OrganisationFactory.build(
+                ref=u"AAA"
+            ))
+        act_b = fac.ActivityFactory.create(
+            reporting_org=fac.OrganisationFactory.build(
+                ref=u"BBB"
+            ))
+        act_not = fac.ActivityFactory.create(
+            reporting_org=fac.OrganisationFactory.build(
+                ref=u"ZZZ"
+            ))
         activities = dsfilter.activities({
             "reporting-org": u"AAA|BBB"
         })
@@ -145,6 +186,29 @@ class TestActivityFilter(AppTestCase):
                 fac.SectorPercentageFactory.build(
                     sector=cl.Sector.secondary_education
                 ),
+            ])
+        activities = dsfilter.activities({
+            "sector": cl.Sector.from_string(u"11220")
+        })
+        self.assertIn(act_in, activities.all())
+        self.assertNotIn(act_not, activities.all())
+
+    def test_by_transaction_sector(self):
+        act_in = fac.ActivityFactory.create()
+        act_not = fac.ActivityFactory.create()
+        fac.TransactionFactory.create(
+            activity=act_in,
+            ref="12345",
+            sector_percentages=[
+                fac.SectorPercentageFactory.build(
+                    sector=cl.Sector.primary_education),
+            ])
+        fac.TransactionFactory.create(
+            activity=act_not,
+            ref="12345",
+            sector_percentages=[
+                fac.SectorPercentageFactory.build(
+                    sector=cl.Sector.secondary_education),
             ])
         activities = dsfilter.activities({
             "sector": cl.Sector.from_string(u"11220")
@@ -444,9 +508,17 @@ class TestTransactionFilter(AppTestCase):
 
     def test_by_reporting_org_ref(self):
         trans_in = fac.TransactionFactory.create(
-            activity=fac.ActivityFactory.build(reporting_org__ref=u"AAA"))
+            activity=fac.ActivityFactory.build(
+                reporting_org=fac.OrganisationFactory.build(
+                    ref=u"AAA"
+                ))
+            )
         trans_not = fac.TransactionFactory.create(
-            activity=fac.ActivityFactory.build(reporting_org__ref=u"ZZZ"))
+            activity=fac.ActivityFactory.build(
+                reporting_org=fac.OrganisationFactory.build(
+                    ref=u"ZZZ"
+                ))
+            )
         transactions = dsfilter.transactions({
             "reporting-org": u"AAA"
         })
@@ -518,9 +590,17 @@ class TestBudgetFilter(AppTestCase):
 
     def test_by_reporting_org_ref(self):
         budget_in = fac.BudgetFactory.create(
-            activity=fac.ActivityFactory.build(reporting_org__ref=u"AAA"))
+            activity=fac.ActivityFactory.build(
+                reporting_org=fac.OrganisationFactory.build(
+                    ref=u"AAA"
+                ))
+            )
         budget_not = fac.BudgetFactory.create(
-            activity=fac.ActivityFactory.build(reporting_org__ref=u"ZZZ"))
+            activity=fac.ActivityFactory.build(
+                reporting_org=fac.OrganisationFactory.build(
+                    ref=u"ZZZ"
+                ))
+            )
         budgets = dsfilter.budgets({
             "reporting-org": u"AAA"
         })

@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from xml.etree import ElementTree as ET
 import csv
-from StringIO import StringIO
+from io import StringIO, BytesIO
 
 from unittest import skip
 import mock
@@ -23,6 +23,14 @@ class TestAbout(ClientTestCase):
         resp = self.client.get('/api/1/about')
         self.assertEquals(200, resp.status_code)
 
+class TestAboutDatasets(ClientTestCase):
+    def test_about_datasets_fetch_status(self):
+        """Check that the `about/datasets/fetch_status` page has a 200 response and contains expected data."""
+        resp = self.client.get('/api/1/about/datasets/fetch_status')
+        data = json.loads(resp.data)
+        self.assertEquals(200, resp.status_code)
+        self.assertIn("datasets", data)
+
 class TestDeletedActivitiesView(ClientTestCase):
     def test_deleted_activities(self):
         db.session.add(model.DeletedActivity(
@@ -35,7 +43,7 @@ class TestDeletedActivitiesView(ClientTestCase):
         deleted_activities = data['deleted_activities']
         self.assertEquals("test", deleted_activities[0]['iati_identifier'])
         self.assertEquals("2000-01-01", deleted_activities[0]['deletion_date'])
-        
+
 
 class TestEmptyDb_JSON(ClientTestCase):
     url = '/api/1/access/activity'
@@ -88,21 +96,21 @@ class TestEmptyDb_XML(ClientTestCase):
     def test_decode(self):
         resp = self.client.get(self.url)
         # an ElementTree node object does not test as true
-        self.assert_(hasattr(ET.fromstring(resp.data), "tag"))
+        self.assert_(hasattr(ET.fromstring(resp.get_data(as_text=True)), "tag"))
 
     def test_resp_ok(self):
         resp = self.client.get(self.url)
-        xml = ET.fromstring(resp.data)
+        xml = ET.fromstring(resp.get_data(as_text=True))
         self.assertTrue(xml.find('ok').text == 'True')
 
     def test_results(self):
         resp = self.client.get(self.url)
-        xml = ET.fromstring(resp.data)
+        xml = ET.fromstring(resp.get_data(as_text=True))
         self.assertEquals(xml.findall('result-activities'), [])
 
     def test_root_element(self):
         resp = self.client.get(self.url)
-        xml = ET.fromstring(resp.data)
+        xml = ET.fromstring(resp.get_data(as_text=True))
         self.assertEquals(xml.tag, "result")
 
 
@@ -122,7 +130,7 @@ class TestEmptyDb_ActivityCSV(ClientTestCase):
 
     def test_fields(self):
         resp = self.client.get(self.url)
-        headers = next(csv.reader(StringIO(resp.data)))
+        headers = next(csv.reader(StringIO(resp.get_data(as_text=True))))
         for exp in ["start-planned", "start-actual"]:
             self.assertIn(exp, headers)
 
@@ -177,14 +185,14 @@ class TestSingleActivity(ClientTestCase):
     def test_xml_activity_count(self):
         load_fix("single_activity.xml")
         resp = self.client.get('/api/1/access/activity.xml')
-        xml = ET.fromstring(resp.data)
+        xml = ET.fromstring(resp.get_data(as_text=True))
         self.assertEquals(1, len(xml.findall('.//iati-activity')))
 
     def test_xml_activity_data(self):
         load_fix("single_activity.xml")
         in_xml = ET.parse(fixture_filename("single_activity.xml"))
         resp = self.client.get('/api/1/access/activity.xml')
-        xml = ET.fromstring(resp.data)
+        xml = ET.fromstring(resp.get_data(as_text=True))
         x1 = in_xml.find('.//iati-activity')
         x2 = xml.find('.//iati-activity')
         self.assertEquals(x1, x2)
@@ -193,21 +201,21 @@ class TestSingleActivity(ClientTestCase):
         load_fix("single_activity.xml")
         with self.client as client:
             resp = client.get('/api/1/access/activity.csv')
-            self.assertEquals(2, resp.data.count("\n"))
+            self.assertEquals(2, resp.get_data(as_text=True).count("\n"))
 
 
 class TestManyActivities(ClientTestCase):
     def test_xml_activity_count(self):
         load_fix("many_activities.xml")
         resp = self.client.get('/api/1/access/activity.xml')
-        xml = ET.fromstring(resp.data)
+        xml = ET.fromstring(resp.get_data(as_text=True))
         self.assertEquals(2, len(xml.findall('.//iati-activity')))
 
     def test_xml_activity_data(self):
         load_fix("many_activities.xml")
         in_xml = ET.parse(fixture_filename("many_activities.xml"))
         resp = self.client.get('/api/1/access/activity.xml')
-        xml = ET.fromstring(resp.data)
+        xml = ET.fromstring(resp.get_data(as_text=True))
         self.assertEquals(
             ET.tostring(in_xml.find('.//iati-activity')),
             ET.tostring(xml.find('.//iati-activity')))
@@ -216,7 +224,7 @@ class TestManyActivities(ClientTestCase):
         load_fix("many_activities.xml")
         with self.client as client:
             resp = client.get('/api/1/access/activity.csv')
-            reader = csv.DictReader(StringIO(resp.data))
+            reader = csv.DictReader(StringIO(resp.get_data(as_text=True)))
             self.assertEquals(2, len(list(reader)))
 
 
@@ -250,6 +258,15 @@ class ApiViewMixin(object):
         resp = self.client.get(self.base_url + ".zzz")
         self.assertEquals(404, resp.status_code)
 
+    def test_junk_before_format(self):
+        url = self.base_url[:-4] + '-bad.csv'
+        resp = self.client.get(url)
+        self.assertEquals(404, resp.status_code)
+
+    def test_junk_in_format(self):
+        url = self.base_url[:-4] + '.bad-csv'
+        resp = self.client.get(url)
+        self.assertEquals(404, resp.status_code)
 
 class TestActivityView(ClientTestCase, ApiViewMixin):
     base_url = '/api/1/access/activity.csv'
@@ -272,14 +289,14 @@ class TestActivityByCountryView(ClientTestCase, ApiViewMixin):
 class CommonTransactionTests(object):
     def test_reporting_org(self):
         load_fix("transaction_ref.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('reporting-org-ref')
         self.assertEquals(u'GB-CHC-285776', output[1][i])
 
     def test_ref_output(self):
         load_fix("transaction_ref.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_ref')
         self.assertEquals(u'36258', output[1][i])
@@ -287,42 +304,42 @@ class CommonTransactionTests(object):
 
     def test_transaction_value_currency(self):
         load_fix("transaction_provider.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_value_currency')
         self.assertEquals(u'GBP', output[1][i])
 
     def test_transaction_value_value_date(self):
         load_fix("transaction_provider.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_value_value-date')
         self.assertEquals(u'2011-08-19', output[1][i])
 
     def test_provider_org_ref_output(self):
         load_fix("transaction_provider.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_provider-org_ref')
         self.assertEquals(u'GB-1-201242-101', output[1][i])
 
     def test_provider_org_output(self):
         load_fix("transaction_provider.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_provider-org')
         self.assertEquals(u'DFID', output[1][i])
 
     def test_provider_org_activity_id_output(self):
         load_fix("provider-activity-id.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_provider-org_provider-activity-id')
         self.assertEquals(u'GB-1-202907', output[1][i])
 
     def test_receiver_org_ref_output(self):
         load_fix("transaction_provider.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_receiver-org_ref')
         self.assertEquals(u'GB-CHC-313139', output[1][i])
@@ -330,21 +347,21 @@ class CommonTransactionTests(object):
     def test_receiver_org_output(self):
         """receiver_org should be in transaction.csv output"""
         load_fix("provider-activity-id.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_receiver-org')
         self.assertEquals(u'Bond', output[1][i])
 
     def test_receiver_org_activity_id_output(self):
         load_fix("provider-activity-id.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_receiver-org_receiver-activity-id')
         self.assertEquals(u'GB-CHC-1068839-dfid_ag_11-13', output[1][i])
-        
+
     def test_description(self):
         load_fix("transaction_provider.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_description')
         self.assertEquals(
@@ -354,35 +371,35 @@ class CommonTransactionTests(object):
 
     def test_flow_type(self):
         load_fix("transaction_fields_code_lists.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_flow-type_code')
         self.assertEquals(u'30', output[1][i])
-        
+
     def test_finance_type(self):
         load_fix("transaction_fields_code_lists.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_finance-type_code')
         self.assertEquals(u'110', output[1][i])
-        
+
     def test_aid_type(self):
         load_fix("transaction_fields_code_lists.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_aid-type_code')
         self.assertEquals(u'B01', output[1][i])
 
     def test_tied_status(self):
         load_fix("transaction_fields_code_lists.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_tied-status_code')
         self.assertEquals(u'5', output[1][i])
-        
+
     def test_disbursement_channel_status(self):
         load_fix("transaction_fields_code_lists.xml")
-        output = list(csv.reader(StringIO(self.client.get(self.base_url).data)))
+        output = list(csv.reader(StringIO(self.client.get(self.base_url).get_data(as_text=True))))
         csv_headers = output[0]
         i = csv_headers.index('transaction_disbursement-channel_code')
         self.assertEquals(u'2', output[1][i])
@@ -421,4 +438,3 @@ class TestBudgetBySectorView(ClientTestCase, ApiViewMixin):
     base_url = '/api/1/access/budget/by_sector.csv'
     filter = 'iatilib.frontend.api1.BudgetsBySectorView.filter'
     serializer = 'iatilib.frontend.api1.BudgetsBySectorView.serializer'
-
