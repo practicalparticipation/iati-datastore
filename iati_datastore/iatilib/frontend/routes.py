@@ -17,7 +17,7 @@ def error():
 
 @routes.route('/docs/<path:path>')
 def docs(path):
-    folder = join('frontend', 'docs')
+    folder = join('frontend', 'docs', 'dirhtml')
     if path.endswith('/'):
         path += 'index.html'
     return send_from_directory(folder, path)

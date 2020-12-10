@@ -123,5 +123,4 @@ Generation of Documentation
 
 API documentation in the docs folder is generated using [Sphinx](http://www.sphinx-doc.org).
 
-    cd docs_source
-    make dirhtml
+    iati build-docs

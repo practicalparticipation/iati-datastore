@@ -1,16 +1,17 @@
-import os
+from os.path import dirname, realpath, join
 import codecs
 import logging
 import datetime as dt
+import subprocess
+
 import click
 from flask.cli import FlaskGroup, with_appcontext
-
 import requests
 from sqlalchemy import not_
 
 from iatilib import parse, codelists, model, db
-
 from iatilib.frontend.app import create_app
+
 
 @click.group(cls=FlaskGroup, create_app=create_app)
 def cli():
@@ -45,6 +46,14 @@ def cleanup():
     )).delete('fetch')
     db.session.commit()
     db.engine.dispose()
+
+
+@cli.command()
+def build_docs():
+    """Build documentation from source."""
+    current_path = dirname(dirname(realpath(__file__)))
+    cwd = join(current_path, 'docs_source')
+    subprocess.run(['make', 'dirhtml'], cwd=cwd)
 
 
 @click.option(
