@@ -128,13 +128,18 @@ class Activity(db.Model):
             nullable=False,
             default=u'1')
 
-    commitments = TransactionType([codelists.by_major_version[mv].TransactionType.commitment for mv in ['1', '2']])
+    commitments = TransactionType([
+        codelists.by_major_version['1'].TransactionType.commitment,
+        codelists.by_major_version['2'].TransactionType.outgoing_commitment,
+        ])
     disbursements = TransactionType([codelists.by_major_version[mv].TransactionType.disbursement for mv in ['1', '2']])
     expenditures = TransactionType([codelists.by_major_version[mv].TransactionType.expenditure for mv in ['1', '2']])
     incoming_funds = TransactionType(
             [codelists.by_major_version[mv].TransactionType.incoming_funds for mv in ['1', '2']])
-    interest_repayment = TransactionType(
-            [codelists.by_major_version[mv].TransactionType.interest_repayment for mv in ['1', '2']])
+    interest_repayment = TransactionType([
+        codelists.by_major_version['1'].TransactionType.interest_repayment,
+        codelists.by_major_version['2'].TransactionType.interest_payment,
+        ])
     loan_repayments = TransactionType(
             [codelists.by_major_version[mv].TransactionType.loan_repayment for mv in ['1', '2']])
     reembursements = TransactionType(
