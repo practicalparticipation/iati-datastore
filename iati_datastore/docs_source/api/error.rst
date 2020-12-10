@@ -10,6 +10,7 @@ To retrieve metadata on the datasets known to the datastore.
    the datastore
 -  ``/api/1/about/dataset/<dataset>`` retrieves specific details on the
    dataset
+
    -  ``last_modified`` - the date stamp that the dataset was updated in
       the IATI registry.
    -  ``resources``
@@ -53,8 +54,8 @@ In plaintext
 ~~~~~~~~~~~~
 
 You can also fetch a list of datasets
-``wget https://iati-datastore.codeforiati.org/api/1/error/dataset.log``
+``wget https://datastore.codeforiati.org/api/1/error/dataset.log``
 
 Detailed logs can be recreated using
-``wget https://iati-datastore.codeforiati.org/api/1/error/dataset.log/<dataset_id>``
+``wget https://datastore.codeforiati.org/api/1/error/dataset.log/<dataset_id>``
 sorted by date \`
