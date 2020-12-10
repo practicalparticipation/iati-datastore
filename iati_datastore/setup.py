@@ -19,6 +19,7 @@ Flask-RQ2==18.3
 psycopg2==2.8.6
 Sphinx==3.3.1
 sphinx-rtd-theme==0.5.0
+Flask-Cors==3.0.9
 """
 
 tests_require = """
