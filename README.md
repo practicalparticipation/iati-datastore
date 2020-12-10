@@ -1,5 +1,5 @@
-IATI Datastore
-==============
+IATI Datastore Classic
+======================
 
 [![Build Status](https://travis-ci.com/codeforIATI/iati-datastore.svg?branch=master)](https://travis-ci.com/codeforIATI/iati-datastore)
 [![Coverage Status](https://img.shields.io/coveralls/codeforIATI/iati-datastore.svg)](https://coveralls.io/r/codeforIATI/iati-datastore?branch=master)
@@ -10,23 +10,30 @@ Introduction
 ------------
 
 The International Aid Transparency Initiative (IATI) aims to make
-information about aid spending easier to access. To this end,
-we publish the [IATI standard](http://iatistandard.org) and keep a
-[registry of data in that form](http://www.iatiregistry.org).
+information about aid spending easier to access.
 
-The *IATI Datastore* is provided to help users of IATI's data access the
-extracts they are interested in. A public instance is available here:
+IATI maintains the [IATI Standard](https://iatistandard.org) and keeps a
+[Registry of IATI data](https://iatiregistry.org/).
 
-http://datastore.iatistandard.org
+The *IATI Datastore* was originally built in 2013 by the
+[Open Knowledge Foundation](https://okfn.org).
+[Code for IATI](https://codeforiati.org) has updated the
+software to use Python3 and modern dependencies.
+Over time, we will include other bugfixes and feature
+improvements. Our fork of the software is called *Datastore Classic*.
+
+A public instance is available here:
+
+https://datastore.codeforiati.org
 
 
 Requirements
 ------------
 
-You will need [Redis](http://redis.io), [Postgres](http://postgresql.org), python, pip and develpment libraries (for libpq, libxml2 and libxslt) to run the full setup.
+You will need [Redis](https://redis.io), [Postgres](https://postgresql.org), Python 3, pip and develpment libraries (for libpq, libxml2 and libxslt) to run the full setup.
 For example, on Ubuntu:
 
-    sudo aptitude install postgresql redis-server python-pip libpq-dev libxml2-dev libxslt-dev libevent-dev python-dev
+    sudo apt-get install postgresql redis-server python3 python3-pip libpq-dev libxml2-dev libxslt-dev libevent-dev python3-dev
 
 Installing for development
 --------------------------
@@ -70,6 +77,86 @@ iati crawl status
 # A local API is available at: http://127.0.0.1:5000
 ```
 
+Deploying with nginx
+--------------------
+
+* Intall the requirements listed above
+* Install nginx
+
+        sudo apt-get install nginx
+
+* Install uwsgi, from within your `virtualenv`
+
+        pip3 install uwsgi
+
+* Create a uwSGI .ini file inside the root `iati-datastore` folder, e.g.
+
+        [uwsgi]
+        module = liveserver
+        master = true
+        processes = 5
+        socket = /var/www/socks/%n.sock
+        logto = /var/log/uwsgi/%n.log
+        chmod-socket = 666
+        vacuum = true
+        die-on-term = true
+
+* Make sure `/var/www/socks/` and `/var/log/uwsgi/` are writeable by the `www-data` user.
+
+* Add a `liveserver.py` file, according to your server configuration:
+
+        import sys, os
+        PATH = os.path.dirname(os.path.realpath(__file__))
+        sys.path.insert(0, '/path/to/iati-datastore/pyenv/lib/python3.6/site-packages')
+        sys.path.insert(0, PATH)
+        from iati_datastore.iatilib.wsgi import app as application
+
+* Set up a systemd service, e.g. in `/etc/systemd/system/iati-datastore.service`
+
+        [Unit]
+        Description=IATI Datastore uWSGI instance
+        After=network.target
+        [Service]
+        User=www-data
+        Group=www-data
+        WorkingDirectory=/path/to/iati-datastore/
+        ExecStart=/path/to/iati-datastore/pyenv/bin/uwsgi --ini /path/to/iati-datastore/iati-datastore_uwsgi.ini
+        [Install]
+        WantedBy=multi-user.target
+
+
+* Start the systemd service, e.g.:
+
+        systemctl start iati-datastore
+
+* Make sure that the service loads on restart:
+
+        systemctl enable iati-datastore
+
+* Create your nginx config file, e.g. in /etc/nginx/sites-available/datastore
+
+        server {
+            server_name datastore.codeforiati.org;
+            gzip            on;
+            gzip_types      text/plain application/xml text/css application/javascript application/json;
+            gzip_min_length 1000;
+            error_log  /var/www/logs/error.log;
+            access_log /var/www/logs/access.log;
+            location / {
+                include uwsgi_params;
+                uwsgi_pass unix:/var/www/socks/iati-datastore_uwsgi.sock;
+            }
+        }
+
+* Load the config file and test nginx:
+
+        cp /etc/nginx/sites-available/datastore /etc/nginx/sites-enabled/datastore
+        nginx -t
+
+* If everything worked out, restart nginx and your site should be available through your server (e.g. in the above configuration, via `datastore.codeforiati.org`:
+
+        systemctl restart nginx
+
 
 Deploying with apache
 ---------------------
@@ -77,7 +164,7 @@ Deploying with apache
 * Install the requirements listed above
 * Install Apache and mod_wsgi
 
-        sudo aptitude install apache2 libapache2-mod-wsgi
+        sudo apt-get install apache2 libapache2-mod-wsgi
 
 * Clone the source
 * Install `pip install -e iati_datastore`
@@ -93,7 +180,7 @@ Deploying with apache
         0 0 * * * export DATABASE_URL='postgres:///iati-datastore'; /usr/local/bin/iati crawl update
 
 * Run a worker with `iati queue background`
-    - This needs to persist when you close your ssh connection. A simple way of doing this is using [screen](http://www.gnu.org/software/screen/).
+    - This needs to persist when you close your ssh connection. A simple way of doing this is using [screen](https://www.gnu.org/software/screen/).
 
 * Set up apache using mod_wsgi
 
@@ -121,6 +208,6 @@ Updating activities after changing import code
 Generation of Documentation
 ---------------------------
 
-API documentation in the docs folder is generated using [Sphinx](http://www.sphinx-doc.org).
+API documentation in the docs folder is generated using [Sphinx](https://www.sphinx-doc.org).
 
     iati build-docs

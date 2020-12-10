@@ -33,7 +33,7 @@ coverage==5.3  # rq.filter: <4.0
 
 setup(
     name='IATI-Datastore',
-    version='0.6',
+    version='1.0.0b1',
     packages=find_packages(),
     include_package_data=True,
     package_data={
