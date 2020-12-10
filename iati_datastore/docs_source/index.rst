@@ -1,10 +1,15 @@
 Home
 ====
 
-What is IATI Datastore Classic?
----------------------------
+What is IATI Datastore?
+-----------------------
 
 The Datastore is an online service that gathers all data published to the IATI standard into a single queryable source. This can deliver selections of IATI data in JSON or XML formats, or CSV (spreadsheet) for less-technical users.
+
+What is IATI Datastore Classic?
+-------------------------------
+
+The *IATI Datastore* was originally built in 2013 by the `Open Knowledge Foundation <https://okfn.org/>`_. `Code for IATI <https://codeforiati.org>`_ has updated the software to use Python3 and modern dependencies. Over time, we will include other bugfixes and feature improvements. Our fork of the software is called *IATI Datastore Classic*.
 
 How does it work?
 -----------------

@@ -20,7 +20,7 @@ The *IATI Datastore* was originally built in 2013 by the
 [Code for IATI](https://codeforiati.org) has updated the
 software to use Python3 and modern dependencies.
 Over time, we will include other bugfixes and feature
-improvements. Our fork of the software is called *Datastore Classic*.
+improvements. Our fork of the software is called *IATI Datastore Classic*.
 
 A public instance is available here:
 
