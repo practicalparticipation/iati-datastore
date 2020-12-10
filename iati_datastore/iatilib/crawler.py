@@ -165,7 +165,9 @@ def fetch_resource(resource):
     :param resource:
     :return:
     '''
-    headers = {}
+    headers = {
+        'User-Agent': 'codeforIATI datastore classic',
+    }
     if resource.last_succ:
         headers['If-Modified-Since'] = http_date(resource.last_succ)
     if resource.etag:
