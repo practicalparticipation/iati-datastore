@@ -9,7 +9,7 @@ routes = Blueprint('routes', __name__, template_folder='templates')
 
 @routes.route('/')
 def homepage():
-    return redirect(url_for('routes.docs', path='api/'))
+    return redirect(url_for('routes.docs', path=''))
 
 @routes.route('/error')
 def error():
