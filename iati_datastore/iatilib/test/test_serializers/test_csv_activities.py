@@ -357,7 +357,7 @@ class TestCSVExample(CSVTstMixin, TestCase):
 
     def test_default_flow_type(self):
         data = self.process([fac.ActivityFactory.build(
-            default_flow_type=cl.FlowType.private_ngo_and_other_private_sources
+            default_flow_type=cl.FlowType.private_development_finance
         )])
         self.assertField({'default-flow-type-code': "30"}, data[0])
 
@@ -1007,7 +1007,7 @@ class TestTotalIncomingFunds2(CSVTstMixin, TotalFieldMixin, TestCase):
 
 class TestTotalInterestRepayment2(CSVTstMixin, TotalFieldMixin, TestCase):
     cl = cl2
-    transaction_type = cl2.TransactionType.interest_repayment
+    transaction_type = cl2.TransactionType.interest_payment
     csv_field = "total-Interest Repayment"
 
 

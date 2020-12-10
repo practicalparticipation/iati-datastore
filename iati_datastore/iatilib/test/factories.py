@@ -41,7 +41,7 @@ class ResourceFactory(TestFactory):
 class CountryPercentageFactory(TestFactory):
     class Meta:
         model = CountryPercentage
-    country = codelists.Country.united_states
+    country = codelists.Country.united_states_of_america_the
     name = ""
     percentage = 0
 

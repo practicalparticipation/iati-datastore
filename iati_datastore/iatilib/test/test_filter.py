@@ -23,7 +23,7 @@ class TestActivityFilter(AppTestCase):
         act_in = fac.ActivityFactory.create(
             recipient_country_percentages=[
                 fac.CountryPercentageFactory.build(
-                    country=cl.Country.libyan_arab_jamahiriya),
+                    country=cl.Country.libya),
             ])
         act_not = fac.ActivityFactory.create(
             recipient_country_percentages=[
@@ -39,8 +39,8 @@ class TestActivityFilter(AppTestCase):
         act_not = fac.ActivityFactory.create(
             recipient_country_percentages=[
                 fac.CountryPercentageFactory.build(
-                    name="Libyan Arab Jamahiriya",
-                    country=cl.Country.libyan_arab_jamahiriya),
+                    name="Libya",
+                    country=cl.Country.libya),
             ])
         act_in = fac.ActivityFactory.create(
             recipient_country_percentages=[
@@ -248,7 +248,7 @@ class TestActivityFilter(AppTestCase):
         activity = dsfilter.activities({
             "transaction.ref": u"12345"
         })
-        
+
         self.assertIn(trans_in.activity, activity.all())
         self.assertNotIn(trans_not.activity, activity.all())
 
@@ -275,7 +275,7 @@ class TestActivityFilter(AppTestCase):
         activity = dsfilter.activities({
             "transaction_provider-org": u"GB-1"
         })
-        
+
         self.assertIn(trans_in.activity, activity.all())
         self.assertNotIn(trans_not.activity, activity.all())
 
@@ -313,7 +313,7 @@ class TestActivityFilter(AppTestCase):
         activity = dsfilter.activities({
             "transaction_receiver-org": u"GB-1"
         })
-        
+
         self.assertIn(trans_in.activity, activity.all())
         self.assertNotIn(trans_not.activity, activity.all())
 
@@ -490,7 +490,7 @@ class TestTransactionFilter(AppTestCase):
             activity=fac.ActivityFactory.build(
                 recipient_country_percentages=[
                     fac.CountryPercentageFactory.build(
-                        country=cl.Country.libyan_arab_jamahiriya),
+                        country=cl.Country.libya),
                 ])
         )
         trans_not = fac.TransactionFactory.create(
@@ -572,7 +572,7 @@ class TestBudgetFilter(AppTestCase):
             activity=fac.ActivityFactory.build(
                 recipient_country_percentages=[
                     fac.CountryPercentageFactory.build(
-                        country=cl.Country.libyan_arab_jamahiriya),
+                        country=cl.Country.libya),
                 ])
         )
         budget_not = fac.BudgetFactory.create(

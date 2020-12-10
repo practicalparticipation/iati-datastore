@@ -274,7 +274,7 @@ class TestParse2xxActivity(AppTestCase):
         self.assertEquals(cl2.CollaborationType.bilateral, self.act.collaboration_type)
 
     def test_default_finance_type(self):
-        self.assertEquals(cl2.FinanceType.aid_grant_excluding_debt_reorganisation,
+        self.assertEquals(cl2.FinanceType.standard_grant,
                 self.act.default_finance_type)
 
     def test_default_flow_type(self):
@@ -478,7 +478,7 @@ class TestParseActivity(AppTestCase):
 
     def test_default_finance_type(self):
         activities = [ a for a in parse.document(fixture_filename("CD.xml")) ]
-        self.assertEquals(cl.FinanceType.aid_grant_excluding_debt_reorganisation,
+        self.assertEquals(cl.FinanceType.standard_grant,
                 activities[1].default_finance_type)
 
     def test_default_flow_type(self):
@@ -631,7 +631,7 @@ class TestSector(AppTestCase):
         sec = parse.sector_percentages(ET.XML(
             u'<wrapper><sector vocabulary="DAC" code="16010">Child Protection Systems Strengthening</sector></wrapper>'
         ))[0]
-        self.assertEquals(cl.Sector.social_welfare_services, sec.sector)
+        self.assertEquals(cl.Sector.social_protection, sec.sector)
         self.assertEquals(u"Child Protection Systems Strengthening", sec.text)
 
     def test_missing_code(self):
