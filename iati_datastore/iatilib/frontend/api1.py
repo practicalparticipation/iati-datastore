@@ -31,9 +31,37 @@ def about():
     # General status info
     count_activity = db.session.query(Activity).count()
     count_transaction = db.session.query(Transaction).count()
+    # Check last updated times
+    max_last_fetch = db.session.query(
+        sa.func.max(Resource.last_fetch)
+    ).scalar()
+    max_last_succ = db.session.query(
+        sa.func.max(Resource.last_succ)
+    ).scalar()
+    max_last_parsed = db.session.query(
+        sa.func.max(Resource.last_parsed)
+    ).scalar()
+    now = datetime.now()
+    # If the file was last fetched and parsed less than 1 day
+    # ago, then the API is healthy.
+    if ((max_last_fetch != None) and
+        (max_last_fetch != None) and
+        (max_last_parsed != None)):
+        healthy = (
+            ((now-max_last_fetch).days < 1) and
+            ((now-max_last_succ).days < 1) and
+            ((now-max_last_parsed).days < 1)
+        )
+    else:
+        healthy = False
     return jsonify(
-        ok=True,
-        status='healthy',
+        ok=healthy,
+        status={True: 'healthy', False: 'unhealthy'}[healthy],
+        status_data={
+            'last_fetch': max_last_fetch,
+            'last_succ': max_last_succ,
+            'last_parsed': max_last_parsed
+        },
         indexed_activities=count_activity,
         indexed_transactions=count_transaction,
     )
