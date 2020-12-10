@@ -9,11 +9,11 @@ Check the health status of the Datstore.
    `</api/1/about>`_
 
 If the last fetch, last successful fetch, or last parsed date is
-more than 24 hours ago, `ok` will be `false` and `healthy` will
+more than 24 hours ago, ``ok`` will be `false` and ``healthy`` will
 be `unhealthy`.
 
 If the last fetch, last successful fetch, or last parsed date is
-less than 24 hours ago, `ok` will be `true` and `healthy` will
+less than 24 hours ago, ``ok`` will be `true` and ``healthy`` will
 be `healthy`.
 
 
