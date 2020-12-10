@@ -26,7 +26,7 @@ def dictify(resource):
             fields.append((key, resource.__dict__[key]))
     return dict(fields)
 
-@api.route('/about')
+@api.route('/about/')
 def about():
     # General status info
     count_activity = db.session.query(Activity).count()
@@ -63,13 +63,13 @@ def about():
         indexed_transactions=count_transaction,
     )
 
-@api.route('/about/dataset')
+@api.route('/about/dataset/')
 def datasets():
     datasets = db.session.query(Dataset.name)
     return jsonify(datasets=[ i.name for i in datasets.all()] )
 
 
-@api.route('/about/dataset/<dataset>')
+@api.route('/about/dataset/<dataset>/')
 def about_dataset(dataset):
     dataset = db.session.query(Dataset).get(dataset)
     if dataset is None:
@@ -93,7 +93,7 @@ def about_dataset(dataset):
     )
 
 
-@api.route('/about/datasets/fetch_status')
+@api.route('/about/datasets/fetch_status/')
 def fetch_status_about_dataset():
     """Output a JSON formatted list of dataset dictionaries containing their resource details.
 
@@ -120,7 +120,7 @@ def fetch_status_about_dataset():
     return jsonify(datasets=[{dataset: datasets[dataset]} for dataset in datasets])
 
 
-@api.route('/about/deleted')
+@api.route('/about/deleted/')
 def deleted_activities():
     deleted_activities = db.session.query(DeletedActivity)\
                                    .order_by(DeletedActivity.deletion_date)
@@ -146,7 +146,7 @@ def error():
             errored_datasets=[ {'dataset': i[0], 'logger': i[1]} for i in logs.all() ]
     )
 
-@api.route('/error/resource')
+@api.route('/error/resource/')
 def resource_error():
     resource_url = request.args.get('url')
     if not resource_url:
@@ -165,7 +165,7 @@ def resource_error():
     ]
     return jsonify(errors=errors)
 
-@api.route('/error/dataset/<dataset_id>')
+@api.route('/error/dataset/<dataset_id>/')
 def dataset_error(dataset_id):
     error_logs = db.session.query(Log).\
             filter(Log.dataset == dataset_id).\
@@ -186,7 +186,7 @@ def dataset_log():
     logs = db.session.query(Log.dataset).distinct()
     return render_template('datasets.log', logs=logs)
 
-@api.route('/error/dataset.log/<dataset_id>')
+@api.route('/error/dataset.log/<dataset_id>/')
 def dataset_log_error(dataset_id):
     error_logs = db.session.query(Log).order_by(sa.desc(Log.created_at)).\
                         filter(Log.dataset == dataset_id)
@@ -325,7 +325,7 @@ class BudgetsBySectorView(DataStoreCSVView):
 activity_view = ActivityView.as_view('activity')
 
 api.add_url_rule(
-    '/access/activity',
+    '/access/activity/',
     defaults={"format": ".json"},
     view_func=activity_view
 )
