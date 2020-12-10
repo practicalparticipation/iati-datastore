@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_cors import CORS
 
 from iatilib import db, rq
 
@@ -25,3 +26,4 @@ def register_blueprints(app):
 def register_extensions(app):
     db.init_app(app)
     rq.init_app(app)
+    CORS(app)

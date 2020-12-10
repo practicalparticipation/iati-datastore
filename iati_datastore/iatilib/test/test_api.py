@@ -20,13 +20,13 @@ class ClientTestCase(AppTestCase):
 
 class TestAbout(ClientTestCase):
     def test_about_http(self):
-        resp = self.client.get('/api/1/about')
+        resp = self.client.get('/api/1/about/')
         self.assertEquals(200, resp.status_code)
 
 class TestAboutDatasets(ClientTestCase):
     def test_about_datasets_fetch_status(self):
         """Check that the `about/datasets/fetch_status` page has a 200 response and contains expected data."""
-        resp = self.client.get('/api/1/about/datasets/fetch_status')
+        resp = self.client.get('/api/1/about/datasets/fetch_status/')
         data = json.loads(resp.data)
         self.assertEquals(200, resp.status_code)
         self.assertIn("datasets", data)
@@ -38,7 +38,7 @@ class TestDeletedActivitiesView(ClientTestCase):
             deletion_date=datetime(2000, 1, 1))
         )
         db.session.commit()
-        resp = self.client.get('api/1/about/deleted')
+        resp = self.client.get('api/1/about/deleted/')
         data = json.loads(resp.data)
         deleted_activities = data['deleted_activities']
         self.assertEquals("test", deleted_activities[0]['iati_identifier'])
@@ -46,7 +46,7 @@ class TestDeletedActivitiesView(ClientTestCase):
 
 
 class TestEmptyDb_JSON(ClientTestCase):
-    url = '/api/1/access/activity'
+    url = '/api/1/access/activity/'
 
     def test_http_ok(self):
         resp = self.client.get(self.url)
@@ -230,11 +230,11 @@ class TestManyActivities(ClientTestCase):
 
 class TestPgination(ClientTestCase):
     def test_missing_page(self):
-        resp = self.client.get('/api/1/access/activity?offset=100')
+        resp = self.client.get('/api/1/access/activity/?offset=100')
         self.assertEquals(404, resp.status_code)
 
     def test_invalid_page(self):
-        resp = self.client.get('/api/1/access/activity?offset=-1')
+        resp = self.client.get('/api/1/access/activity/?offset=-1')
         self.assertEquals(400, resp.status_code)
 
 
