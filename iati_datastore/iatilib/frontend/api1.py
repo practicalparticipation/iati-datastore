@@ -29,7 +29,7 @@ def dictify(resource):
 @api.route('/meta/filters')
 def meta_filters():
     return jsonify({
-        'filters': validators.activity_api_args.schema.keys()
+        'filters': list(validators.activity_api_args.schema.keys())
         })
 
 @api.route('/about')
