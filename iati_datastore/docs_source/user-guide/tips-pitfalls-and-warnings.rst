@@ -1,7 +1,8 @@
 Tips, pitfalls and warnings
 ===========================
 
-Warning! The Datastore is not a single dataset
+.. warning::
+  The Datastore is not a single dataset
 
 A single activity may be reported by a donor, an implementing agent and an aid information management system or other secondary source publisher.
 
