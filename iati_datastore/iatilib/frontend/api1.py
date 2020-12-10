@@ -59,7 +59,7 @@ def about():
         status={True: 'healthy', False: 'unhealthy'}[healthy],
         status_data={
             'last_fetch': max_last_fetch,
-            'last_succ': max_last_succ,
+            'last_successful_fetch': max_last_succ,
             'last_parsed': max_last_parsed
         },
         indexed_activities=count_activity,
