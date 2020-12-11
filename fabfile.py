@@ -1,17 +1,18 @@
-from fabric.api import task, local
+from fabric import task
 
 
 @task
-def deploy():
-    local("heroku maintenance:on")
-    local("git push heroku")
-    local("heroku run alembic upgrade head")
-    local("heroku maintenance:off")
-
-
-@task
-def swipe():
-    local("heroku pgbackups:capture")
-    local("curl -o latest.dump `heroku pgbackups:url`")
-    local("pg_restore --verbose --clean --no-acl --no-owner " +
-          "-d iati-datastore latest.dump")
+def deploy(conn):
+    with conn.cd('~/iati-datastore'):
+        # pull latest copy of code in version control
+        conn.run('git pull origin master')
+        # start the virtual environment
+        conn.run('source pyenv/bin/activate')
+        # install dependencies
+        conn.run('pip install -r requirements.txt')
+        # run database migrations
+        conn.run('alembic upgrade head')
+        # build the docs
+        conn.run('iati build-docs')
+        # restart nginx
+        conn.run('systemctl restart nginx')

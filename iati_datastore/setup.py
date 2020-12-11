@@ -23,6 +23,7 @@ Flask-Cors==3.0.9
 """
 
 tests_require = """
+fabric==2.5.0
 nose==1.3.7  # rq.filter: <2.0
 mock==4.0.2  # rq.filter: <2.0
 factory-boy==3.1.0  # rq.filter: <2.0
