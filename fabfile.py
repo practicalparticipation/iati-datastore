@@ -14,5 +14,9 @@ def deploy(conn):
         conn.run('alembic upgrade head')
         # build the docs
         conn.run('iati build-docs')
-        # restart nginx
-        conn.run('systemctl restart nginx')
+        # stop everything
+        conn.run('systemctl stop iati-datastore')
+        conn.run('systemctl stop iati-datastore-queue')
+        # start everything again
+        conn.run('systemctl start iati-datastore')
+        conn.run('systemctl start iati-datastore-queue')
