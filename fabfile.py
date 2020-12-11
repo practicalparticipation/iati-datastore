@@ -24,8 +24,8 @@ def deploy(conn):
         # build the docs
         conn.run('iati build-docs')
         # stop everything
-        conn.sudo('systemctl stop iati-datastore')
-        conn.sudo('systemctl stop iati-datastore-queue')
+        conn.run('sudo systemctl stop iati-datastore')
+        conn.run('sudo systemctl stop iati-datastore-queue')
         # start everything again
-        conn.sudo('systemctl start iati-datastore')
-        conn.sudo('systemctl start iati-datastore-queue')
+        conn.run('sudo systemctl start iati-datastore')
+        conn.run('sudo systemctl start iati-datastore-queue')
