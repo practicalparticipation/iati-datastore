@@ -177,7 +177,7 @@ Deploying with apache
 * Run `iati create_database` to create the db tables
 * Set up a cron job for updates. (Add the following line after running `crontab -e`)
 
-        0 0 * * * export DATABASE_URL='postgres:///iati-datastore'; /usr/local/bin/iati crawl update
+        0 0 * * * export DATABASE_URL='postgres:///iati-datastore'; /usr/local/bin/iati crawler update
 
 * Run a worker with `iati queue background`
     - This needs to persist when you close your ssh connection. A simple way of doing this is using [screen](https://www.gnu.org/software/screen/).
@@ -202,7 +202,7 @@ Updating activities after changing import code
 
 * Run this SQL query on the database - `UPDATE resource SET last_succ=NULL;`
 * Restart background process
-* Run `iati crawl update` (or wait for cron to run it for you)
+* Run `iati crawler update` (or wait for cron to run it for you)
 
 
 Generation of Documentation
