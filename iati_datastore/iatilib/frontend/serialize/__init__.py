@@ -9,7 +9,7 @@ from .jsonserializer import json, datastore_json
 
 
 def xml(pagination):
-    yield """<result xmlns:iati-extra="http://datastore.iatistandard.org/ns">
+    yield """<result xmlns:iati-extra="https://datastore.codeforiati.org/ns">
     <ok>True</ok>
     <iati-activities generated-datetime='{3}'>
       <query>
