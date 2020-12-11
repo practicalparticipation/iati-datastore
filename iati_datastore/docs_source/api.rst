@@ -43,7 +43,7 @@ Available filters
 iati-identifier
 ```````````````
 
-Returns activities matching the specified `IATI Identifier <http://iatistandard.org/activity-standard/iati-identifier/>`__ element.  In practice this should return one activity, as each activity should contain a `IATI Identifier <http://iatistandard.org/activity-standard/iati-identifier/>`__ value.
+Returns activities matching the specified `IATI Identifier <https://iatistandard.org/en/iati-standard/203/activity-standard/iati-activities/iati-activity/iati-identifier/>`__ element.  In practice this should return one activity, as each activity should contain a `IATI Identifier <https://iatistandard.org/en/iati-standard/203/activity-standard/iati-activities/iati-activity/iati-identifier/>`__ value.
 
 Parameters:
     @iati-identifier: String denoting an individual IATI activity
