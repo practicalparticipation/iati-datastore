@@ -63,7 +63,7 @@ sudo -u postgres psql -c "CREATE USER [SYSTEM USER]"
 sudo -u postgres psql -c "GRANT ALL ON DATABASE iati_datastore TO [SYSTEM USER]"
 
 # Start the process of grabbing the source data
-iati crawl update
+iati crawler update
 
 # Start a development server – this should be run in a seperate terminal window
 iati run
@@ -72,7 +72,7 @@ iati run
 iati queue background
 
 # The progess of the worker can be checked using:
-iati crawl status
+iati crawler status
 
 # A local API is available at: http://127.0.0.1:5000
 ```
