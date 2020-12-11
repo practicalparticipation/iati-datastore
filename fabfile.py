@@ -1,9 +1,18 @@
+from contextlib import contextmanager
+
 from fabric import task
+
+
+@contextmanager
+def virtualenv(conn):
+    with conn.cd('~/iati-datastore'):
+        with conn.prefix('source pyenv/bin/activate'):
+            yield
 
 
 @task
 def deploy(conn):
-    with conn.cd('~/iati-datastore'):
+    with virtualenv(conn):
         # pull latest copy of code in version control
         conn.run('git pull origin master')
         # start the virtual environment
