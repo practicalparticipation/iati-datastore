@@ -55,7 +55,7 @@ Example API call:
 recipient-country
 `````````````````
 
-Returns activities where the country contained within a `recipient-country <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/recipient-country/>`__ element matches a specified ISO country code.
+Returns activities where the country contained within a `recipient-country <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/recipient-country/>`__ element or any `transaction/recipient-country <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/recipient-country/>`__ matches a specified ISO country code.
 
 Parameters:
     @recipient-country: 2-digit ISO country code which appears on the `country codelist <http://iatistandard.org/201/codelists/Country/>`__
@@ -67,7 +67,7 @@ Example API call:
 recipient-region
 ````````````````
 
-Returns activities where the contained within with a `recipient-region <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/recipient-region/>`__ element matches a specified DAC region code.
+Returns activities where the contained within with a `recipient-region <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/recipient-region/>`__ element or any `transaction/recipient-region <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/recipient-region/>`__ matches a specified DAC region code.
 
 Parameters:
     @recipient-region: 3-digit DAC region code which appears on the `region codelist <http://iatistandard.org/201/codelists/Region/>`__
@@ -103,7 +103,7 @@ Example API call:
 sector
 ``````
 
-Returns activities where the value contained within a `sector <http://iatistandard.org/201/codelists/Sector/>`__ element matches a specified DAC sector code.
+Returns activities where the value contained within a `sector <http://iatistandard.org/201/codelists/Sector/>`__ element or any `transaction/sector <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/sector/>`__ matches a specified DAC sector code.
 
 Parameters:
     @sector: 5-digit DAC sector code which appears on the `sector codelist <http://iatistandard.org/201/codelists/Sector/>`__
