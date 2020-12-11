@@ -44,4 +44,4 @@ class TestXMLSerializer(TestCase):
         data = self.process([
             fac.ActivityFactory.build(raw_xml=u"<iati-activity></iati-activity>", version='x.yy')
         ])
-        self.assertEquals('x.yy', data.find('.//iati-activity').attrib['{http://datastore.iatistandard.org/ns}version'])
+        self.assertEquals('x.yy', data.find('.//iati-activity').attrib['{https://datastore.codeforiati.org/ns}version'])
