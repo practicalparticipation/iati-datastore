@@ -20,7 +20,7 @@ def deploy(conn):
         # install dependencies
         conn.run('pip install -r requirements.txt')
         # run database migrations
-        conn.run('alembic upgrade head')
+        # conn.run('alembic upgrade head')
         # build the docs
         conn.run('iati build-docs')
         # stop everything
