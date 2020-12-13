@@ -37,7 +37,7 @@ activity_api_args = v.Schema({
     'recipient-country.text' : v.All(v.Coerce(str)),
     'recipient-region' : v.All(v.Coerce(str), recipient_region),
     'recipient-region.code' : v.All(v.Coerce(str), recipient_region),
-    'recipient-region.text' : v.All(v.Coerce(str), recipient_region),
+    'recipient-region.text' : v.All(v.Coerce(str)),
     'reporting-org' : v.All(v.Coerce(str)),
     'reporting-org.ref' : v.All(v.Coerce(str)),
     'reporting-org.type' : v.All(v.Coerce(str), reporting_org_type),
