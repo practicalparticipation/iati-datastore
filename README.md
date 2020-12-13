@@ -55,7 +55,7 @@ sudo -u postgres psql -c "CREATE DATABASE iati_datastore"
 export IATI_DATASTORE_DATABASE_URL=postgres:///iati_datastore
 
 # Create the db tables
-iati create-database
+iati db upgrade
 
 # Note: To create the tables the new database may need access privileges granted to your system user
 # See http://dba.stackexchange.com/questions/117109/how-to-manage-default-privileges-for-users-on-a-database-vs-schema/117661#117661

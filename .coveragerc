@@ -2,3 +2,4 @@
 omit =
     */test/*
     docs_source/*
+    migrations/*

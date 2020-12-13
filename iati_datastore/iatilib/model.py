@@ -95,7 +95,7 @@ class Participation(db.Model):
 class Activity(db.Model):
     __tablename__ = "activity"
     iati_identifier = sa.Column(sa.Unicode, primary_key=True, nullable=False)
-    hierarchy = sa.Column(codelists.RelatedActivityType.db_type())
+    hierarchy = sa.Column(sa.Integer)
     default_language = sa.Column(codelists.Language.db_type())
     # parsed from xml iati-activity@last-updated-datetime
     last_updated_datetime = sa.Column(sa.DateTime, nullable=True)
@@ -357,7 +357,9 @@ class SectorPercentage(db.Model):
             act_ForeignKey("transaction.id"),
             nullable=True,
             index=True)
-    sector = sa.Column(codelists.Sector.db_type(), nullable=True)
+    sector = sa.Column(codelists.Sector.db_type(),
+            nullable=True,
+            index=True)
     vocabulary = sa.Column(
             codelists.Vocabulary.db_type(),
             default=codelists.Vocabulary.oecd_development_assistance_committee,

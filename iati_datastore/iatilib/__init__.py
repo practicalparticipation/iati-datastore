@@ -1,10 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
-#from flask_redis import Redis
 from flask_rq2 import RQ
+from flask_migrate import Migrate
 
 db = SQLAlchemy()
-#redis = Redis()
 rq = RQ()
+migrate = Migrate()
 
 _logger = None
 

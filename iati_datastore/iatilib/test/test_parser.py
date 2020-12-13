@@ -288,7 +288,7 @@ class TestParse2xxActivity(AppTestCase):
         self.assertEquals(cl2.TiedStatus.partially_tied, self.act.default_tied_status)
 
     def test_default_hierarchy(self):
-        self.assertEquals(cl2.RelatedActivityType.parent, self.act.hierarchy)
+        self.assertEquals(1, self.act.hierarchy)
 
     def test_default_language(self):
         self.assertEquals(cl2.Language.english, self.act.default_language)
@@ -496,7 +496,7 @@ class TestParseActivity(AppTestCase):
 
     def test_default_hierarchy(self):
         activities = [ a for a in parse.document(fixture_filename("default_currency.xml")) ]
-        self.assertEquals(cl.RelatedActivityType.parent, activities[0].hierarchy)
+        self.assertEquals(1, activities[0].hierarchy)
 
     def test_default_language(self):
         activities = [ a for a in parse.document(fixture_filename("default_currency.xml")) ]

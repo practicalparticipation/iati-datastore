@@ -8,7 +8,6 @@ lxml==4.6.2
 python-dateutil==2.8.1
 six==1.15.0
 voluptuous>=0.12.0
-alembic==1.4.3
 gunicorn==20.0.4
 Unidecode==1.1.1
 requests==2.25.0
@@ -20,6 +19,7 @@ psycopg2==2.8.6
 Sphinx==3.3.1
 sphinx-rtd-theme==0.5.0
 Flask-Cors==3.0.9
+Flask-Migrate==2.5.3
 """
 
 tests_require = """
