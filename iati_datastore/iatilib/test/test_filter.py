@@ -27,7 +27,8 @@ class TestActivityFilter(AppTestCase):
             ])
         act_not = fac.ActivityFactory.create(
             recipient_country_percentages=[
-                fac.CountryPercentageFactory.build(country=cl.Country.zambia),
+                fac.CountryPercentageFactory.build(
+                    country=cl.Country.zambia),
             ])
         activities = dsfilter.activities({
             "recipient-country": cl.Country.from_string(u"LY")
