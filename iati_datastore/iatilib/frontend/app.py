@@ -3,7 +3,7 @@ import os
 from flask import Flask
 from flask_cors import CORS
 
-from iatilib import db, rq
+from iatilib import db, rq, migrate
 
 from .api1 import api
 from iatilib.frontend.routes import routes
@@ -27,3 +27,4 @@ def register_extensions(app):
     db.init_app(app)
     rq.init_app(app)
     CORS(app)
+    migrate.init_app(app, db)

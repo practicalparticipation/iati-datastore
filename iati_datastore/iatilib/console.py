@@ -88,5 +88,5 @@ def create_database():
 
 @cli.command()
 @with_appcontext
-def empty_database():
+def drop_database():
     db.drop_all()
