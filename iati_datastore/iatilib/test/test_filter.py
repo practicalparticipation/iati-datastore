@@ -35,6 +35,29 @@ class TestActivityFilter(AppTestCase):
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
 
+    def test_by_transaction_country_code(self):
+        act_in = fac.ActivityFactory.create()
+        act_not = fac.ActivityFactory.create()
+        fac.TransactionFactory.create(
+            activity=act_in,
+            ref="12345",
+            recipient_country_percentages=[
+                fac.CountryPercentageFactory.build(
+                    country=cl.Country.libya),
+            ])
+        fac.TransactionFactory.create(
+            activity=act_not,
+            ref="12345",
+            recipient_country_percentages=[
+                fac.CountryPercentageFactory.build(
+                    country=cl.Country.zambia),
+            ])
+        activities = dsfilter.activities({
+            "recipient-country": cl.Country.from_string(u"LY")
+        })
+        self.assertIn(act_in, activities.all())
+        self.assertNotIn(act_not, activities.all())
+
     def test_by_country_name(self):
         act_not = fac.ActivityFactory.create(
             recipient_country_percentages=[
@@ -51,6 +74,31 @@ class TestActivityFilter(AppTestCase):
             ])
         activities = dsfilter.activities({
             "recipient-country.text": u"Zambia"
+        })
+        self.assertIn(act_in, activities.all())
+        self.assertNotIn(act_not, activities.all())
+
+    def test_by_transaction_country_name(self):
+        act_in = fac.ActivityFactory.create()
+        act_not = fac.ActivityFactory.create()
+        fac.TransactionFactory.create(
+            activity=act_in,
+            ref="12345",
+            recipient_country_percentages=[
+                fac.CountryPercentageFactory.build(
+                    name="Libya",
+                    country=cl.Country.libya),
+            ])
+        fac.TransactionFactory.create(
+            activity=act_not,
+            ref="12345",
+            recipient_country_percentages=[
+                fac.CountryPercentageFactory.build(
+                    name="Zambia",
+                    country=cl.Country.zambia),
+            ])
+        activities = dsfilter.activities({
+            "recipient-country.text": u"Libya"
         })
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
@@ -117,6 +165,79 @@ class TestActivityFilter(AppTestCase):
             ])
         activities = dsfilter.activities({
             "recipient-region": cl.Region.from_string(u"298")
+        })
+        self.assertIn(act_in, activities.all())
+        self.assertNotIn(act_not, activities.all())
+
+    def test_by_transaction_recipient_region_code(self):
+        act_in = fac.ActivityFactory.create()
+        act_not = fac.ActivityFactory.create()
+        fac.TransactionFactory.create(
+            activity=act_in,
+            ref="12345",
+            recipient_region_percentages=[
+                fac.RegionPercentageFactory.build(
+                    region=cl.Region.africa_regional,
+                ),
+            ])
+        fac.TransactionFactory.create(
+            activity=act_not,
+            ref="12345",
+            recipient_region_percentages=[
+                fac.RegionPercentageFactory.build(
+                    region=cl.Region.oceania_regional,
+                ),
+            ])
+        activities = dsfilter.activities({
+            "recipient-region": cl.Region.from_string(u"298")
+        })
+        self.assertIn(act_in, activities.all())
+        self.assertNotIn(act_not, activities.all())
+
+    def test_by_recipient_region_name(self):
+        act_in = fac.ActivityFactory.create(
+            recipient_region_percentages=[
+                fac.RegionPercentageFactory.build(
+                    region=cl.Region.africa_regional,
+                    name="Africa"
+                )
+            ])
+        act_not = fac.ActivityFactory.create(
+            recipient_region_percentages=[
+                fac.RegionPercentageFactory.build(
+                    region=cl.Region.oceania_regional,
+                    name="Oceania"
+                ),
+            ])
+        activities = dsfilter.activities({
+            "recipient-region.text": u"Africa"
+        })
+        self.assertIn(act_in, activities.all())
+        self.assertNotIn(act_not, activities.all())
+
+    def test_by_transaction_recipient_region_name(self):
+        act_in = fac.ActivityFactory.create()
+        act_not = fac.ActivityFactory.create()
+        fac.TransactionFactory.create(
+            activity=act_in,
+            ref="12345",
+            recipient_region_percentages=[
+                fac.RegionPercentageFactory.build(
+                    region=cl.Region.africa_regional,
+                    name="Africa"
+                ),
+            ])
+        fac.TransactionFactory.create(
+            activity=act_not,
+            ref="12345",
+            recipient_region_percentages=[
+                fac.RegionPercentageFactory.build(
+                    region=cl.Region.oceania_regional,
+                    name="Oceania"
+                ),
+            ])
+        activities = dsfilter.activities({
+            "recipient-region.text": u"Africa"
         })
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
@@ -229,6 +350,31 @@ class TestActivityFilter(AppTestCase):
                     text="Secondary",
                     sector=cl.Sector.secondary_education
                 ),
+            ])
+        activities = dsfilter.activities({
+            "sector.text": u"Primary"
+        })
+        self.assertIn(act_in, activities.all())
+        self.assertNotIn(act_not, activities.all())
+
+    def test_by_transaction_sector_name(self):
+        act_in = fac.ActivityFactory.create()
+        act_not = fac.ActivityFactory.create()
+        fac.TransactionFactory.create(
+            activity=act_in,
+            ref="12345",
+            sector_percentages=[
+                fac.SectorPercentageFactory.build(
+                    text="Primary",
+                    sector=cl.Sector.primary_education),
+            ])
+        fac.TransactionFactory.create(
+            activity=act_not,
+            ref="12345",
+            sector_percentages=[
+                fac.SectorPercentageFactory.build(
+                    text="Secondary",
+                    sector=cl.Sector.secondary_education),
             ])
         activities = dsfilter.activities({
             "sector.text": u"Primary"
