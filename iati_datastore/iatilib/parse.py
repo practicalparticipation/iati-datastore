@@ -387,8 +387,8 @@ def related_activities(xml, resource=no_resource, major_version='1'):
 
 def hierarchy(xml, resource=None, major_version='1'):
     xml_value = xval(xml, "@hierarchy", None)
-    if xml_value:
-        return codelists.by_major_version[major_version].RelatedActivityType.from_string(xml_value)
+    if (xml_value) and (xml_value != ''):
+        return int(xml_value)
     return None
 
 

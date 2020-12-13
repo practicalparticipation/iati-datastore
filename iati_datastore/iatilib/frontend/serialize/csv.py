@@ -111,6 +111,7 @@ receiver_org = partial(transaction_org, 'receiver_org')
 title = attrgetter("title")
 description = attrgetter("description")
 iati_identifier = attrgetter("iati_identifier")
+hierarchy = attrgetter("hierarchy")
 
 
 def recipient_country_code(activity):
@@ -228,7 +229,7 @@ def fielddict_from_major_version(major_version):
     class FieldDict(OrderedDict):
         common_field = {
             u"iati-identifier": iati_identifier,
-            u"hierarchy" :  partial(codelist_code, 'hierarchy'),
+            u"hierarchy": hierarchy,
             u"last-updated-datetime": attrgetter(u'last_updated_datetime'),
             u"default-language" : partial(codelist_code, 'default_language'),
             u"reporting-org" : reporting_org_name,
