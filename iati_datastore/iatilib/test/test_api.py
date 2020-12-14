@@ -18,6 +18,22 @@ class ClientTestCase(AppTestCase):
         self.client = self.app.test_client()
 
 
+class TestLatestApiRedirect(ClientTestCase):
+    def test_latest_api_redirect(self):
+        resp = self.client.get('/api/')
+        self.assertEquals(302, resp.status_code)
+        self.assertRegex(resp.headers['Location'], '/api/1/$')
+
+
+class TestListRoutes(ClientTestCase):
+    def test_list_routes(self):
+        resp = self.client.get('/api/1/')
+        self.assertEquals(200, resp.status_code)
+        self.assertEquals("application/json", resp.content_type)
+        data = json.loads(resp.data)
+        self.assertIn('http://localhost/api/1/', data)
+
+
 class TestAbout(ClientTestCase):
     def test_about_http(self):
         resp = self.client.get('/api/1/about/')
