@@ -24,3 +24,8 @@ class TestDocs(ClientTestCase):
         self.assertRegex(
             resp.data.decode(),
             r"What is the IATI Datastore\?")
+
+    def test_favicon(self):
+        resp = self.client.get('/favicon.ico')
+        self.assertEquals(200, resp.status_code)
+        self.assertRegex(resp.content_type, "^image/")
