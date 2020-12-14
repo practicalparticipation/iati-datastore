@@ -317,7 +317,7 @@ def fielddict_from_major_version(major_version):
                     return i
                 else:
                     raise ValueError("%s is not allowed in FieldDict" % type(i))
-            super(FieldDict, self).__init__(
+            super().__init__(
                 (field_for(i) for i in itr),
                 *args,
                 **kw

@@ -618,7 +618,7 @@ class TestActivityByCountry(CSVTstMixin, ActivityExample, TestCase):
         return serialize.csv_activity_by_country(data)
 
     def example(self):
-        activity = super(TestActivityByCountry, self).example()
+        activity = super().example()
         NT = namedtuple('ActivityCountryPercentage', 'Activity CountryPercentage')
         return [
             NT(activity, activity.recipient_country_percentages[0]),
@@ -784,7 +784,7 @@ class TestActivityBySector(CSVTstMixin, ActivityExample, TestCase):
         return serialize.csv_activity_by_sector(data)
 
     def example(self):
-        activity = super(TestActivityBySector, self).example()
+        activity = super().example()
         NT = namedtuple('ActivitySectorPercentage', 'Activity SectorPercentage')
         return [
             NT(activity, activity.sector_percentages[0]),
