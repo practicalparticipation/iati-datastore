@@ -564,7 +564,7 @@ def update(verbose=False, limit=None, dataset=None, timedelta=None):
     queue = rq.get_queue()
 
     if dataset:
-        print ("Enqueing {0} for update".format(dataset))
+        print ("Enqueuing {0} for update".format(dataset))
         queue.enqueue(update_dataset, args=(dataset,), result_ttl=0)
         res = Resource.query.filter(Resource.dataset_id == dataset)
         for resource in res:
@@ -583,10 +583,10 @@ def update(verbose=False, limit=None, dataset=None, timedelta=None):
         if limit:
             datasets = datasets.limit(limit)
 
-        print ("Enqueing %d datasets for update" % datasets.count())
+        print ("Enqueuing %d datasets for update" % datasets.count())
 
         for dataset in datasets:
             if verbose:
-                print ("Enquing %s" % dataset.name)
+                print ("Enqueuing %s" % dataset.name)
             queue.enqueue(update_dataset, args=(dataset.name,), result_ttl=0)
     db.session.close()
