@@ -27,23 +27,52 @@ def _filter(query, args):
     #recipient_country = partial(filter_from_codelist, codelists.Country,
     #    Activity.recipient_country_percentages, CountryPercentage.country)
     def recipient_country(country_code):
-        return Activity.recipient_country_percentages.any(
-            CountryPercentage.country == country_code
+        return or_(
+            Activity.recipient_country_percentages.any(
+                CountryPercentage.country == country_code
+            ),
+            Activity.transactions.any(
+                Transaction.recipient_country_percentages.any(
+                    CountryPercentage.country == country_code
+                )
+            )
         )
 
     def recipient_country_text(country):
-        return Activity.recipient_country_percentages.any(
-            CountryPercentage.name == country
+        return or_(
+            Activity.recipient_country_percentages.any(
+                CountryPercentage.name == country
+            ),
+            Activity.transactions.any(
+                Transaction.recipient_country_percentages.any(
+                    CountryPercentage.name == country
+                )
+            )
         )
 
     def recipient_region(region_code):
-        return Activity.recipient_region_percentages.any(
-            RegionPercentage.region == region_code
+        return or_(
+            Activity.recipient_region_percentages.any(
+                RegionPercentage.region == region_code
+            ),
+            Activity.transactions.any(
+                Transaction.recipient_region_percentages.any(
+                    RegionPercentage.region == region_code
+                )
+            )
         )
 
+
     def recipient_region_text(region):
-        return Activity.recipient_region_percentages.any(
-            RegionPercentage.name == region
+        return or_(
+            Activity.recipient_region_percentages.any(
+                RegionPercentage.name == region
+            ),
+            Activity.transactions.any(
+                Transaction.recipient_region_percentages.any(
+                    RegionPercentage.name == region
+                )
+            )
         )
 
     def reporting_org(organisation):
@@ -81,17 +110,27 @@ def _filter(query, args):
         )
 
     def sector(sector_code):
-        return or_(Activity.sector_percentages.any(
-            SectorPercentage.sector == sector_code
-        ), Activity.transactions.any(
-            Transaction.sector_percentages.any(
+        return or_(
+            Activity.sector_percentages.any(
                 SectorPercentage.sector == sector_code
+            ),
+            Activity.transactions.any(
+                Transaction.sector_percentages.any(
+                    SectorPercentage.sector == sector_code
+                )
             )
-        ))
+        )
 
     def sector_text(sector):
-        return Activity.sector_percentages.any(
-            SectorPercentage.text == sector
+        return or_(
+            Activity.sector_percentages.any(
+                SectorPercentage.text == sector
+            ),
+            Activity.transactions.any(
+                Transaction.sector_percentages.any(
+                    SectorPercentage.text == sector
+                )
+            )
         )
 
     def transaction_ref(transaction):
