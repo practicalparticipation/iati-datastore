@@ -11,7 +11,7 @@ routes = Blueprint('routes', __name__, template_folder='templates')
 def homepage():
     return redirect(url_for('routes.docs', path=''))
 
-@routes.route('/error')
+@routes.route('/error/')
 def error():
     return redirect(url_for('routes.docs', path='api/error/'))
 
