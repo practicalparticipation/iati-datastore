@@ -1,8 +1,9 @@
 from collections import namedtuple
 from datetime import datetime
 import sqlalchemy as sa
-from flask import (request, Response, Blueprint, jsonify, abort,
-                   render_template, make_response)
+from flask import (current_app, request, Response, Blueprint,
+                   jsonify, abort, render_template, make_response,
+                   url_for)
 from flask.views import MethodView
 from werkzeug.datastructures import MultiDict
 from flask_sqlalchemy import Pagination
@@ -14,7 +15,7 @@ from iatilib.model import (Activity, Resource, Transaction, Dataset,
 from . import dsfilter, validators, serialize
 
 
-api = Blueprint('api', __name__)
+api = Blueprint('api1', __name__)
 Scrollination = namedtuple('Scrollination', 'query offset limit total items')
 
 def dictify(resource):
@@ -25,6 +26,21 @@ def dictify(resource):
         else:
             fields.append((key, resource.__dict__[key]))
     return dict(fields)
+
+@api.route('/')
+def list_routes():
+    urls = []
+    rules = [
+        r for r in current_app.url_map.iter_rules()
+        if r.endpoint.startswith('api1.')]
+    for rule in rules:
+        options = {}
+        for arg in rule.arguments:
+            options[arg] = "[{0}]".format(arg)
+        url = url_for(rule.endpoint, _external=True, **options)
+        urls.append(url)
+    urls = sorted(urls)
+    return jsonify(urls)
 
 @api.route('/meta/filters/')
 def meta_filters():
