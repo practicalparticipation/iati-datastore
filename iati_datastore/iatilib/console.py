@@ -6,6 +6,7 @@ import subprocess
 
 import click
 from flask.cli import FlaskGroup, with_appcontext
+import flask_migrate
 import requests
 from sqlalchemy import not_
 
@@ -83,7 +84,7 @@ def parse_file(filenames, verbose=False, fail_xml=False, fail_spec=False):
 @cli.command()
 @with_appcontext
 def create_database():
-    db.create_all()
+    flask_migrate.upgrade()
 
 
 @cli.command()

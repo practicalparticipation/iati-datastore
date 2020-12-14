@@ -17,7 +17,7 @@ class ConsoleTestCase(AppTestCase):
         self.assertEquals(1, mock.call_count)
         self.assertEquals(mock.call_args.args[0], command.split(' '))
 
-    @mock.patch('iatilib.db.create_all')
+    @mock.patch('flask_migrate.upgrade')
     def test_create_db(self, mock):
         self.runner.invoke(console.create_database)
         self.assertEquals(1, mock.call_count)
