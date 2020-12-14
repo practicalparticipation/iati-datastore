@@ -15,6 +15,10 @@ def homepage():
 def error():
     return redirect(url_for('routes.docs', path='api/error/'))
 
+@routes.route('/api/')
+def api_latest():
+    return redirect(url_for('api1.list_routes'))
+
 @routes.route('/docs/')
 @routes.route('/docs/<path:path>')
 def docs(path=''):
