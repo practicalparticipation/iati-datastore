@@ -18,7 +18,7 @@ def fixture(fix_name, encoding='utf-8'):
 
 class TestParse2xxActivity(AppTestCase):
     def setUp(self):
-        super(TestParse2xxActivity, self).setUp()
+        super().setUp()
         self.activities = list(parse.document(fixture_filename("2.01-example-annotated.xml")))
         self.act = self.activities[0]
 
@@ -296,7 +296,7 @@ class TestParse2xxActivity(AppTestCase):
 
 class TestParseActivity(AppTestCase):
     def setUp(self):
-        super(TestParseActivity, self).setUp()
+        super().setUp()
         self.act = parse.activity(fixture("default_currency.xml"))
 
     def test_bad_xml(self):
@@ -747,7 +747,7 @@ class TestActivity(AppTestCase):
 
 class TestTransaction(AppTestCase):
     def __init__(self, methodName='runTest'):
-        super(TestTransaction, self).__init__(methodName)
+        super().__init__(methodName)
         self.codelists = """
             <activity><transaction>
               <transaction-type code="C"/>

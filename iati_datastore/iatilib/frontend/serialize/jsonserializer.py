@@ -27,7 +27,7 @@ class JSONEncoder(jsonlib.JSONEncoder):
             d = xmltodict.parse(o.raw_xml, attr_prefix='', cdata_key='text')
             d['iati-extra:version'] = o.version
             return d
-        return super(JSONEncoder, self).default(o)
+        return super().default(o)
 
 
 class DatastoreJSONEncoder(jsonlib.JSONEncoder):
@@ -42,7 +42,7 @@ class DatastoreJSONEncoder(jsonlib.JSONEncoder):
             return str(o.quantize(self.TWOPLACES))
         if isinstance(o, Activity):
             return json_rep(o)
-        return super(DatastoreJSONEncoder, self).default(o)
+        return super().default(o)
 
 def code(attr):
     if attr:
