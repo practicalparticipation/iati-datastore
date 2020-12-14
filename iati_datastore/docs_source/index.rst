@@ -22,7 +22,7 @@ Who is it for?
 The Datastore is a service for analysts, data journalists, infomediaries and developers. It is a ‘back-end’ service to streamline the work of those who wish to build applications that can deliver accessible and usable information to a wide range of users.
 
 Why a Datastore?
-------------
+----------------
 
 This repository is called a Datastore, not a database, because it cannot be used as a single dataset. IATI is a publishing standard, not an integral information system. One activity can be reported through IATI by a donor, an implementing organisation and a third-party (secondary-source publisher): in other words you cannot simply add everything together.
 
