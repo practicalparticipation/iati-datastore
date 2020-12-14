@@ -18,15 +18,6 @@ from . import dsfilter, validators, serialize
 api = Blueprint('api1', __name__)
 Scrollination = namedtuple('Scrollination', 'query offset limit total items')
 
-def dictify(resource):
-    fields = []
-    for key in resource._fields:
-        if isinstance(resource.__dict__[key], datetime):
-            fields.append((key, resource.__dict__[key].isoformat()))
-        else:
-            fields.append((key, resource.__dict__[key]))
-    return dict(fields)
-
 @api.route('/')
 def list_routes():
     urls = []
