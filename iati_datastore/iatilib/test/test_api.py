@@ -8,14 +8,8 @@ from io import StringIO, BytesIO
 from unittest import skip
 import mock
 
-from . import AppTestCase
+from . import ClientTestCase
 from iatilib import parse, db, model
-
-
-class ClientTestCase(AppTestCase):
-    def setUp(self):
-        super(ClientTestCase, self).setUp()
-        self.client = self.app.test_client()
 
 
 class TestLatestApiRedirect(ClientTestCase):

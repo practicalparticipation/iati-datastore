@@ -19,7 +19,7 @@ _app = None
 
 class AppTestCase(unittest.TestCase):
     def __init__(self, methodName='runTest'):
-        super(AppTestCase, self).__init__(methodName)
+        super().__init__(methodName)
         self.addTypeEqualityFunc(lxml_etree.Element, self.assertXMLEqual)
         self.addTypeEqualityFunc(xml_etree.Element, self.assertXMLEqual)
 
@@ -50,7 +50,7 @@ class AppTestCase(unittest.TestCase):
 
 class ClientTestCase(AppTestCase):
     def setUp(self):
-        super(ClientTestCase, self).setUp()
+        super().setUp()
         self.client = self.app.test_client()
 
 
