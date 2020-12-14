@@ -99,7 +99,7 @@ def json_rep(obj):
     if isinstance(obj, Participation):
         return {
             "organisation": json_rep(obj.organisation),
-            "role": code(obj.role), 
+            "role": code(obj.role),
         }
     if isinstance(obj, CountryPercentage):
         return {
@@ -117,7 +117,7 @@ def json_rep(obj):
         }
     if isinstance(obj, Budget):
         return {
-            "type": code(obj.type), 
+            "type": code(obj.type),
             "period-start": obj.period_start,
             "period-end": obj.period_end,
             "value": {
