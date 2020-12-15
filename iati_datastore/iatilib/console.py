@@ -84,4 +84,6 @@ def parse_file(filenames, verbose=False, fail_xml=False, fail_spec=False):
 @cli.command()
 @with_appcontext
 def drop_database():
+    """Drop all database tables."""
+    click.confirm('Are you sure?', abort=True)
     db.drop_all()
