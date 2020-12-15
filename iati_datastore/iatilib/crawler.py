@@ -133,8 +133,10 @@ def fetch_dataset_metadata(dataset):
     except Exception:
         raise CouldNotFetchPackageList()
 
-    dataset.last_modified = date_parser(ds_entity.get('metadata_modified',
-        datetime.datetime.now().date().isoformat()))
+    dataset.last_modified = date_parser(
+        ds_entity.get(
+            'metadata_modified',
+            datetime.datetime.now().date().isoformat()))
     new_urls = [resource['url'] for resource
                 in ds_entity.get('resources', [])
                 if resource['url'] not in dataset.resource_urls]
@@ -235,7 +237,7 @@ def parse_activity(new_identifiers, old_xml, resource):
             parse.log.warn(
                     _("Duplicate identifier {0} in same resource document".format(
                             activity.iati_identifier),
-                            logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
+                      logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
                     exc_info=''
             )
 
@@ -482,12 +484,11 @@ def status():
     ))
 
     print(status_line(
-            "resources have no activites",
-            db.session.query(Resource.url).outerjoin(Activity)
-                .group_by(Resource.url)
-                .having(sa.func.count(Activity.iati_identifier) == 0),
-            Resource.query,
-    ))
+          "resources have no activites",
+          db.session.query(Resource.url).outerjoin(Activity)
+          .group_by(Resource.url)
+          .having(sa.func.count(Activity.iati_identifier) == 0),
+          Resource.query))
 
     print("")
 
@@ -568,8 +569,7 @@ def update(verbose=False, limit=None, dataset=None, timedelta=None):
         res = Resource.query.filter(Resource.dataset_id == dataset)
         for resource in res:
             queue.enqueue(update_resource, args=(resource.url,), result_ttl=0)
-            queue.enqueue(update_activities, args=(resource.url,), result_ttl=0,
-                       timeout=1000)
+            queue.enqueue(update_activities, args=(resource.url,), result_ttl=0, timeout=1000)
     else:
         if timedelta:
             modified_since = datetime.date.today() - datetime.timedelta(timedelta)

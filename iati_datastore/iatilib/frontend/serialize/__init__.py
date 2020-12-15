@@ -17,8 +17,9 @@ def xml(pagination):
         <start>{1}</start>
         <limit>{2}</limit>
       </query>
-    """.format(pagination.total,
-            pagination.offset, pagination.limit, datetime.now().isoformat())
+    """.format(
+        pagination.total,
+        pagination.offset, pagination.limit, datetime.now().isoformat())
     for activity in pagination.items:
         if activity.version:
             # This should always work, as the first element in the raw_xml should always be iati-activity

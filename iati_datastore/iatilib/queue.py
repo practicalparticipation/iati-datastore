@@ -38,7 +38,7 @@ def get_worker():
     # Set up the worker to log errors to the db rather than pushing them
     # into the failed queue.
     worker = rq.get_worker()
-    #worker.pop_exc_handler()
+    # worker.pop_exc_handler()
     worker.push_exc_handler(db_log_exception)
     return worker
 

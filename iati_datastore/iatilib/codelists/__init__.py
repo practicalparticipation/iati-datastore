@@ -66,9 +66,10 @@ def ident(name):
 
 
 def codelist_reader(itr):
-    headers = next(itr)
+    _ = next(itr)
     for line in itr:
         yield line[:2]
+
 
 by_major_version = {}
 for major_version in ['1', '2']:
@@ -84,4 +85,3 @@ for major_version in ['1', '2']:
                     globals()[name] = codelist
         except IOError as exc:
             warnings.warn(str(exc))
-

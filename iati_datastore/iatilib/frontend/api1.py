@@ -56,9 +56,9 @@ def about():
     now = datetime.now()
     # If the file was last fetched and parsed less than 1 day
     # ago, then the API is healthy.
-    if ((updated.last_fetch != None) and
-        (updated.last_succ != None) and
-        (updated.last_parsed != None)):
+    if ((updated.last_fetch is not None) and
+            (updated.last_succ is not None) and
+            (updated.last_parsed is not None)):
         healthy = (
             ((now-updated.last_fetch).days < 1) and
             ((now-updated.last_succ).days < 1) and
@@ -168,8 +168,8 @@ def resource_error():
     if not resource_url:
         abort(404)
     error_logs = db.session.query(Log).\
-                    filter(Log.resource == resource_url).\
-                    order_by(sa.desc(Log.created_at))
+        filter(Log.resource == resource_url).\
+        order_by(sa.desc(Log.created_at))
     errors = [{
                 'resource_url': log.resource,
                 'dataset': log.dataset,

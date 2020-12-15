@@ -35,7 +35,7 @@ class TestXMLSerializer(TestCase):
         self.assertIn("t:test", ser_data)
 
     def test_results_count(self):
-        data =[ fac.ActivityFactory.build(raw_xml=u"<test />") ]
+        data = [fac.ActivityFactory.build(raw_xml=u"<test />")]
         ser_data = "".join(serialize.xml(TestWrapper(data, 1, 0, 0)))
         result = ET.fromstring(ser_data)
         self.assertEquals("1", result[1][0][0].text)

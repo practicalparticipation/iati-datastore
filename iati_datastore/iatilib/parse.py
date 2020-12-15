@@ -135,7 +135,7 @@ def reporting_org(element, resource=no_resource, major_version='1'):
         log.warn(
             _(u"Failed to import a valid reporting-org.type in activity {0}, error was: {1}".format(
                 iati_identifier, exe),
-            logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
+              logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
             exc_info=exe
         )
 
@@ -157,14 +157,14 @@ def participating_orgs(xml, resource=None, major_version='1'):
             log.warn(
                 _(u"Failed to import a valid sector percentage:{0} in activity {1}, error was: {2}".format(
                     'organisation_role', iati_identifier, e),
-                logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
+                  logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
                 exc_info=e
             )
     return ret
 
 
 def websites(xml, resource=None, major_version='1'):
-    return [xval(ele, "text()") for ele in xml.xpath("./activity-website") if xval(ele, "text()", None) ]
+    return [xval(ele, "text()") for ele in xml.xpath("./activity-website") if xval(ele, "text()", None)]
 
 
 def recipient_country_percentages(element, resource=no_resource, major_version='1'):
@@ -188,8 +188,8 @@ def recipient_region_percentages(element, resource=no_resource, major_version='1
     xml = element.xpath("./recipient-region")
     results = []
     for ele in xml:
-        name=xval(ele, TEXT_ELEMENT[major_version], None)
-        region=from_codelist(codelists.by_major_version[major_version].Region, "@code", ele, resource)
+        name = xval(ele, TEXT_ELEMENT[major_version], None)
+        region = from_codelist(codelists.by_major_version[major_version].Region, "@code", ele, resource)
         if ele.xpath("@percentage"):
             try:
                 percentage = Decimal(xval(ele, "@percentage"))
@@ -258,7 +258,7 @@ def transactions(xml, resource=no_resource, major_version='1'):
                 log.warn(
                     _(u"Failed to import a valid {0} in activity {1}, error was: {2}".format(
                         field, iati_identifier, exe),
-                    logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
+                      logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
                     exc_info=exe
                 )
 
@@ -273,7 +273,7 @@ def transactions(xml, resource=no_resource, major_version='1'):
             log.warn(
                 _(u"Failed to import a valid transaction in activity {0}, error was: {1}".format(
                     iati_identifier, exe),
-                logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
+                  logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
                 exc_info=exe
             )
     return ret
@@ -297,7 +297,7 @@ def sector_percentages(xml, resource=no_resource, major_version='1'):
                 log.warn(
                     _("uFailed to import a valid {0} in activity {1}, error was: {2}".format(
                         field, iati_identifier, exe),
-                    logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
+                      logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
                     exc_info=exe
                 )
 
@@ -343,7 +343,7 @@ def budgets(xml, resource=no_resource, major_version='1'):
                 log.warn(
                     _("uFailed to import a valid budget:{0} in activity {1}, error was: {2}".format(
                         field, iati_identifier, exe),
-                    logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
+                      logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
                     exc_info=exe
                 )
 
@@ -376,7 +376,7 @@ def related_activities(xml, resource=no_resource, major_version='1'):
             log.warn(
                 _(u"Failed to import a valid related-activity in activity {0}, error was: {1}".format(
                     iati_identifier, e),
-                logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
+                  logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
                 exc_info=e
             )
     return results
@@ -443,16 +443,17 @@ def from_codelist(codelist, path, xml, resource=no_resource):
         try:
             return codelist.from_string(code)
         except (MissingValue, ValueError) as e:
-            iati_identifier = xval(xml, "/iati-activity/iati-identifier/text()",
+            iati_identifier = xval(
+                xml, "/iati-activity/iati-identifier/text()",
                 'no_identifier')
 
             log.warn(
                 _((u"Failed to import a valid {0} in activity"
                    "{1}, error was: {2}".format(codelist, iati_identifier, e)),
-                   logger='activity_importer',
-                   dataset=resource.dataset_id,
-                   resource=resource.url
-                ),
+                  logger='activity_importer',
+                  dataset=resource.dataset_id,
+                  resource=resource.url
+                  ),
                 exc_info=e
             )
     return None
@@ -484,7 +485,6 @@ def activity(xml_resource, resource=no_resource, major_version='1', version=None
         "raw_xml": ET.tostring(xml, encoding='utf-8').decode()
     }
 
-    cl = codelists.by_major_version[major_version]
     activity_status = partial(from_codelist_with_major_version, 'ActivityStatus', "./activity-status/@code")
     collaboration_type = partial(from_codelist_with_major_version, 'CollaborationType', "./collaboration-type/@code")
     default_finance_type = partial(from_codelist_with_major_version, 'FinanceType', "./default-finance-type/@code")
@@ -529,7 +529,7 @@ def activity(xml_resource, resource=no_resource, major_version='1', version=None
             log.warn(
                 _(u"Failed to import a valid {0} in activity {1}, error was: {2}".format(
                     field, data['iati_identifier'], exe),
-                logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
+                  logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
                 exc_info=exe
             )
     return Activity(**data)
@@ -556,8 +556,8 @@ def activities(xmlfile, resource=no_resource):
                     yield activity(elem, resource=resource, major_version=major_version, version=version)
                 except MissingValue as exe:
                     log.error(_("Failed to import a valid Activity error was: {0}".format(exe),
-                            logger='failed_activity', dataset=resource.dataset_id, resource=resource.url),
-                            exc_info=exe)
+                              logger='failed_activity', dataset=resource.dataset_id, resource=resource.url),
+                              exc_info=exe)
                 elem.clear()
     except ET.XMLSyntaxError:
         raise XMLError()

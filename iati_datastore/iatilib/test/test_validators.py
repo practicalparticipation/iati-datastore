@@ -16,6 +16,7 @@ class TestApiDate(TestCase):
         with self.assertRaises(validators.Invalid):
             validators.apidate("1-1-2012")
 
+
 class TestCodelist(TestCase):
     def test_valid_organisation_role(self):
         self.assertEqual(
@@ -32,7 +33,7 @@ class TestCodelist(TestCase):
     def test_multiple_codes_values(self):
         self.assertEqual(
             [x.value for x in validators.reporting_org_type("10|xx")],
-            ['10','xx']
+            ['10', 'xx']
         )
 
 
@@ -67,4 +68,3 @@ class TestApiSchema(TestCase):
             validators.activity_api_args({"stream": "t"}),
             {"stream": True}
         )
-

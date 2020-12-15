@@ -67,7 +67,7 @@ class TestCrawler(AppTestCase):
 
     @mock.patch('iatilib.crawler.registry')
     def test_fetch_package_search_update(self, mock):
-        #initial call to fetch dataset list sets up 3 datasets inside the
+        # initial call to fetch dataset list sets up 3 datasets inside the
         # datastore
         mock.action.package_list.return_value = [
             u"tst-deleted", u"tst-not-modified", 'tst-modified'
@@ -166,7 +166,7 @@ class TestCrawler(AppTestCase):
             activities=[act]
         )
         # the updated resource (will remove the activities)
-        resource.document=b"<iati-activities />"
+        resource.document = b"<iati-activities />"
         resource = crawler.parse_resource(resource)
         db.session.commit()
         self.assertEquals(None, Activity.query.get(act.iati_identifier))
@@ -176,7 +176,9 @@ class TestCrawler(AppTestCase):
         )
 
     def test_deleted_activity_removal(self):
-        db.session.add(DeletedActivity(iati_identifier='test_deleted_activity',
+        db.session.add(
+            DeletedActivity(
+                iati_identifier='test_deleted_activity',
                 deletion_date=datetime.datetime(2000, 1, 1)))
         db.session.commit()
         resource = fac.ResourceFactory.create(
@@ -228,10 +230,9 @@ class TestCrawler(AppTestCase):
         db.session.commit()
         crawler.parse_resource(resource)
         acts = db.session.query(Activity).all()
-        self.assertEquals(datetime.datetime(2000, 1, 1),
+        self.assertEquals(
+            datetime.datetime(2000, 1, 1),
             acts[0].last_change_datetime)
-
-
 
     def test_parse_resource_fail(self):
         resource = Resource(document=b"", url="")
@@ -243,7 +244,7 @@ class TestCrawler(AppTestCase):
     def test_deleted_activities(self, mock):
         fac.DatasetFactory.create(
             name='deleteme',
-            resources=[ fac.ResourceFactory.create(
+            resources=[fac.ResourceFactory.create(
                 url=u"http://yes",
                 activities=[
                     fac.ActivityFactory.build(

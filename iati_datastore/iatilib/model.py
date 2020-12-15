@@ -241,8 +241,7 @@ class PercentageMixin(object):
 
 class CountryPercentage(db.Model, PercentageMixin):
     __tablename__ = "country_percentage"
-    country = sa.Column(codelists.Country.db_type(),
-        index=True)
+    country = sa.Column(codelists.Country.db_type(), index=True)
 
 
 class RegionPercentage(db.Model, PercentageMixin):
@@ -357,9 +356,10 @@ class SectorPercentage(db.Model):
             act_ForeignKey("transaction.id"),
             nullable=True,
             index=True)
-    sector = sa.Column(codelists.Sector.db_type(),
-            nullable=True,
-            index=True)
+    sector = sa.Column(
+        codelists.Sector.db_type(),
+        nullable=True,
+        index=True)
     vocabulary = sa.Column(
             codelists.Vocabulary.db_type(),
             default=codelists.Vocabulary.oecd_development_assistance_committee,

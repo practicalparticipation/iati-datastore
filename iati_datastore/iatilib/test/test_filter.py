@@ -1,12 +1,9 @@
 import datetime
-from unittest import skip
 
 from . import AppTestCase, factories as fac
-from .factories import create_activity
 
 from iatilib import codelists as cl
 from iatilib.frontend import dsfilter
-from iatilib.model import Activity
 
 
 class TestActivityFilter(AppTestCase):
@@ -135,7 +132,6 @@ class TestActivityFilter(AppTestCase):
         })
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
-
 
     def test_by_reporting_org_type(self):
         act_in = fac.ActivityFactory.create(
@@ -399,13 +395,12 @@ class TestActivityFilter(AppTestCase):
         self.assertIn(trans_in.activity, activity.all())
         self.assertNotIn(trans_not.activity, activity.all())
 
-
     def test_provider_org(self):
-        org_in=fac.OrganisationFactory.build(
+        org_in = fac.OrganisationFactory.build(
             ref="GB-1",
             name="an org",
         )
-        org_out=fac.OrganisationFactory.build(
+        org_out = fac.OrganisationFactory.build(
             ref="GB-2",
             name="another org",
         )
@@ -439,11 +434,11 @@ class TestActivityFilter(AppTestCase):
         self.assertNotIn(trans_not.activity, provider_activity_id.all())
 
     def test_receiver_org(self):
-        org_in=fac.OrganisationFactory.build(
+        org_in = fac.OrganisationFactory.build(
             ref="GB-1",
             name="an org",
         )
-        org_out=fac.OrganisationFactory.build(
+        org_out = fac.OrganisationFactory.build(
             ref="GB-2",
             name="another org",
         )
@@ -505,7 +500,7 @@ class TestActivityFilter(AppTestCase):
         act_a = fac.ActivityFactory.create(start_actual=datetime.date(2013, 1, 1))
         act_b = fac.ActivityFactory.create(start_planned=datetime.date(2013, 2, 1))
         act_c = fac.ActivityFactory.create(start_actual=datetime.date(2013, 3, 1))
-        act_not = fac.ActivityFactory.create(start_actual=datetime.date(2000,1, 1))
+        act_not = fac.ActivityFactory.create(start_actual=datetime.date(2000, 1, 1))
         activities = dsfilter.activities({
             "start-date__gt": datetime.date(2012, 12, 31)
         })
@@ -518,7 +513,7 @@ class TestActivityFilter(AppTestCase):
         act_a = fac.ActivityFactory.create(end_actual=datetime.date(2013, 1, 1))
         act_b = fac.ActivityFactory.create(end_planned=datetime.date(2013, 2, 1))
         act_c = fac.ActivityFactory.create(end_actual=datetime.date(2013, 3, 1))
-        act_not = fac.ActivityFactory.create(end_actual=datetime.date(2000,1, 1))
+        act_not = fac.ActivityFactory.create(end_actual=datetime.date(2000, 1, 1))
         activities = dsfilter.activities({
             "end-date__gt": datetime.date(2010, 1, 1)
         })
@@ -529,9 +524,9 @@ class TestActivityFilter(AppTestCase):
 
     def test_start_actual_lesser_than(self):
         act_in = fac.ActivityFactory.create(start_actual=datetime.date(2000, 1, 1))
-        act_not = fac.ActivityFactory.create(start_actual=datetime.date(2013,1, 1))
+        act_not = fac.ActivityFactory.create(start_actual=datetime.date(2013, 1, 1))
         activities = dsfilter.activities({
-            "start-date__lt":datetime.date(2010, 1, 1)
+            "start-date__lt": datetime.date(2010, 1, 1)
 
         })
         self.assertIn(act_in, activities.all())
@@ -539,7 +534,7 @@ class TestActivityFilter(AppTestCase):
 
     def test_end_actual_lesser_than(self):
         act_in = fac.ActivityFactory.create(end_actual=datetime.date(2000, 1, 1))
-        act_not = fac.ActivityFactory.create(end_actual=datetime.date(2013,1, 1))
+        act_not = fac.ActivityFactory.create(end_actual=datetime.date(2013, 1, 1))
         activities = dsfilter.activities({
             "end-date__lt": datetime.date(2010, 1, 1)
 
@@ -547,19 +542,18 @@ class TestActivityFilter(AppTestCase):
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
 
-
     def test_last_change_lesser_than(self):
         act_in = fac.ActivityFactory.create(last_change_datetime=datetime.date(2000, 1, 1))
-        act_not = fac.ActivityFactory.create(last_change_datetime=datetime.date(2013,1, 1))
+        act_not = fac.ActivityFactory.create(last_change_datetime=datetime.date(2013, 1, 1))
         activities = dsfilter.activities({
-            "last-change__lt":datetime.date(2010, 1, 1)
+            "last-change__lt": datetime.date(2010, 1, 1)
 
         })
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
 
     def test_last_change_actual_greater_than(self):
-        act_in = fac.ActivityFactory.create(last_change_datetime=datetime.date(2013,1, 1))
+        act_in = fac.ActivityFactory.create(last_change_datetime=datetime.date(2013, 1, 1))
         act_not = fac.ActivityFactory.create(last_change_datetime=datetime.date(2000, 1, 1))
         activities = dsfilter.activities({
             "last-change__gt": datetime.date(2010, 1, 1)
@@ -568,20 +562,18 @@ class TestActivityFilter(AppTestCase):
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
 
-
     def test_last_updated_lesser_than(self):
         act_in = fac.ActivityFactory.create(last_updated_datetime=datetime.date(2000, 1, 1))
-        act_not = fac.ActivityFactory.create(last_updated_datetime=datetime.date(2013,1, 1))
+        act_not = fac.ActivityFactory.create(last_updated_datetime=datetime.date(2013, 1, 1))
         activities = dsfilter.activities({
-            "last-updated-datetime__lt":datetime.date(2010, 1, 1)
+            "last-updated-datetime__lt": datetime.date(2010, 1, 1)
 
         })
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
 
-
     def test_last_updated_actual_greater_than(self):
-        act_in = fac.ActivityFactory.create(last_updated_datetime=datetime.date(2013,1, 1))
+        act_in = fac.ActivityFactory.create(last_updated_datetime=datetime.date(2013, 1, 1))
         act_not = fac.ActivityFactory.create(last_updated_datetime=datetime.date(2000, 1, 1))
         activities = dsfilter.activities({
             "last-updated-datetime__gt": datetime.date(2010, 1, 1)
@@ -589,7 +581,6 @@ class TestActivityFilter(AppTestCase):
         })
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
-
 
     def test_participating_org_role(self):
         act_in = fac.ActivityFactory.create(
@@ -609,7 +600,6 @@ class TestActivityFilter(AppTestCase):
         })
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
-
 
     def test_registry_dataset(self):
         fac.DatasetFactory.create(name=u"aaa", resources=[])

@@ -7,12 +7,11 @@ from iatilib import db
 from iatilib.model import (
     Activity, Transaction, Organisation, SectorPercentage, CountryPercentage,
     Participation, Budget, Resource, RegionPercentage, PolicyMarker,
-    RelatedActivity, Dataset, DeletedActivity
+    RelatedActivity, Dataset
 )
 
-
-
 from factory.alchemy import SQLAlchemyModelFactory as Factory
+
 
 class TestFactory(Factory):
     class Meta:
@@ -73,15 +72,18 @@ class ParticipationFactory(TestFactory):
     organisation = factory.SubFactory(OrganisationFactory)
     role = codelists.OrganisationRole.funding
 
+
 class PolicyMarkerFactory(TestFactory):
     class Meta:
         model = PolicyMarker
     code = codelists.PolicyMarker.gender_equality
 
+
 class RelatedActivityFactory(TestFactory):
     class Meta:
         model = RelatedActivity
     ref = "test_ref"
+
 
 class ActivityFactory(TestFactory):
     class Meta:
@@ -101,12 +103,14 @@ class TransactionFactory(TestFactory):
     value_date = datetime.date(1972, 1, 1)
     date = datetime.date(1973, 2, 2)
 
+
 class BudgetFactory(TestFactory):
     class Meta:
         model = Budget
     activity = factory.SubFactory(ActivityFactory)
     type = codelists.BudgetType.original
     value_amount = 0
+
 
 class DatasetFactory(TestFactory):
     class Meta:
