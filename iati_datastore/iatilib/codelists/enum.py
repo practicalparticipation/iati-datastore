@@ -1,6 +1,5 @@
 # http://techspot.zzzeek.org/2011/01/14/the-enum-recipe/
-from sqlalchemy.types import SchemaType, TypeDecorator, UnicodeText
-import re
+from sqlalchemy.types import TypeDecorator, UnicodeText
 import six
 from requests.structures import CaseInsensitiveDict
 

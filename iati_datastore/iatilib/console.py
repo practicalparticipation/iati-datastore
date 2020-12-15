@@ -9,7 +9,7 @@ from flask.cli import FlaskGroup, with_appcontext
 import requests
 from sqlalchemy import not_
 
-from iatilib import parse, codelists, model, db
+from iatilib import parse, codelists, db
 from iatilib.frontend.app import create_app
 
 

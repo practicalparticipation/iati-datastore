@@ -1,9 +1,9 @@
 import traceback
 
-import click
+from flask import Blueprint
+
 from iatilib import db, rq
 from iatilib.model import Log, Resource
-from flask import Blueprint
 
 
 manager = Blueprint('queue', __name__)

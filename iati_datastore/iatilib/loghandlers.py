@@ -4,6 +4,7 @@ import traceback
 
 from iatilib.model import Log, db
 
+
 class SQLAlchemyHandler(logging.Handler):
 
     def emit(self, record):

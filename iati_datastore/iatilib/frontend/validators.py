@@ -22,7 +22,7 @@ def codelist_validator(Codelist, value):
 organisation_role = partial(codelist_validator, codelists.OrganisationRole)
 recipient_country = partial(codelist_validator, codelists.Country)
 recipient_region = partial(codelist_validator, codelists.Region)
-reporting_org_type = partial(codelist_validator, codelists.OrganisationType) 
+reporting_org_type = partial(codelist_validator, codelists.OrganisationType)
 sector = partial(codelist_validator, codelists.Sector)
 policy_marker = partial(codelist_validator, codelists.PolicyMarker)
 

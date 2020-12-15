@@ -6,8 +6,7 @@ import sqlalchemy as sa
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declared_attr
 
-from . import db
-from . import codelists
+from . import codelists, db
 
 act_relationship = ft.partial(
         sa.orm.relationship,

@@ -1,12 +1,9 @@
 import os
-import re
-import datetime
 import logging
 from decimal import Decimal, InvalidOperation
 from functools import partial
 from collections import namedtuple
-from io import StringIO, BytesIO
-import six
+from io import BytesIO
 from lxml import etree as ET
 from dateutil.parser import parse as parse_date
 from requests.packages import chardet
@@ -221,32 +218,32 @@ def transactions(xml, resource=no_resource, major_version='1'):
         organisation = ele.xpath(path)
         if organisation:
             return parse_org(organisation[0], major_version=major_version)
-        #return Organisation.as_unique(db.session, ref=org) if org else Nonejk
+        # return Organisation.as_unique(db.session, ref=org) if org else Nonejk
 
     def process(ele):
         data = {
-            'description' : xval(ele, "description/" + TEXT_ELEMENT[major_version], None),
-            'provider_org_text' : xval(ele, "provider-org/" + TEXT_ELEMENT[major_version], None),
-            'provider_org_activity_id' : xval(
+            'description': xval(ele, "description/" + TEXT_ELEMENT[major_version], None),
+            'provider_org_text': xval(ele, "provider-org/" + TEXT_ELEMENT[major_version], None),
+            'provider_org_activity_id': xval(
                                 ele, "provider-org/@provider-activity-id", None),
-            'receiver_org_text' : xval(ele, "receiver-org/" + TEXT_ELEMENT[major_version], None),
-            'receiver_org_activity_id' : xval(ele, "receiver-org/@receiver-activity-id", None),
-            'ref' : xval(ele, "@ref", None),
+            'receiver_org_text': xval(ele, "receiver-org/" + TEXT_ELEMENT[major_version], None),
+            'receiver_org_activity_id': xval(ele, "receiver-org/@receiver-activity-id", None),
+            'ref': xval(ele, "@ref", None),
         }
 
         field_functions = {
-            'date' : partial(xpath_date, "transaction-date/@iso-date"),
-            'flow_type' : partial(from_codelist_with_major_version, 'FlowType', "./flow-type/@code"),
-            'finance_type' : partial(from_codelist_with_major_version, 'FinanceType', "./finance-type/@code"),
-            'aid_type' : partial(from_codelist_with_major_version, 'AidType', "./aid-type/@code"),
-            'tied_status' : partial(from_codelist_with_major_version, 'TiedStatus', "./tied-status/@code"),
-            'disbursement_channel' : partial(from_codelist_with_major_version, 'DisbursementChannel', "./disbursement-channel/@code"),
-            'provider_org' : partial(from_org, "./provider-org"),
-            'receiver_org' : partial(from_org, "./receiver-org"),
-            'type' : partial(from_codelist_with_major_version, 'TransactionType', "./transaction-type/@code"),
-            'value_currency' : partial(currency, "value/@currency"),
-            'value_date' : partial(xpath_date, "value/@value-date"),
-            'value_amount' : partial(xpath_decimal, "value/text()"),
+            'date': partial(xpath_date, "transaction-date/@iso-date"),
+            'flow_type': partial(from_codelist_with_major_version, 'FlowType', "./flow-type/@code"),
+            'finance_type': partial(from_codelist_with_major_version, 'FinanceType', "./finance-type/@code"),
+            'aid_type': partial(from_codelist_with_major_version, 'AidType', "./aid-type/@code"),
+            'tied_status': partial(from_codelist_with_major_version, 'TiedStatus', "./tied-status/@code"),
+            'disbursement_channel': partial(from_codelist_with_major_version, 'DisbursementChannel', "./disbursement-channel/@code"),
+            'provider_org': partial(from_org, "./provider-org"),
+            'receiver_org': partial(from_org, "./receiver-org"),
+            'type': partial(from_codelist_with_major_version, 'TransactionType', "./transaction-type/@code"),
+            'value_currency': partial(currency, "value/@currency"),
+            'value_date': partial(xpath_date, "value/@value-date"),
+            'value_amount': partial(xpath_decimal, "value/text()"),
             "recipient_country_percentages": recipient_country_percentages,
             "recipient_region_percentages": recipient_region_percentages,
             "sector_percentages": sector_percentages,
@@ -288,8 +285,8 @@ def sector_percentages(xml, resource=no_resource, major_version='1'):
     for ele in xml.xpath("./sector"):
         sp = SectorPercentage()
         field_functions = {
-            'sector' : partial(from_codelist, cl.Sector, "@code"),
-            'vocabulary' : partial(from_codelist, cl.Vocabulary, "@vocabulary"),
+            'sector': partial(from_codelist, cl.Sector, "@code"),
+            'vocabulary': partial(from_codelist, cl.Vocabulary, "@vocabulary"),
         }
 
         for field, function in field_functions.items():
@@ -330,11 +327,11 @@ def budgets(xml, resource=no_resource, major_version='1'):
 
     def process(ele):
         field_functions = {
-            'type' : budget_type,
-            'value_currency' : partial(currency, "value/@currency"),
-            'value_amount' : partial(xpath_decimal, "value/text()"),
-            'period_start' : partial(xpath_date, "period-start/@iso-date"),
-            'period_end' : partial(xpath_date, "period-end/@iso-date"),
+            'type': budget_type,
+            'value_currency': partial(currency, "value/@currency"),
+            'value_amount': partial(xpath_decimal, "value/text()"),
+            'period_start': partial(xpath_date, "period-start/@iso-date"),
+            'period_end': partial(xpath_date, "period-end/@iso-date"),
         }
         data = {}
         for field, function in field_functions.items():
@@ -360,17 +357,17 @@ def budgets(xml, resource=no_resource, major_version='1'):
 
 def policy_markers(xml, resource=no_resource, major_version='1'):
     element = xml.xpath("./policy-marker")
-    return [ PolicyMarker(
+    return [PolicyMarker(
                 code=from_codelist(codelists.by_major_version[major_version].PolicyMarker, "@code", ele, resource),
                 text=xval(ele, TEXT_ELEMENT[major_version], None),
-             ) for ele in element ]
+             ) for ele in element]
 
 
 def related_activities(xml, resource=no_resource, major_version='1'):
     element = xml.xpath("./related-activity")
     results = []
     for ele in element:
-        text=xval(ele, TEXT_ELEMENT[major_version], None)
+        text = xval(ele, TEXT_ELEMENT[major_version], None)
         try:
             ref = xval(ele, "@ref")
             results.append(RelatedActivity(ref=ref, text=text))
@@ -415,14 +412,13 @@ def _open_resource(xml_resource, detect_encoding=False):
             if encoding in ('UTF-16LE', 'UTF-16BE'):
                 xml_resource = xml_resource.decode('UTF-16').encode('utf-8')
 
-        try: # https://github.com/IATI/iati-datastore/issues/160
+        try:  # https://github.com/IATI/iati-datastore/issues/160
             xml_resource_is_path = os.path.exists(xml_resource)
         except TypeError:
             xml_resource_is_path = False
 
-
         # Previously included a workaround to this bug, but now appears to be fixed
-        #https://bugzilla.redhat.com/show_bug.cgi?id=874546
+        # https://bugzilla.redhat.com/show_bug.cgi?id=874546
         # appears now to be fixed
         if xml_resource_is_path:
             xmlfile = open(xml_resource, 'rb')
@@ -497,10 +493,10 @@ def activity(xml_resource, resource=no_resource, major_version='1', version=None
     default_tied_status = partial(from_codelist_with_major_version, 'TiedStatus', "./default-tied-status/@code")
 
     field_functions = {
-        "default_currency" : partial(currency, "@default-currency"),
+        "default_currency": partial(currency, "@default-currency"),
         "hierarchy": hierarchy,
-        "last_updated_datetime" : last_updated_datetime,
-        "default_language" : default_language,
+        "last_updated_datetime": last_updated_datetime,
+        "default_language": default_language,
         "reporting_org": reporting_org,
         "websites": websites,
         "participating_orgs": participating_orgs,
@@ -515,12 +511,12 @@ def activity(xml_resource, resource=no_resource, major_version='1', version=None
         "budgets": budgets,
         "policy_markers": policy_markers,
         "related_activities": related_activities,
-        'activity_status' : activity_status,
-        'collaboration_type' : collaboration_type,
-        'default_finance_type' : default_finance_type,
-        'default_flow_type' : default_flow_type,
-        'default_aid_type' : default_aid_type,
-        'default_tied_status' : default_tied_status,
+        'activity_status': activity_status,
+        'collaboration_type': collaboration_type,
+        'default_finance_type': default_finance_type,
+        'default_flow_type': default_flow_type,
+        'default_aid_type': default_aid_type,
+        'default_tied_status': default_tied_status,
         'major_version': lambda *args, **kwargs: major_version,
         'version': lambda *args, **kwargs: version,
     }
@@ -550,12 +546,12 @@ def activities(xmlfile, resource=no_resource):
     major_version = '1'
     version = None
     try:
-        for event, elem in ET.iterparse(xmlfile, events=('start','end')):
-            if event=='start' and elem.tag == 'iati-activities':
+        for event, elem in ET.iterparse(xmlfile, events=('start', 'end')):
+            if event == 'start' and elem.tag == 'iati-activities':
                 version = elem.attrib.get('version')
                 if version and version.startswith('2.'):
                     major_version = '2'
-            elif event=='end' and elem.tag == 'iati-activity':
+            elif event == 'end' and elem.tag == 'iati-activity':
                 try:
                     yield activity(elem, resource=resource, major_version=major_version, version=version)
                 except MissingValue as exe:
@@ -563,7 +559,7 @@ def activities(xmlfile, resource=no_resource):
                             logger='failed_activity', dataset=resource.dataset_id, resource=resource.url),
                             exc_info=exe)
                 elem.clear()
-    except ET.XMLSyntaxError as exe:
+    except ET.XMLSyntaxError:
         raise XMLError()
 
 
