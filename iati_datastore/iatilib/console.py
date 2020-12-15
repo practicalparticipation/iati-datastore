@@ -83,11 +83,5 @@ def parse_file(filenames, verbose=False, fail_xml=False, fail_spec=False):
 
 @cli.command()
 @with_appcontext
-def create_database():
-    flask_migrate.upgrade()
-
-
-@cli.command()
-@with_appcontext
 def drop_database():
     db.drop_all()
