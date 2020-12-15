@@ -30,81 +30,36 @@ class CouldNotFetchPackageList(Exception):
     pass
 
 
-def fetch_dataset_list(modified_since=None):
+def fetch_dataset_list():
     '''
     Fetches datasets from CKAN and stores them in the DB. Either passed a datetime to filter on more recently modified
     datasets, or updates the entire set. Used in update() to update the Flask job queue. Uses CKAN metadata to determine
     if an activity is active or deleted, and tries to determine if a dataset is actually new or not.
-    :param modified_since:
     :return:
     '''
     existing_datasets = Dataset.query.all()
     existing_ds_names = set(ds.name for ds in existing_datasets)
-    if modified_since:
-        solr_date_format = modified_since.strftime('%Y-%m-%dT%H:%M:%SZ')
-        try:
-            search_result = registry.action.package_search(
-                    fq='metadata_modified:[{0} TO NOW]'.format(solr_date_format),
-            )
-        except Exception:
-            raise CouldNotFetchPackageList()
-        step = 50
-        count = search_result['count']
-        package_list = []
-        for current_start in range(0, count, step):
-            packages = registry.action.package_search(
-                    fq='metadata_modified:[{0} TO NOW]'.format(solr_date_format),
-                    start=current_start,
-                    rows=step,
+    try:
+        package_list = registry.action.package_list()
+    except Exception:
+        raise CouldNotFetchPackageList()
+    incoming_ds_names = set(package_list)
 
-            )
-            package_list = package_list + packages['results']
+    new_datasets = [Dataset(name=n) for n
+                    in incoming_ds_names - existing_ds_names]
+    all_datasets = existing_datasets + new_datasets
+    for dataset in all_datasets:
+        dataset.last_seen = datetime.datetime.utcnow()
 
-        incoming_ds_names = set()
-        deleted_ds_names = set()
+    db.session.add_all(all_datasets)
+    db.session.commit()
 
-        for dataset in package_list:
-            if dataset['state'] == 'active':
-                incoming_ds_names.add(dataset['name'])
-            elif dataset['state'] == 'deleted':
-                deleted_ds_names.add(dataset['name'])
+    deleted_ds_names = existing_ds_names - incoming_ds_names
+    if deleted_ds_names:
+        delete_datasets(deleted_ds_names)
 
-        # TODO check if the following line is the source of activity mismatch.
-        new_datasets = [Dataset(name=n) for n
-                        in incoming_ds_names - existing_ds_names]
-
-        db.session.add_all(new_datasets)
-        db.session.commit()
-
-        if deleted_ds_names:
-            delete_datasets(deleted_ds_names)
-
-        datasets = db.session.query(Dataset).filter(
-                Dataset.name.in_(incoming_ds_names))
-        return datasets
-
-    else:
-        try:
-            package_list = registry.action.package_list()
-        except Exception:
-            raise CouldNotFetchPackageList()
-        incoming_ds_names = set(package_list)
-
-        new_datasets = [Dataset(name=n) for n
-                        in incoming_ds_names - existing_ds_names]
-        all_datasets = existing_datasets + new_datasets
-        for dataset in all_datasets:
-            dataset.last_seen = datetime.datetime.utcnow()
-
-        db.session.add_all(all_datasets)
-        db.session.commit()
-
-        deleted_ds_names = existing_ds_names - incoming_ds_names
-        if deleted_ds_names:
-            delete_datasets(deleted_ds_names)
-
-        all_datasets = Dataset.query
-        return all_datasets
+    all_datasets = Dataset.query
+    return all_datasets
 
 
 def delete_datasets(datasets):
@@ -553,9 +508,8 @@ def enqueue(careful=False):
 @click.option('--limit', "limit", type=int,
               help="max no of datasets to update")
 @click.option('-v', '--verbose', "verbose")
-@click.option('-t', '--timedelta', "timedelta", type=int)
 @manager.cli.command('update')
-def update(verbose=False, limit=None, dataset=None, timedelta=None):
+def update(verbose=False, limit=None, dataset=None):
     """
     Fetch all datasets from IATI registry; update any that have changed.
     This is done by adding to the dataset table, and then adding an update command to
@@ -571,12 +525,7 @@ def update(verbose=False, limit=None, dataset=None, timedelta=None):
             queue.enqueue(update_resource, args=(resource.url,), result_ttl=0)
             queue.enqueue(update_activities, args=(resource.url,), result_ttl=0, timeout=1000)
     else:
-        if timedelta:
-            modified_since = datetime.date.today() - datetime.timedelta(timedelta)
-        else:
-            modified_since = None
-
-        datasets = fetch_dataset_list(modified_since)
+        datasets = fetch_dataset_list()
         db.session.commit()
 
         if limit:
