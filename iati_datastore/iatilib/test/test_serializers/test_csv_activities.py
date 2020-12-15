@@ -16,6 +16,7 @@ class TestCSVStream(TestCase):
     def test_stream(self):
         self.assertTrue(inspect.isgenerator(serialize.csv([])))
 
+
 class CSVTstMixin(_CSVTstMixin):
     def serialize(self, data):
         return serialize.csv(data)
@@ -182,8 +183,9 @@ class TestCSVExample(CSVTstMixin, TestCase):
 
     def test_reporting_org(self):
         data = self.process([fac.ActivityFactory.build(
-            reporting_org=fac.OrganisationFactory.build(name='rep',
-                    ref='rep_ref', type=cl.OrganisationType.foundation),
+            reporting_org=fac.OrganisationFactory.build(
+                name='rep',
+                ref='rep_ref', type=cl.OrganisationType.foundation),
         )])
         self.assertField({"reporting-org": "rep"}, data[0])
         self.assertField({"reporting-org-ref": "rep_ref"}, data[0])
@@ -213,7 +215,8 @@ class TestCSVExample(CSVTstMixin, TestCase):
         data = self.process([fac.ActivityFactory.build(
             participating_orgs=[
                 fac.ParticipationFactory.build(
-                    organisation=fac.OrganisationFactory.build(name='fund',
+                    organisation=fac.OrganisationFactory.build(
+                        name='fund',
                         ref='fund_ref', type=cl.OrganisationType.foundation),
                     role=cl.OrganisationRole.funding),
             ]
@@ -227,7 +230,8 @@ class TestCSVExample(CSVTstMixin, TestCase):
         data = self.process([fac.ActivityFactory.build(
             participating_orgs=[
                 fac.ParticipationFactory.build(
-                    organisation=fac.OrganisationFactory.build(name='impl',
+                    organisation=fac.OrganisationFactory.build(
+                        name='impl',
                         ref="impl_ref", type=cl.OrganisationType.foundation),
                     role=cl.OrganisationRole.implementing),
             ]
@@ -241,7 +245,8 @@ class TestCSVExample(CSVTstMixin, TestCase):
         data = self.process([fac.ActivityFactory.build(
             participating_orgs=[
                 fac.ParticipationFactory.build(
-                    organisation=fac.OrganisationFactory.build(name='ext',
+                    organisation=fac.OrganisationFactory.build(
+                        name='ext',
                         ref="ext_ref", type=cl.OrganisationType.foundation),
                     role=cl.OrganisationRole.extending),
             ]
@@ -250,7 +255,6 @@ class TestCSVExample(CSVTstMixin, TestCase):
         self.assertField({"participating-org-ref (Extending)": "ext_ref"}, data[0])
         self.assertField({"participating-org-type (Extending)": "Foundation"}, data[0])
         self.assertField({"participating-org-type-code (Extending)": "60"}, data[0])
-
 
     def test_sector_code(self):
         data = self.process([fac.ActivityFactory.build(
@@ -312,7 +316,6 @@ class TestCSVExample(CSVTstMixin, TestCase):
             default_currency=cl.Currency.us_dollar
         )])
         self.assertField({"default-currency": "USD"}, data[0])
-
 
     def test_currency(self):
         data = self.process([fac.ActivityFactory.build(
@@ -485,7 +488,9 @@ class TestCSVExample(CSVTstMixin, TestCase):
         for col in cols:
             self.assertIn(col, data[0].keys(), msg="Missing col %s" % col)
 
+
 cl2 = cl.by_major_version['2']
+
 
 class TestCSVExample2(CSVTstMixin, TestCase):
     def test_sector_vocabulary(self):
@@ -526,7 +531,8 @@ class TestCSVExample2(CSVTstMixin, TestCase):
         data = self.process([fac.ActivityFactory.build(
             participating_orgs=[
                 fac.ParticipationFactory.build(
-                    organisation=fac.OrganisationFactory.build(name='fund',
+                    organisation=fac.OrganisationFactory.build(
+                        name='fund',
                         ref='fund_ref', type=cl2.OrganisationType.foundation),
                     role=cl2.OrganisationRole.funding),
             ],
@@ -541,7 +547,8 @@ class TestCSVExample2(CSVTstMixin, TestCase):
         data = self.process([fac.ActivityFactory.build(
             participating_orgs=[
                 fac.ParticipationFactory.build(
-                    organisation=fac.OrganisationFactory.build(name='impl',
+                    organisation=fac.OrganisationFactory.build(
+                        name='impl',
                         ref="impl_ref", type=cl2.OrganisationType.foundation),
                     role=cl2.OrganisationRole.implementing),
             ],
@@ -556,7 +563,8 @@ class TestCSVExample2(CSVTstMixin, TestCase):
         data = self.process([fac.ActivityFactory.build(
             participating_orgs=[
                 fac.ParticipationFactory.build(
-                    organisation=fac.OrganisationFactory.build(name='ext',
+                    organisation=fac.OrganisationFactory.build(
+                        name='ext',
                         ref="ext_ref", type=cl2.OrganisationType.foundation),
                     role=cl2.OrganisationRole.extending),
             ],
@@ -566,6 +574,7 @@ class TestCSVExample2(CSVTstMixin, TestCase):
         self.assertField({"participating-org-ref (Extending)": "ext_ref"}, data[0])
         self.assertField({"participating-org-type (Extending)": "Foundation"}, data[0])
         self.assertField({"participating-org-type-code (Extending)": "60"}, data[0])
+
 
 class ActivityExample(object):
     def example(self):
@@ -592,7 +601,7 @@ class ActivityExample(object):
                         region=cl.Region.africa_regional,
                         percentage=30
                 ),
-        ],
+            ],
             sector_percentages=[
                 fac.SectorPercentageFactory.build(
                     sector=cl.Sector.teacher_training,
@@ -610,7 +619,6 @@ class ActivityExample(object):
             ]
         )
         return activity
-
 
 
 class TestActivityByCountry(CSVTstMixin, ActivityExample, TestCase):
@@ -907,7 +915,6 @@ class TestActivityBySector(CSVTstMixin, ActivityExample, TestCase):
         )
 
 
-
 class TotalFieldMixin(object):
     cl = cl
 
@@ -1021,4 +1028,3 @@ class TestTotalReimbursement2(CSVTstMixin, TotalFieldMixin, TestCase):
     cl = cl2
     transaction_type = cl2.TransactionType.reimbursement
     csv_field = "total-Reimbursement"
-

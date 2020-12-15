@@ -6,7 +6,6 @@ from flask import (current_app, request, Response, Blueprint,
                    url_for)
 from flask.views import MethodView
 from werkzeug.datastructures import MultiDict
-from flask_sqlalchemy import Pagination
 
 from iatilib import db
 from iatilib.model import (Activity, Resource, Transaction, Dataset,
@@ -17,6 +16,7 @@ from . import dsfilter, validators, serialize
 
 api = Blueprint('api1', __name__)
 Scrollination = namedtuple('Scrollination', 'query offset limit total items')
+
 
 @api.route('/')
 def list_routes():
@@ -33,11 +33,13 @@ def list_routes():
     urls = sorted(urls)
     return jsonify(urls)
 
+
 @api.route('/meta/filters/')
 def meta_filters():
     return jsonify({
         'filters': list(validators.activity_api_args.schema.keys())
         })
+
 
 @api.route('/about/')
 def about():
@@ -54,9 +56,9 @@ def about():
     now = datetime.now()
     # If the file was last fetched and parsed less than 1 day
     # ago, then the API is healthy.
-    if ((updated.last_fetch != None) and
-        (updated.last_succ != None) and
-        (updated.last_parsed != None)):
+    if ((updated.last_fetch is not None) and
+            (updated.last_succ is not None) and
+            (updated.last_parsed is not None)):
         healthy = (
             ((now-updated.last_fetch).days < 1) and
             ((now-updated.last_succ).days < 1) and
@@ -76,10 +78,11 @@ def about():
         indexed_transactions=count_transaction,
     )
 
+
 @api.route('/about/dataset/')
 def datasets():
     datasets = db.session.query(Dataset.name)
-    return jsonify(datasets=[ i.name for i in datasets.all()] )
+    return jsonify(datasets=[i.name for i in datasets.all()])
 
 
 @api.route('/about/dataset/<dataset>/')
@@ -140,24 +143,24 @@ def deleted_activities():
     return jsonify(
         deleted_activities=[
           {
-            'iati_identifier' : da.iati_identifier,
-            'deletion_date' : da.deletion_date.isoformat(),
+            'iati_identifier': da.iati_identifier,
+            'deletion_date': da.deletion_date.isoformat(),
           }
           for da in deleted_activities
         ],
     )
 
 
-
 @api.route('/error/dataset/')
 def error():
-    #logs = db.session.query(Log.dataset).distinct()
+    # logs = db.session.query(Log.dataset).distinct()
     logs = db.session.query(Log.dataset, Log.logger).\
             group_by(Log.dataset, Log.logger).\
             order_by(Log.dataset)
     return jsonify(
-            errored_datasets=[ {'dataset': i[0], 'logger': i[1]} for i in logs.all() ]
+            errored_datasets=[{'dataset': i[0], 'logger': i[1]} for i in logs.all()]
     )
+
 
 @api.route('/error/resource/')
 def resource_error():
@@ -165,39 +168,42 @@ def resource_error():
     if not resource_url:
         abort(404)
     error_logs = db.session.query(Log).\
-                    filter(Log.resource == resource_url).\
-                    order_by(sa.desc(Log.created_at))
-    errors = [ {
-                'resource_url' : log.resource,
-                'dataset' : log.dataset,
-                'logger' : log.logger,
-                'msg' : log.msg,
-                'traceback' : log.trace,
-                'datestamp' : log.created_at.isoformat(),
+        filter(Log.resource == resource_url).\
+        order_by(sa.desc(Log.created_at))
+    errors = [{
+                'resource_url': log.resource,
+                'dataset': log.dataset,
+                'logger': log.logger,
+                'msg': log.msg,
+                'traceback': log.trace,
+                'datestamp': log.created_at.isoformat(),
             } for log in error_logs.all()
     ]
     return jsonify(errors=errors)
+
 
 @api.route('/error/dataset/<dataset_id>/')
 def dataset_error(dataset_id):
     error_logs = db.session.query(Log).\
             filter(Log.dataset == dataset_id).\
             order_by(sa.desc(Log.created_at))
-    errors = [ {
-                'resource_url' : log.resource,
-                'dataset' : log.dataset,
-                'logger' : log.logger,
-                'msg' : log.msg,
-                'traceback' : log.trace,
-                'datestamp' : log.created_at.isoformat(),
-            } for log in error_logs.all() ]
+    errors = [{
+                'resource_url': log.resource,
+                'dataset': log.dataset,
+                'logger': log.logger,
+                'msg': log.msg,
+                'traceback': log.trace,
+                'datestamp': log.created_at.isoformat(),
+            } for log in error_logs.all()]
 
     return jsonify(errors=errors)
+
 
 @api.route('/error/dataset.log')
 def dataset_log():
     logs = db.session.query(Log.dataset).distinct()
     return render_template('datasets.log', logs=logs)
+
 
 @api.route('/error/dataset.log/<dataset_id>/')
 def dataset_log_error(dataset_id):
@@ -227,6 +233,7 @@ class Stream(object):
     def __init__(self, query):
         self.items = query.all()
         self.total = query.count()
+
 
 class DataStoreView(MethodView):
     filter = None
@@ -332,6 +339,7 @@ class BudgetsByCountryView(DataStoreCSVView):
 class BudgetsBySectorView(DataStoreCSVView):
     filter = staticmethod(dsfilter.budgets_by_sector)
     serializer = staticmethod(serialize.csv_budget_by_sector)
+
 
 # Must declare this, instead of creating it twice,
 # to avoid the anti-duplication errors of Flask 0.10

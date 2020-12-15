@@ -1,7 +1,6 @@
-import os
 import datetime
 from decimal import Decimal
-from unittest import TestCase, skip
+from unittest import TestCase
 
 import mock
 from lxml import etree as ET
@@ -210,7 +209,7 @@ class TestParse2xxActivity(AppTestCase):
 
     def test_transaction_provider_org_ref(self):
         self.assertEquals(u'BB-BBB-123456789',
-                            self.act.transactions[0].provider_org.ref)
+                          self.act.transactions[0].provider_org.ref)
 
     def test_transaction_provider_org_name(self):
         self.assertEquals(u'Agency B',
@@ -218,7 +217,8 @@ class TestParse2xxActivity(AppTestCase):
 
     def test_transaction_reciever_org_ref(self):
         self.assertEquals(u'AA-AAA-123456789',
-                            self.act.transactions[0].receiver_org.ref)
+                          self.act.transactions[0].receiver_org.ref)
+
     def test_transaction_reciever_org_name(self):
         self.assertEquals(u'Agency A',
                           self.act.transactions[0].receiver_org.name)
@@ -254,7 +254,6 @@ class TestParse2xxActivity(AppTestCase):
         norm_xml = ET.tostring(ET.parse(fixture_filename("2.01-example-annotated.xml")).find('iati-activity'), encoding='utf-8').decode("utf-8").strip('\n ')
         self.assertEquals(norm_xml, self.act.raw_xml)
 
-
     def test_budget(self):
         self.assertEquals(1, len(self.act.budgets))
 
@@ -275,14 +274,14 @@ class TestParse2xxActivity(AppTestCase):
 
     def test_default_finance_type(self):
         self.assertEquals(cl2.FinanceType.standard_grant,
-                self.act.default_finance_type)
+                          self.act.default_finance_type)
 
     def test_default_flow_type(self):
         self.assertEquals(cl2.FlowType.oda, self.act.default_flow_type)
 
     def test_default_aid_type(self):
         self.assertEquals(cl2.AidType.general_budget_support,
-                self.act.default_aid_type)
+                          self.act.default_aid_type)
 
     def test_default_tied_status(self):
         self.assertEquals(cl2.TiedStatus.partially_tied, self.act.default_tied_status)
@@ -301,8 +300,7 @@ class TestParseActivity(AppTestCase):
 
     def test_bad_xml(self):
         with self.assertRaises(ET.LxmlError):
-            act = parse.activity(fixture("broken.xml"))
-
+            parse.activity(fixture("broken.xml"))
 
     def test_id(self):
         self.assertEquals(
@@ -417,12 +415,12 @@ class TestParseActivity(AppTestCase):
     def test_transaction_provider_org_ref(self):
         act = parse.activity(fixture("transaction_provider.xml"))
         self.assertEquals(u'GB-1-201242-101',
-                            act.transactions[0].provider_org.ref)
+                          act.transactions[0].provider_org.ref)
 
     def test_transaction_reciever_org_ref(self):
         act = parse.activity(fixture("transaction_provider.xml"))
         self.assertEquals(u'GB-CHC-313139',
-                            act.transactions[0].receiver_org.ref)
+                          act.transactions[0].receiver_org.ref)
 
     def test_date_start_planned(self):
         self.assertEquals(datetime.date(2009, 10, 3), self.act.start_planned)
@@ -447,59 +445,62 @@ class TestParseActivity(AppTestCase):
 
     def test_no_start_actual(self):
         activities = parse.document(fixture_filename("missing_dates.xml"))
-        act = {a.iati_identifier:a for a in activities}
+        act = {a.iati_identifier: a for a in activities}
         self.assertEquals(None, act[u"GB-CHC-272465-680"].start_actual)
 
     def test_budget(self):
         self.assertEquals(6, len(self.act.budgets))
 
     def test_policy_markers(self):
-        activities = [ a for a in parse.document(fixture_filename("CD.xml")) ]
+        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
 
         self.assertEquals(8, len(activities[1].policy_markers))
         self.assertEquals(cl.PolicyMarker.gender_equality, activities[1].policy_markers[0].code)
         self.assertEquals(cl.PolicyMarker.aid_to_environment, activities[1].policy_markers[1].code)
-        self.assertEquals(cl.PolicyMarker.participatory_developmentgood_governance,
-                activities[1].policy_markers[2].code)
+        self.assertEquals(
+            cl.PolicyMarker.participatory_developmentgood_governance,
+            activities[1].policy_markers[2].code)
         self.assertEquals(cl.PolicyMarker.trade_development, activities[1].policy_markers[3].code)
 
     def test_related_activity(self):
-        activities = [ a for a in parse.document(fixture_filename("CD.xml")) ]
+        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
         self.assertEquals(4, len(activities[0].related_activities))
         self.assertEquals("GB-1-105838-101", activities[0].related_activities[0].ref)
 
     def test_activity_status(self):
-        activities = [ a for a in parse.document(fixture_filename("default_currency.xml")) ]
+        activities = [a for a in parse.document(fixture_filename("default_currency.xml"))]
         self.assertEquals(cl.ActivityStatus.implementation, activities[0].activity_status)
 
     def test_collaboration_type(self):
-        activities = [ a for a in parse.document(fixture_filename("CD.xml")) ]
+        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
         self.assertEquals(cl.CollaborationType.bilateral, activities[1].collaboration_type)
 
     def test_default_finance_type(self):
-        activities = [ a for a in parse.document(fixture_filename("CD.xml")) ]
-        self.assertEquals(cl.FinanceType.standard_grant,
-                activities[1].default_finance_type)
+        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
+        self.assertEquals(
+            cl.FinanceType.standard_grant,
+            activities[1].default_finance_type)
 
     def test_default_flow_type(self):
-        activities = [ a for a in parse.document(fixture_filename("CD.xml")) ]
+        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
         self.assertEquals(cl.FlowType.oda, activities[1].default_flow_type)
 
     def test_default_aid_type(self):
-        activities = [ a for a in parse.document(fixture_filename("CD.xml")) ]
-        self.assertEquals(cl.AidType.projecttype_interventions,
-                activities[1].default_aid_type)
+        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
+        self.assertEquals(
+            cl.AidType.projecttype_interventions,
+            activities[1].default_aid_type)
 
     def test_default_tied_status(self):
-        activities = [ a for a in parse.document(fixture_filename("CD.xml")) ]
+        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
         self.assertEquals(cl.TiedStatus.untied, activities[1].default_tied_status)
 
     def test_default_hierarchy(self):
-        activities = [ a for a in parse.document(fixture_filename("default_currency.xml")) ]
+        activities = [a for a in parse.document(fixture_filename("default_currency.xml"))]
         self.assertEquals(1, activities[0].hierarchy)
 
     def test_default_language(self):
-        activities = [ a for a in parse.document(fixture_filename("default_currency.xml")) ]
+        activities = [a for a in parse.document(fixture_filename("default_currency.xml"))]
         self.assertEquals(cl.Language.english, activities[0].default_language)
 
     def test_default_language_none(self):
@@ -509,7 +510,6 @@ class TestParseActivity(AppTestCase):
         no_default_language = parse.default_language(
             ET.XML('<iati-activity default-currency="GBP" hierarchy="1"/>'))
         self.assertEquals(None, no_default_language)
-
 
 
 class TestFunctional(AppTestCase):
@@ -646,6 +646,7 @@ class TestSector(AppTestCase):
         ))
         self.assertEquals([], sec)
 
+
 class TestPercentages(AppTestCase):
     def test_recipient_country_percentages(self):
         recipient_country_percentages = parse.recipient_country_percentages(ET.XML(
@@ -662,6 +663,7 @@ class TestPercentages(AppTestCase):
         ))
         self.assertEquals(4, recipient_region_percentages[0].percentage)
         self.assertEquals(None, recipient_region_percentages[1].percentage)
+
 
 class TestOrganisation(AppTestCase):
     def test_org_role_looseness(self):
@@ -682,7 +684,6 @@ class TestOrganisation(AppTestCase):
             u"""<wrap><reporting-org ref="GB-CHC-202918" /></wrap>"""
         ))
         self.assertEquals(None, orgtype.type)
-
 
 
 class TestParticipation(AppTestCase):
@@ -785,7 +786,7 @@ class TestTransaction(AppTestCase):
 
     @mock.patch('iatilib.parse.iati_decimal')
     def test_iati_int_called(self, mock):
-        transaction = parse.transactions(
+        parse.transactions(
             ET.XML(u'''<activity><transaction>
                 <transaction-date iso-date="31/12/2011" />
                 <description>test</description>
@@ -874,6 +875,7 @@ class TestTransaction(AppTestCase):
         transaction = parse.transactions(ET.XML(self.codelists))[0]
         self.assertEquals(u'2', transaction.disbursement_channel.value)
 
+
 class TestBudget(TestCase):
     def parse_budget(self):
         return parse.budgets(ET.XML("""
@@ -917,7 +919,6 @@ class TestBudget(TestCase):
         self.assertEquals(budget.value_amount, 1840852)
 
 
-
 class TestDates(TestCase):
     def test_correct_date(self):
         self.assertEquals(
@@ -959,6 +960,7 @@ class TestValue(TestCase):
     def test_decimal(self):
         self.assertEquals(Decimal('42479.4'), parse.iati_decimal(u"42479.4"))
 
+
 class TestXVal(TestCase):
     def test_missing_val(self):
         with self.assertRaises(parse.MissingValue):
@@ -968,4 +970,3 @@ class TestXVal(TestCase):
         self.assertEquals(
             None,
             parse.xval(ET.XML(u"<foo />"), "bar", None))
-

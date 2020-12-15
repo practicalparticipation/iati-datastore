@@ -4,6 +4,7 @@ import traceback
 
 from iatilib.model import Log, db
 
+
 class SQLAlchemyHandler(logging.Handler):
 
     def emit(self, record):
@@ -21,7 +22,7 @@ class SQLAlchemyHandler(logging.Handler):
             created_at=datetime.fromtimestamp(record.created)
         )
         db.session.add(log)
-        #db.session.commit()
+        # db.session.commit()
 
 
 class DatasetMessage(object):

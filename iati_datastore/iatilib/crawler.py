@@ -8,13 +8,12 @@ import requests
 import ckanapi
 from dateutil.parser import parse as date_parser
 from werkzeug.http import http_date
+from flask import Blueprint
+import click
 
 from iatilib import db, parse, rq
 from iatilib.model import Dataset, Resource, Activity, Log, DeletedActivity
 from iatilib.loghandlers import DatasetMessage as _
-from flask import Blueprint
-
-import click
 
 log = logging.getLogger("crawler")
 
@@ -134,8 +133,10 @@ def fetch_dataset_metadata(dataset):
     except Exception:
         raise CouldNotFetchPackageList()
 
-    dataset.last_modified = date_parser(ds_entity.get('metadata_modified',
-        datetime.datetime.now().date().isoformat()))
+    dataset.last_modified = date_parser(
+        ds_entity.get(
+            'metadata_modified',
+            datetime.datetime.now().date().isoformat()))
     new_urls = [resource['url'] for resource
                 in ds_entity.get('resources', [])
                 if resource['url'] not in dataset.resource_urls]
@@ -236,7 +237,7 @@ def parse_activity(new_identifiers, old_xml, resource):
             parse.log.warn(
                     _("Duplicate identifier {0} in same resource document".format(
                             activity.iati_identifier),
-                            logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
+                      logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
                     exc_info=''
             )
 
@@ -482,13 +483,12 @@ def status():
             Resource.query,
     ))
 
-    print (status_line(
-            "resources have no activites",
-            db.session.query(Resource.url).outerjoin(Activity)
-                .group_by(Resource.url)
-                .having(sa.func.count(Activity.iati_identifier) == 0),
-            Resource.query,
-    ))
+    print(status_line(
+          "resources have no activites",
+          db.session.query(Resource.url).outerjoin(Activity)
+          .group_by(Resource.url)
+          .having(sa.func.count(Activity.iati_identifier) == 0),
+          Resource.query))
 
     print("")
 
@@ -500,7 +500,7 @@ def status():
         ratio = 1.0 * total_activities_fetched / total_activities
     except ZeroDivisionError:
         ratio = 0.0
-    print ("{nofetched_c}/{res_c} ({pct:6.2%}) activities out of date".format(
+    print("{nofetched_c}/{res_c} ({pct:6.2%}) activities out of date".format(
             nofetched_c=total_activities_fetched,
             res_c=total_activities,
             pct=ratio
@@ -511,7 +511,7 @@ def status():
 def enqueue(careful=False):
     queue = rq.get_queue()
     if careful and queue.count > 0:
-        print ("%d jobs on queue, not adding more" % queue.count)
+        print("%d jobs on queue, not adding more" % queue.count)
         return
 
     yesterday = datetime.datetime.utcnow() - datetime.timedelta(days=1)
@@ -523,7 +523,7 @@ def enqueue(careful=False):
                             Resource.last_succ == None,
                             Resource.last_fetch <= yesterday
                     )))
-    print ("Enqueuing {0:d} unfetched resources".format(
+    print("Enqueuing {0:d} unfetched resources".format(
             unfetched_resources.count()
     ))
     for resource in unfetched_resources:
@@ -537,7 +537,7 @@ def enqueue(careful=False):
             Resource.activities.any(Activity.created < Resource.last_parsed)
     ))
 
-    print ("Enqueuing {0:d} resources with out of date activities".format(
+    print("Enqueuing {0:d} resources with out of date activities".format(
             ood_resources.count()
     ))
     for resource in ood_resources:
@@ -549,9 +549,9 @@ def enqueue(careful=False):
 
 
 @click.option('--dataset', 'dataset', type=str,
-                help="update a single dataset")
+              help="update a single dataset")
 @click.option('--limit', "limit", type=int,
-                help="max no of datasets to update")
+              help="max no of datasets to update")
 @click.option('-v', '--verbose', "verbose")
 @click.option('-t', '--timedelta', "timedelta", type=int)
 @manager.cli.command('update')
@@ -564,13 +564,12 @@ def update(verbose=False, limit=None, dataset=None, timedelta=None):
     queue = rq.get_queue()
 
     if dataset:
-        print ("Enqueuing {0} for update".format(dataset))
+        print("Enqueuing {0} for update".format(dataset))
         queue.enqueue(update_dataset, args=(dataset,), result_ttl=0)
         res = Resource.query.filter(Resource.dataset_id == dataset)
         for resource in res:
             queue.enqueue(update_resource, args=(resource.url,), result_ttl=0)
-            queue.enqueue(update_activities, args=(resource.url,), result_ttl=0,
-                       timeout=1000)
+            queue.enqueue(update_activities, args=(resource.url,), result_ttl=0, timeout=1000)
     else:
         if timedelta:
             modified_since = datetime.date.today() - datetime.timedelta(timedelta)
@@ -583,10 +582,10 @@ def update(verbose=False, limit=None, dataset=None, timedelta=None):
         if limit:
             datasets = datasets.limit(limit)
 
-        print ("Enqueuing %d datasets for update" % datasets.count())
+        print("Enqueuing %d datasets for update" % datasets.count())
 
         for dataset in datasets:
             if verbose:
-                print ("Enqueuing %s" % dataset.name)
+                print("Enqueuing %s" % dataset.name)
             queue.enqueue(update_dataset, args=(dataset.name,), result_ttl=0)
     db.session.close()

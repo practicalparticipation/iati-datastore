@@ -60,6 +60,7 @@ def example():
     activity.budgets = budgets
     return activity
 
+
 class TestCSVBudgetExample(TestCase, CSVTstMixin):
     # See example here: https://docs.google.com/a/okfn.org/spreadsheet/ccc?key=0AqR8dXc6Ji4JdHJIWDJtaXhBV0IwOG56N0p1TE04V2c&usp=sharing#gid=5
     def test_start(self):

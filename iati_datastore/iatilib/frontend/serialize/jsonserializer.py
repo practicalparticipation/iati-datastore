@@ -13,6 +13,7 @@ from iatilib.model import (
 )
 from iatilib import codelists
 
+
 class JSONEncoder(jsonlib.JSONEncoder):
     TWOPLACES = Decimal(10) ** -2
 
@@ -44,12 +45,13 @@ class DatastoreJSONEncoder(jsonlib.JSONEncoder):
             return json_rep(o)
         return super().default(o)
 
+
 def code(attr):
     if attr:
         return {
              "code": attr.value
-        #    "value": attr.value,
-        #    "description": attr.description
+             # "value": attr.value,
+             # "description": attr.description
         }
     return None
 
@@ -61,8 +63,8 @@ def json_rep(obj):
             ("title", obj.title),
             ("description", obj.description),
             ("reporting-org", json_rep(obj.reporting_org)),
-            ("license" , obj.resource.dataset.license if obj.resource else None),
-            ("version" , obj.version),
+            ("license", obj.resource.dataset.license if obj.resource else None),
+            ("version", obj.version),
             ("start-planned", obj.start_planned),
             ("end-planned", obj.end_planned),
             ("start-actual", obj.start_actual),
@@ -78,8 +80,8 @@ def json_rep(obj):
         ),)
     if isinstance(obj, Organisation):
         return {
-            "ref" : obj.ref,
-            "name" : obj.name,
+            "ref": obj.ref,
+            "name": obj.name,
         }
     if isinstance(obj, Transaction):
         return {
@@ -88,13 +90,13 @@ def json_rep(obj):
                 "text": obj.value.amount,
                 "currency": code(obj.value.currency),
             },
-            "transaction-type": { "code": obj.type.value },
-            "transaction-date": { "iso-date": obj.date },
-            "flow-type": { "code": obj.flow_type },
-            "finance-type": { "code": obj.finance_type },
-            "aid-type": { "code": obj.aid_type },
-            "disbursement-channel": { "code": obj.disbursement_channel},
-            "tied-status": { "code": obj.tied_status}
+            "transaction-type": {"code": obj.type.value},
+            "transaction-date": {"iso-date": obj.date},
+            "flow-type": {"code": obj.flow_type},
+            "finance-type": {"code": obj.finance_type},
+            "aid-type": {"code": obj.aid_type},
+            "disbursement-channel": {"code": obj.disbursement_channel},
+            "tied-status": {"code": obj.tied_status}
         }
     if isinstance(obj, Participation):
         return {
@@ -129,23 +131,26 @@ def json_rep(obj):
 
 
 def json(pagination):
-    return jsonlib.dumps(OrderedDict((
-        ("ok", True),
-        ("total-count", pagination.total),
-        ("start", pagination.offset),
-        ("limit", pagination.limit),
-        ("iati-activities", pagination.items),
-    )),
-    indent=2 if current_app.debug else 0,
-    cls=JSONEncoder)
+    return jsonlib.dumps(
+        OrderedDict((
+            ("ok", True),
+            ("total-count", pagination.total),
+            ("start", pagination.offset),
+            ("limit", pagination.limit),
+            ("iati-activities", pagination.items),
+        )),
+        indent=2 if current_app.debug else 0,
+        cls=JSONEncoder)
+
 
 def datastore_json(pagination):
-    return jsonlib.dumps(OrderedDict((
-        ("ok", True),
-        ("total-count", pagination.total),
-        ("start", pagination.offset),
-        ("limit", pagination.limit),
-        ("iati-activities", pagination.items),
-    )),
-    indent=2 if current_app.debug else 0,
-    cls=DatastoreJSONEncoder)
+    return jsonlib.dumps(
+        OrderedDict((
+            ("ok", True),
+            ("total-count", pagination.total),
+            ("start", pagination.offset),
+            ("limit", pagination.limit),
+            ("iati-activities", pagination.items),
+        )),
+        indent=2 if current_app.debug else 0,
+        cls=DatastoreJSONEncoder)

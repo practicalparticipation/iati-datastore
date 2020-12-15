@@ -322,8 +322,9 @@ class TestCSVTransactionExample(TestCase, CSVTstMixin):
 
     def test_reporting_org(self):
         activity = fac.ActivityFactory.build(
-            reporting_org=fac.OrganisationFactory.build(name='rep',
-                    ref='rep_ref', type=cl.OrganisationType.foundation),
+            reporting_org=fac.OrganisationFactory.build(
+                name='rep',
+                ref='rep_ref', type=cl.OrganisationType.foundation),
         )
         data = self.process([
             fac.TransactionFactory.build(activity=activity)
@@ -415,7 +416,8 @@ class TestCSVTransactionExample(TestCase, CSVTstMixin):
         activity = fac.ActivityFactory.build(
             participating_orgs=[
                 fac.ParticipationFactory.build(
-                    organisation=fac.OrganisationFactory.build(name='fund',
+                    organisation=fac.OrganisationFactory.build(
+                        name='fund',
                         ref='fund_ref', type=cl.OrganisationType.foundation),
                     role=cl.OrganisationRole.funding),
             ]
@@ -432,7 +434,8 @@ class TestCSVTransactionExample(TestCase, CSVTstMixin):
         activity = fac.ActivityFactory.build(
             participating_orgs=[
                 fac.ParticipationFactory.build(
-                    organisation=fac.OrganisationFactory.build(name='impl',
+                    organisation=fac.OrganisationFactory.build(
+                        name='impl',
                         ref="impl_ref", type=cl.OrganisationType.foundation),
                     role=cl.OrganisationRole.implementing),
             ]
@@ -449,7 +452,8 @@ class TestCSVTransactionExample(TestCase, CSVTstMixin):
         activity = fac.ActivityFactory.build(
             participating_orgs=[
                 fac.ParticipationFactory.build(
-                    organisation=fac.OrganisationFactory.build(name='ext',
+                    organisation=fac.OrganisationFactory.build(
+                        name='ext',
                         ref="ext_ref", type=cl.OrganisationType.foundation),
                     role=cl.OrganisationRole.extending),
             ]
@@ -586,7 +590,6 @@ class TestCSVTransactionExample(TestCase, CSVTstMixin):
         ])
         self.assertField({"sector-percentage": ""}, data[0])
 
-
     def test_default_finance_type(self):
         activity = fac.ActivityFactory.build(
             default_finance_type=cl.FinanceType.bank_bonds
@@ -625,6 +628,7 @@ class TestCSVTransactionExample(TestCase, CSVTstMixin):
 
 
 cl2 = cl.by_major_version['2']
+
 
 class TestCSVTransactionExample2(TestCase, CSVTstMixin):
     def test_transaction_sector_vocabulary(self):
@@ -669,7 +673,8 @@ class TestCSVTransactionExample2(TestCase, CSVTstMixin):
         activity = fac.ActivityFactory.build(
             participating_orgs=[
                 fac.ParticipationFactory.build(
-                    organisation=fac.OrganisationFactory.build(name='fund',
+                    organisation=fac.OrganisationFactory.build(
+                        name='fund',
                         ref='fund_ref', type=cl2.OrganisationType.foundation),
                     role=cl2.OrganisationRole.funding),
             ],
@@ -687,7 +692,8 @@ class TestCSVTransactionExample2(TestCase, CSVTstMixin):
         activity = fac.ActivityFactory.build(
             participating_orgs=[
                 fac.ParticipationFactory.build(
-                    organisation=fac.OrganisationFactory.build(name='impl',
+                    organisation=fac.OrganisationFactory.build(
+                        name='impl',
                         ref="impl_ref", type=cl2.OrganisationType.foundation),
                     role=cl2.OrganisationRole.implementing),
             ],
@@ -705,7 +711,8 @@ class TestCSVTransactionExample2(TestCase, CSVTstMixin):
         activity = fac.ActivityFactory.build(
             participating_orgs=[
                 fac.ParticipationFactory.build(
-                    organisation=fac.OrganisationFactory.build(name='ext',
+                    organisation=fac.OrganisationFactory.build(
+                        name='ext',
                         ref="ext_ref", type=cl2.OrganisationType.foundation),
                     role=cl2.OrganisationRole.extending),
             ],
@@ -718,7 +725,6 @@ class TestCSVTransactionExample2(TestCase, CSVTstMixin):
         self.assertField({"participating-org-ref (Extending)": "ext_ref"}, data[0])
         self.assertField({"participating-org-type (Extending)": "Foundation"}, data[0])
         self.assertField({"participating-org-type-code (Extending)": "60"}, data[0])
-
 
 
 class TestTransactionByCountry(TestCase, CSVTstMixin):
@@ -791,4 +797,3 @@ class TestTransactionBySector(TestCase, CSVTstMixin):
     def test_recepient_country_code(self):
         data = self.process(self.example())
         self.assertField({"recipient-country-code": "KE;UG"}, data[0])
-

@@ -33,6 +33,7 @@ class TestAbout(ClientTestCase):
         resp = self.client.get('/api/1/about/')
         self.assertEquals(200, resp.status_code)
 
+
 class TestAboutDatasets(ClientTestCase):
     def test_about_datasets_fetch_status(self):
         """Check that the `about/datasets/fetch_status` page has a 200 response and contains expected data."""
@@ -40,6 +41,7 @@ class TestAboutDatasets(ClientTestCase):
         data = json.loads(resp.data)
         self.assertEquals(200, resp.status_code)
         self.assertIn("datasets", data)
+
 
 class TestDeletedActivitiesView(ClientTestCase):
     def test_deleted_activities(self):
@@ -175,7 +177,6 @@ class TestEmptyDb_BudgetCSV(ClientTestCase):
         self.assertEquals("text/csv; charset=utf-8", resp.content_type)
 
 
-
 def fixture_filename(fix_name):
     return os.path.join(
             os.path.dirname(__file__), "fixtures", fix_name)
@@ -277,6 +278,7 @@ class ApiViewMixin(object):
         url = self.base_url[:-4] + '.bad-csv'
         resp = self.client.get(url)
         self.assertEquals(404, resp.status_code)
+
 
 class TestActivityView(ClientTestCase, ApiViewMixin):
     base_url = '/api/1/access/activity.csv'
@@ -413,6 +415,7 @@ class CommonTransactionTests(object):
         csv_headers = output[0]
         i = csv_headers.index('transaction_disbursement-channel_code')
         self.assertEquals(u'2', output[1][i])
+
 
 class TestTransactionView(ClientTestCase, ApiViewMixin, CommonTransactionTests):
     base_url = '/api/1/access/transaction.csv'

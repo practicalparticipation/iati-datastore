@@ -21,7 +21,7 @@ def deploy(conn):
         conn.run('pip install -r requirements.txt')
         # run database migrations
         conn.run('iati db upgrade')
-        # build the docs
+        # build the docs
         conn.run('iati build-docs')
         # stop everything
         conn.run('sudo systemctl stop iati-datastore')

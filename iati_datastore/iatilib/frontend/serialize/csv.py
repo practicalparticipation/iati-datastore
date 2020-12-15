@@ -37,6 +37,7 @@ def codelist_code(column_name, activity):
     else:
         return ""
 
+
 def activity_status(activity):
     return activity.activity_status.description if activity.activity_status and activity.activity_status.description else ""
 
@@ -62,6 +63,7 @@ def sector_vocabulary(activity):
         u"%s" % sec.vocabulary.description if sec.vocabulary and sec.vocabulary.description else u""
         for sec in activity.sector_percentages)
 
+
 def sector_vocabulary_code(activity):
     return u";".join(
         u"%s" % sec.vocabulary.value if sec.vocabulary else u""
@@ -70,6 +72,7 @@ def sector_vocabulary_code(activity):
 
 def default_currency(transaction):
     return activity_default_currency(transaction.activity)
+
 
 def transaction_type(transaction):
     return transaction.type.value if transaction.type else ""
@@ -82,22 +85,28 @@ def transaction_date(transaction):
 def transaction_value(transaction):
     return transaction.value.amount
 
+
 def transaction_flow_type(transaction):
     return transaction.flow_type.value if transaction.flow_type else ""
+
 
 def transaction_aid_type(transaction):
     return transaction.aid_type.value if transaction.aid_type else ""
 
+
 def transaction_finance_type(transaction):
     return transaction.finance_type.value if transaction.finance_type else ""
 
+
 def transaction_tied_status(transaction):
     return transaction.tied_status.value if transaction.tied_status else ""
+
 
 def transaction_disbursement_channel(transaction):
     if transaction.disbursement_channel:
         return transaction.disbursement_channel.value
     return ""
+
 
 def transaction_org(field, transaction):
     organisation = getattr(transaction, field)
@@ -105,6 +114,8 @@ def transaction_org(field, transaction):
         return organisation.ref
     else:
         return ""
+
+
 provider_org = partial(transaction_org, 'provider_org')
 receiver_org = partial(transaction_org, 'receiver_org')
 
@@ -131,6 +142,7 @@ def recipient_country_percentage(activity):
         u"%d" % rcp.percentage if rcp.percentage else ""
         for rcp in activity.recipient_country_percentages)
 
+
 def recipient_region_code(activity):
     return u";".join(
         rrp.region.value
@@ -142,10 +154,12 @@ def recipient_region(activity):
         rrp.region.description if rrp.region and rrp.region.description else ""
         for rrp in activity.recipient_region_percentages)
 
+
 def recipient_region_percentage(activity):
     return u";".join(
         u"%d" % rrp.percentage if rrp.percentage else ""
         for rrp in activity.recipient_region_percentages)
+
 
 def reporting_org_ref(activity):
     try:
@@ -153,11 +167,13 @@ def reporting_org_ref(activity):
     except AttributeError:
         return ""
 
+
 def reporting_org_name(activity):
     try:
         return activity.reporting_org.name
     except AttributeError:
         return ""
+
 
 def reporting_org_type(activity):
     try:
@@ -165,11 +181,13 @@ def reporting_org_type(activity):
     except AttributeError:
         return ""
 
+
 def reporting_org_type_code(activity):
     try:
         return activity.reporting_org.type.value
     except AttributeError:
         return ""
+
 
 def participating_org(attr, role, activity):
     activity_by_role = dict(
@@ -181,21 +199,26 @@ def participating_org(attr, role, activity):
     else:
         return ''
 
+
 participating_org_name = partial(participating_org, "name")
 participating_org_ref = partial(participating_org, "ref")
+
+
 def participating_org_type(role, activity):
-    code=  participating_org( "type", role, activity)
+    code = participating_org("type", role, activity)
     if code:
         return code.description
     else:
         return ""
 
+
 def participating_org_type_code(role, activity):
-    code=  participating_org( "type", role, activity)
+    code = participating_org("type", role, activity)
     if code:
         return code.value
     else:
         return ""
+
 
 def period_start_date(budget):
     if budget.period_start:
@@ -212,11 +235,13 @@ def period_end_date(budget):
 def budget_value(budget):
     return budget.value_amount
 
+
 def value_currency(transaction):
     if transaction.value_currency:
         return transaction.value_currency.value
     else:
         return u""
+
 
 def activity_default_currency(activity):
     if activity.default_currency:
@@ -224,71 +249,88 @@ def activity_default_currency(activity):
     else:
         return u""
 
+
 def fielddict_from_major_version(major_version):
     cl = codelists.by_major_version[major_version]
+
     class FieldDict(OrderedDict):
         common_field = {
             u"iati-identifier": iati_identifier,
             u"hierarchy": hierarchy,
             u"last-updated-datetime": attrgetter(u'last_updated_datetime'),
-            u"default-language" : partial(codelist_code, 'default_language'),
-            u"reporting-org" : reporting_org_name,
-            u"reporting-org-ref" : reporting_org_ref,
-            u"reporting-org-type" : reporting_org_type,
-            u"reporting-org-type-code" : reporting_org_type_code,
+            u"default-language": partial(codelist_code, 'default_language'),
+            u"reporting-org": reporting_org_name,
+            u"reporting-org-ref": reporting_org_ref,
+            u"reporting-org-type": reporting_org_type,
+            u"reporting-org-type-code": reporting_org_type_code,
             u"title": title,
             u"description": description,
-            u"activity-status-code" : partial(codelist_code, "activity_status"),
-            u"start-planned" : attrgetter(u"start_planned"),
-            u"end-planned" : attrgetter(u"end_planned"),
-            u"start-actual" : attrgetter(u"start_actual"),
-            u"end-actual" : attrgetter(u"end_actual"),
-            u"participating-org (Accountable)" : partial(participating_org_name,
-                                    cl.OrganisationRole.accountable),
-            u"participating-org-ref (Accountable)" : partial(participating_org_ref,
-                                    cl.OrganisationRole.accountable),
-            u"participating-org-type (Accountable)" : partial(participating_org_type,
-                                    cl.OrganisationRole.accountable),
-            u"participating-org-type-code (Accountable)" : partial(participating_org_type_code,
-                                    cl.OrganisationRole.accountable),
-            u"participating-org (Funding)" : partial(participating_org_name,
-                                    cl.OrganisationRole.funding),
-            u"participating-org-ref (Funding)" : partial(participating_org_ref,
-                                    cl.OrganisationRole.funding),
-            u"participating-org-type (Funding)" : partial(participating_org_type,
-                                    cl.OrganisationRole.funding),
-            u"participating-org-type-code (Funding)" : partial(participating_org_type_code,
-                                    cl.OrganisationRole.funding),
-            u"participating-org (Extending)" : partial(participating_org_name,
-                                    cl.OrganisationRole.extending),
-            u"participating-org-ref (Extending)" : partial(participating_org_ref,
-                                    cl.OrganisationRole.extending),
-            u"participating-org-type (Extending)" : partial(participating_org_type,
-                                    cl.OrganisationRole.extending),
-            u"participating-org-type-code (Extending)" : partial(participating_org_type_code,
-                                    cl.OrganisationRole.extending),
-            u"participating-org (Implementing)" : partial(participating_org_name,
-                                    cl.OrganisationRole.implementing),
-            u"participating-org-ref (Implementing)" : partial(participating_org_ref,
-                                    cl.OrganisationRole.implementing),
-            u"participating-org-type (Implementing)" : partial(participating_org_type,
-                                    cl.OrganisationRole.implementing),
-            u"participating-org-type-code (Implementing)" : partial(participating_org_type_code,
-                                    cl.OrganisationRole.implementing),
-            u"recipient-country-code" : recipient_country_code,
-            u"recipient-country" : recipient_country,
-            u"recipient-country-percentage" : recipient_country_percentage,
+            u"activity-status-code": partial(codelist_code, "activity_status"),
+            u"start-planned": attrgetter(u"start_planned"),
+            u"end-planned": attrgetter(u"end_planned"),
+            u"start-actual": attrgetter(u"start_actual"),
+            u"end-actual": attrgetter(u"end_actual"),
+            u"participating-org (Accountable)": partial(
+                participating_org_name,
+                cl.OrganisationRole.accountable),
+            u"participating-org-ref (Accountable)": partial(
+                participating_org_ref,
+                cl.OrganisationRole.accountable),
+            u"participating-org-type (Accountable)": partial(
+                participating_org_type,
+                cl.OrganisationRole.accountable),
+            u"participating-org-type-code (Accountable)": partial(
+                participating_org_type_code,
+                cl.OrganisationRole.accountable),
+            u"participating-org (Funding)": partial(
+                participating_org_name,
+                cl.OrganisationRole.funding),
+            u"participating-org-ref (Funding)": partial(
+                participating_org_ref,
+                cl.OrganisationRole.funding),
+            u"participating-org-type (Funding)": partial(
+                participating_org_type,
+                cl.OrganisationRole.funding),
+            u"participating-org-type-code (Funding)": partial(
+                participating_org_type_code,
+                cl.OrganisationRole.funding),
+            u"participating-org (Extending)": partial(
+                participating_org_name,
+                cl.OrganisationRole.extending),
+            u"participating-org-ref (Extending)": partial(
+                participating_org_ref,
+                cl.OrganisationRole.extending),
+            u"participating-org-type (Extending)": partial(
+                participating_org_type,
+                cl.OrganisationRole.extending),
+            u"participating-org-type-code (Extending)": partial(
+                participating_org_type_code,
+                cl.OrganisationRole.extending),
+            u"participating-org (Implementing)": partial(
+                participating_org_name,
+                cl.OrganisationRole.implementing),
+            u"participating-org-ref (Implementing)": partial(
+                participating_org_ref,
+                cl.OrganisationRole.implementing),
+            u"participating-org-type (Implementing)": partial(
+                participating_org_type,
+                cl.OrganisationRole.implementing),
+            u"participating-org-type-code (Implementing)": partial(
+                participating_org_type_code,
+                cl.OrganisationRole.implementing),
+            u"recipient-country-code": recipient_country_code,
+            u"recipient-country": recipient_country,
+            u"recipient-country-percentage": recipient_country_percentage,
             u"sector-code": sector_code,
             u"sector": sector,
             u"sector-percentage": sector_percentage,
             u"sector-vocabulary": sector_vocabulary,
             u"sector-vocabulary-code": sector_vocabulary_code,
-            u"collaboration-type-code" : partial(codelist_code, "collaboration_type"),
-            u"default-finance-type-code" : partial(codelist_code,
-                "default_finance_type"),
-            u"default-flow-type-code" : partial(codelist_code, "default_flow_type"),
-            u"default-aid-type-code" : partial(codelist_code, "default_aid_type"),
-            u"default-tied-status-code" : partial(codelist_code, "default_tied_status"),
+            u"collaboration-type-code": partial(codelist_code, "collaboration_type"),
+            u"default-finance-type-code": partial(codelist_code, "default_finance_type"),
+            u"default-flow-type-code": partial(codelist_code, "default_flow_type"),
+            u"default-aid-type-code": partial(codelist_code, "default_aid_type"),
+            u"default-tied-status-code": partial(codelist_code, "default_tied_status"),
             u"recipient-country-code": recipient_country_code,
             u"recipient-country": recipient_country,
             u"recipient-country-percentage": recipient_country_percentage,
@@ -325,7 +367,10 @@ def fielddict_from_major_version(major_version):
 
     return FieldDict
 
-fielddict_by_major_version = {major_version:fielddict_from_major_version(major_version) for major_version in ['1', '2']}
+
+fielddict_by_major_version = {
+    major_version: fielddict_from_major_version(major_version)
+    for major_version in ['1', '2']}
 
 
 def identity(x):
@@ -347,7 +392,9 @@ class CSVSerializer(object):
     """
     def __init__(self, fields, adapter=identity):
         self.get_major_version = adapter(lambda x: x.major_version)
-        self.fields_by_major_version = {major_version:FieldDict(fields, adapter=adapter) for major_version, FieldDict in fielddict_by_major_version.items()}
+        self.fields_by_major_version = {
+            major_version: FieldDict(fields, adapter=adapter)
+            for major_version, FieldDict in fielddict_by_major_version.items()}
 
     def __call__(self, data):
         """
@@ -569,18 +616,18 @@ common_transaction_csv = (
     (u'transaction_provider-org', lambda t: t.provider_org_text),
     (u'transaction_provider-org_ref', provider_org),
     (u'transaction_provider-org_provider-activity-id',
-            lambda t: t.provider_org_activity_id),
+     lambda t: t.provider_org_activity_id),
     (u'transaction_receiver-org', lambda t: t.receiver_org_text),
     (u'transaction_receiver-org_ref', receiver_org),
     (u'transaction_receiver-org_receiver-activity-id',
-            lambda t: t.receiver_org_activity_id),
+     lambda t: t.receiver_org_activity_id),
     (u'transaction_description', lambda t: t.description),
     (u'transaction_flow-type_code', transaction_flow_type),
     (u'transaction_finance-type_code', transaction_finance_type),
     (u'transaction_aid-type_code', transaction_aid_type),
     (u'transaction_tied-status_code', transaction_tied_status),
     (u'transaction_disbursement-channel_code',
-            transaction_disbursement_channel),
+     transaction_disbursement_channel),
     (u"transaction_recipient-country-code", recipient_country_code),
     (u"transaction_recipient-country", recipient_country),
     (u"transaction_recipient-region-code", recipient_region_code),
@@ -589,7 +636,7 @@ common_transaction_csv = (
     (u"transaction_sector", sector),
     (u"transaction_sector-vocabulary", sector_vocabulary),
     (u"transaction_sector-vocabulary-code", sector_vocabulary_code),
-    #(u'reporting-org', lambda t: t.activity.reporting_org_ref),
+    # (u'reporting-org', lambda t: t.activity.reporting_org_ref),
 )
 
 transaction_csv = CSVSerializer((
@@ -599,53 +646,53 @@ transaction_csv = CSVSerializer((
     (u"transaction-value", transaction_value),
     ) + common_transaction_csv +
     ("iati-identifier",
-    "hierarchy",
-    "last-updated-datetime",
-    "default-language",
-    "reporting-org",
-    "reporting-org-ref",
-    "reporting-org-type",
-    "reporting-org-type-code",
-    "title",
-    "description",
-    "activity-status-code",
-    "start-planned",
-    "end-planned",
-    "start-actual",
-    "end-actual",
-    "participating-org (Accountable)",
-    "participating-org-ref (Accountable)",
-    "participating-org-type (Accountable)",
-    "participating-org-type-code (Accountable)",
-    "participating-org (Funding)",
-    "participating-org-ref (Funding)",
-    "participating-org-type (Funding)",
-    "participating-org-type-code (Funding)",
-    "participating-org (Extending)",
-    "participating-org-ref (Extending)",
-    "participating-org-type (Extending)",
-    "participating-org-type-code (Extending)",
-    "participating-org (Implementing)",
-    "participating-org-ref (Implementing)",
-    "participating-org-type (Implementing)",
-    "participating-org-type-code (Implementing)",
-    "recipient-country-code",
-    "recipient-country",
-    "recipient-country-percentage",
-    u"recipient-region-code",
-    u"recipient-region",
-    u"recipient-region-percentage",
-    u"sector-code",
-    u"sector",
-    u"sector-percentage",
-    u"sector-vocabulary",
-    u"sector-vocabulary-code",
-    u"collaboration-type-code",
-    u"default-finance-type-code",
-    u"default-flow-type-code",
-    u"default-aid-type-code",
-    u"default-tied-status-code",
-    ), adapter=adapt_activity)
+     "hierarchy",
+     "last-updated-datetime",
+     "default-language",
+     "reporting-org",
+     "reporting-org-ref",
+     "reporting-org-type",
+     "reporting-org-type-code",
+     "title",
+     "description",
+     "activity-status-code",
+     "start-planned",
+     "end-planned",
+     "start-actual",
+     "end-actual",
+     "participating-org (Accountable)",
+     "participating-org-ref (Accountable)",
+     "participating-org-type (Accountable)",
+     "participating-org-type-code (Accountable)",
+     "participating-org (Funding)",
+     "participating-org-ref (Funding)",
+     "participating-org-type (Funding)",
+     "participating-org-type-code (Funding)",
+     "participating-org (Extending)",
+     "participating-org-ref (Extending)",
+     "participating-org-type (Extending)",
+     "participating-org-type-code (Extending)",
+     "participating-org (Implementing)",
+     "participating-org-ref (Implementing)",
+     "participating-org-type (Implementing)",
+     "participating-org-type-code (Implementing)",
+     "recipient-country-code",
+     "recipient-country",
+     "recipient-country-percentage",
+     u"recipient-region-code",
+     u"recipient-region",
+     u"recipient-region-percentage",
+     u"sector-code",
+     u"sector",
+     u"sector-percentage",
+     u"sector-vocabulary",
+     u"sector-vocabulary-code",
+     u"collaboration-type-code",
+     u"default-finance-type-code",
+     u"default-flow-type-code",
+     u"default-aid-type-code",
+     u"default-tied-status-code",
+     ), adapter=adapt_activity)
 
 
 def trans(func):
@@ -670,52 +717,52 @@ csv_transaction_by_country = CSVSerializer((
     (u'transaction-date', trans(transaction_date)),
     (u"default-currency", trans(default_currency)),
     (u'transaction-value', trans(transaction_value)),
-    ) + tuple([ (i[0], trans(i[1])) for i in common_transaction_csv ]) +
+    ) + tuple([(i[0], trans(i[1])) for i in common_transaction_csv]) +
     ("iati-identifier",
-    "hierarchy",
-    "last-updated-datetime",
-    "default-language",
-    "reporting-org",
-    "reporting-org-ref",
-    "reporting-org-type",
-    "reporting-org-type-code",
-    "title",
-    "description",
-    "activity-status-code",
-    "start-planned",
-    "end-planned",
-    "start-actual",
-    "end-actual",
-    "participating-org (Accountable)",
-    "participating-org-ref (Accountable)",
-    "participating-org-type (Accountable)",
-    "participating-org-type-code (Accountable)",
-    "participating-org (Funding)",
-    "participating-org-ref (Funding)",
-    "participating-org-type (Funding)",
-    "participating-org-type-code (Funding)",
-    "participating-org (Extending)",
-    "participating-org-ref (Extending)",
-    "participating-org-type (Extending)",
-    "participating-org-type-code (Extending)",
-    "participating-org (Implementing)",
-    "participating-org-ref (Implementing)",
-    "participating-org-type (Implementing)",
-    "participating-org-type-code (Implementing)",
-    u"recipient-region-code",
-    u"recipient-region",
-    u"recipient-region-percentage",
-    u"sector-code",
-    u"sector",
-    u"sector-percentage",
-    u"sector-vocabulary",
-    u"sector-vocabulary-code",
-    u"collaboration-type-code",
-    u"default-finance-type-code",
-    u"default-flow-type-code",
-    u"default-aid-type-code",
-    u"default-tied-status-code",
-    ) ,
+     "hierarchy",
+     "last-updated-datetime",
+     "default-language",
+     "reporting-org",
+     "reporting-org-ref",
+     "reporting-org-type",
+     "reporting-org-type-code",
+     "title",
+     "description",
+     "activity-status-code",
+     "start-planned",
+     "end-planned",
+     "start-actual",
+     "end-actual",
+     "participating-org (Accountable)",
+     "participating-org-ref (Accountable)",
+     "participating-org-type (Accountable)",
+     "participating-org-type-code (Accountable)",
+     "participating-org (Funding)",
+     "participating-org-ref (Funding)",
+     "participating-org-type (Funding)",
+     "participating-org-type-code (Funding)",
+     "participating-org (Extending)",
+     "participating-org-ref (Extending)",
+     "participating-org-type (Extending)",
+     "participating-org-type-code (Extending)",
+     "participating-org (Implementing)",
+     "participating-org-ref (Implementing)",
+     "participating-org-type (Implementing)",
+     "participating-org-type-code (Implementing)",
+     u"recipient-region-code",
+     u"recipient-region",
+     u"recipient-region-percentage",
+     u"sector-code",
+     u"sector",
+     u"sector-percentage",
+     u"sector-vocabulary",
+     u"sector-vocabulary-code",
+     u"collaboration-type-code",
+     u"default-finance-type-code",
+     u"default-flow-type-code",
+     u"default-aid-type-code",
+     u"default-tied-status-code",
+     ),
     adapter=trans_activity)
 
 
@@ -729,50 +776,50 @@ csv_transaction_by_sector = CSVSerializer((
     (u'transaction-date', trans(transaction_date)),
     (u"default-currency", trans(default_currency)),
     (u'transaction-value', trans(transaction_value)),
-    ) + tuple([ (i[0], trans(i[1])) for i in common_transaction_csv ]) +
+    ) + tuple([(i[0], trans(i[1])) for i in common_transaction_csv]) +
     ("iati-identifier",
-    "hierarchy",
-    "last-updated-datetime",
-    "default-language",
-    "reporting-org",
-    "reporting-org-ref",
-    "reporting-org-type",
-    "reporting-org-type-code",
-    "title",
-    "description",
-    "activity-status-code",
-    "start-planned",
-    "end-planned",
-    "start-actual",
-    "end-actual",
-    "participating-org (Accountable)",
-    "participating-org-ref (Accountable)",
-    "participating-org-type (Accountable)",
-    "participating-org-type-code (Accountable)",
-    "participating-org (Funding)",
-    "participating-org-ref (Funding)",
-    "participating-org-type (Funding)",
-    "participating-org-type-code (Funding)",
-    "participating-org (Extending)",
-    "participating-org-ref (Extending)",
-    "participating-org-type (Extending)",
-    "participating-org-type-code (Extending)",
-    "participating-org (Implementing)",
-    "participating-org-ref (Implementing)",
-    "participating-org-type (Implementing)",
-    "participating-org-type-code (Implementing)",
-    "recipient-country-code",
-    "recipient-country",
-    "recipient-country-percentage",
-    u"recipient-region-code",
-    u"recipient-region",
-    u"recipient-region-percentage",
-    u"collaboration-type-code",
-    u"default-finance-type-code",
-    u"default-flow-type-code",
-    u"default-aid-type-code",
-    u"default-tied-status-code",
-    ),
+     "hierarchy",
+     "last-updated-datetime",
+     "default-language",
+     "reporting-org",
+     "reporting-org-ref",
+     "reporting-org-type",
+     "reporting-org-type-code",
+     "title",
+     "description",
+     "activity-status-code",
+     "start-planned",
+     "end-planned",
+     "start-actual",
+     "end-actual",
+     "participating-org (Accountable)",
+     "participating-org-ref (Accountable)",
+     "participating-org-type (Accountable)",
+     "participating-org-type-code (Accountable)",
+     "participating-org (Funding)",
+     "participating-org-ref (Funding)",
+     "participating-org-type (Funding)",
+     "participating-org-type-code (Funding)",
+     "participating-org (Extending)",
+     "participating-org-ref (Extending)",
+     "participating-org-type (Extending)",
+     "participating-org-type-code (Extending)",
+     "participating-org (Implementing)",
+     "participating-org-ref (Implementing)",
+     "participating-org-type (Implementing)",
+     "participating-org-type-code (Implementing)",
+     "recipient-country-code",
+     "recipient-country",
+     "recipient-country-percentage",
+     u"recipient-region-code",
+     u"recipient-region",
+     u"recipient-region-percentage",
+     u"collaboration-type-code",
+     u"default-finance-type-code",
+     u"default-flow-type-code",
+     u"default-aid-type-code",
+     u"default-tied-status-code",
+     ),
     adapter=trans_activity)
 
 
