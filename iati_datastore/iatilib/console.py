@@ -6,7 +6,6 @@ import subprocess
 
 import click
 from flask.cli import FlaskGroup, with_appcontext
-import flask_migrate
 import requests
 from sqlalchemy import not_
 
