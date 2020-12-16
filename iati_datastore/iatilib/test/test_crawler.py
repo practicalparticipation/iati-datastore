@@ -185,7 +185,7 @@ class TestCrawler(AppTestCase):
             resource = crawler.parse_resource(resource)
             self.assertEquals(None, resource.last_parsed)
 
-    @mock.patch('iatilib.crawler.registry')
+    @mock.patch('iatilib.crawler.iatikit')
     def test_deleted_activities(self, mock):
         fac.DatasetFactory.create(
             name='deleteme',
@@ -199,7 +199,7 @@ class TestCrawler(AppTestCase):
                 ]
             )]
         )
-        mock.action.package_list.return_value = [u"tst-a", u"tst-b"]
+        mock.download.data.return_value = None
         self.assertIn("deleteme", [ds.name for ds in Dataset.query.all()])
         datasets = crawler.fetch_dataset_list()
         self.assertNotIn("deleteme", [ds.name for ds in datasets])
