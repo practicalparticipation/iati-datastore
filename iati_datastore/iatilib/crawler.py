@@ -1,3 +1,4 @@
+from glob import glob
 import datetime
 import hashlib
 import logging
@@ -39,10 +40,10 @@ def fetch_dataset_list():
     '''
     existing_datasets = Dataset.query.all()
     existing_ds_names = set(ds.name for ds in existing_datasets)
-    try:
-        package_list = registry.action.package_list()
-    except Exception:
-        raise CouldNotFetchPackageList()
+
+    package_list = [
+        x[:-4].rsplit('/', 1)[-1]
+        for x in glob('registry/data/*/*')]
     incoming_ds_names = set(package_list)
 
     new_datasets = [Dataset(name=n) for n
