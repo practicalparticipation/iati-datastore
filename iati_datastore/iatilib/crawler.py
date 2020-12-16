@@ -1,3 +1,4 @@
+import json
 from glob import glob
 import datetime
 import hashlib
@@ -25,10 +26,6 @@ registry = ckanapi.RemoteCKAN(CKAN_API, get_only=True)
 
 manager = Blueprint('crawler', __name__)
 manager.cli.short_help = "Crawl IATI registry"
-
-
-class CouldNotFetchPackageList(Exception):
-    pass
 
 
 def fetch_dataset_list():
@@ -84,10 +81,10 @@ def delete_datasets(datasets):
 
 
 def fetch_dataset_metadata(dataset):
-    try:
-        ds_entity = registry.action.package_show(id=dataset.name)
-    except Exception:
-        raise CouldNotFetchPackageList()
+    fname = 'registry/metadata/{0}/{1}.json'.format(
+        dataset.publisher, dataset.name)
+    with open(fname) as f:
+        ds_entity = json.load(f)
 
     dataset.last_modified = date_parser(
         ds_entity.get(
@@ -122,30 +119,17 @@ def fetch_resource(resource):
     :param resource:
     :return:
     '''
-    headers = {
-        'User-Agent': 'codeforIATI datastore classic',
-    }
-    if resource.last_succ:
-        headers['If-Modified-Since'] = http_date(resource.last_succ)
-    if resource.etag:
-        headers["If-None-Match"] = resource.etag
-    resp = requests.get(resource.url, headers=headers)
-    resource.last_status_code = resp.status_code
-    resource.last_fetch = datetime.datetime.utcnow()
-    if resp.status_code == 200:
-        if isinstance(resp.content, bytes):
-            resource.document = resp.content
-        else:
-            resource.document = resp.content.encode()
-        if "etag" in resp.headers:
-            resource.etag = resp.headers.get('etag')
-        else:
-            resource.etag = None
-        resource.last_succ = datetime.datetime.utcnow()
-        resource.last_parsed = None
-        resource.last_parse_error = None
-    if resp.status_code == 304:
-        resource.last_succ = datetime.datetime.utcnow()
+    dataset = Dataset.query.get(resource.dataset_id)
+    fname = 'registry/data/{0}/{1}.xml'.format(
+        dataset.publisher, dataset.name)
+    with open(fname, 'rb') as f:
+        content = f.read()
+
+    resource.document = content
+    resource.last_succ = datetime.datetime.utcnow()
+    resource.last_parsed = None
+    resource.last_parse_error = None
+
     db.session.add(resource)
     return resource
 
@@ -242,7 +226,7 @@ def parse_resource(resource):
     return resource  # , new_identifiers
 
 
-def update_activities(resource_url):
+def update_activities(dataset_name):
     '''
     Parses and stores the raw XML associated with a resource [see parse_resource()], or logs the invalid resource
     :param resource_url:
@@ -251,16 +235,17 @@ def update_activities(resource_url):
     # clear up previous job queue log errors
     db.session.query(Log).filter(sa.and_(
             Log.logger == 'job iatilib.crawler.update_activities',
-            Log.resource == resource_url,
+            Log.resource == dataset_name,
     )).delete(synchronize_session=False)
     db.session.commit()
 
-    resource = Resource.query.get(resource_url)
+    dataset = Dataset.query.get(dataset_name)
+    resource = dataset.resources[0]
     try:
         db.session.query(Log).filter(sa.and_(
                 Log.logger.in_(
                         ['activity_importer', 'failed_activity', 'xml_parser']),
-                Log.resource == resource_url,
+                Log.resource == dataset_name,
         )).delete(synchronize_session=False)
         parse_resource(resource)
         db.session.commit()
@@ -271,33 +256,12 @@ def update_activities(resource_url):
                 dataset=resource.dataset_id,
                 resource=resource.url,
                 logger="xml_parser",
-                msg="Failed to parse XML file {0} error was".format(resource_url, exc),
+                msg="Failed to parse XML file {0} error was".format(dataset_name, exc),
                 level="error",
                 trace=traceback.format_exc(),
                 created_at=datetime.datetime.now()
         ))
         db.session.commit()
-
-
-def update_resource(resource_url):
-    '''
-    Fetches the resource based on the URL passed to it, then enqueues an activity update if the url is still live.
-    :param resource_url:
-    :return:
-    '''
-    # clear up previous job queue log errors
-    db.session.query(Log).filter(sa.and_(
-            Log.logger == 'job iatilib.crawler.update_resource',
-            Log.resource == resource_url,
-    )).delete(synchronize_session=False)
-    db.session.commit()
-
-    queue = rq.get_queue()
-    resource = fetch_resource(Resource.query.get(resource_url))
-    db.session.commit()
-
-    if resource.last_status_code == 200:
-        queue.enqueue(update_activities, args=(resource.url,), result_ttl=0, timeout=100000)
 
 
 def update_dataset(dataset_name):
@@ -318,13 +282,10 @@ def update_dataset(dataset_name):
     dataset = Dataset.query.get(dataset_name)
 
     fetch_dataset_metadata(dataset)
+    fetch_resource(dataset.resources[0])
     db.session.commit()
 
-    # TODO: check if the following line is the source of the mismatch problem - passing the URL seems very dodgy!!
-    need_update = [r for r in dataset.resources
-                   if not r.last_succ or r.last_succ < dataset.last_modified]
-    for resource in need_update:
-        queue.enqueue(update_resource, args=(resource.url,), result_ttl=0)
+    queue.enqueue(update_activities, args=(dataset_name,), result_ttl=0, timeout=100000)
 
 
 @manager.cli.command('dataset_list')
@@ -353,8 +314,6 @@ def documents(verbose=False):
                 fetch_resource(resource)
             except IOError:
                 print("Failed to fetch %s" % resource.url,)
-            if verbose:
-                print(resource.last_status_code)
             db.session.commit()
 
 
