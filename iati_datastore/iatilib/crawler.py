@@ -22,17 +22,22 @@ manager = Blueprint('crawler', __name__)
 manager.cli.short_help = "Crawl IATI registry"
 
 
-def fetch_dataset_list():
+def fetch_dataset_list(modified_since=None):
     '''
     Fetches datasets from CKAN and stores them in the DB. Either passed a datetime to filter on more recently modified
     datasets, or updates the entire set. Used in update() to update the Flask job queue. Uses CKAN metadata to determine
     if an activity is active or deleted, and tries to determine if a dataset is actually new or not.
+    :param modified_since:
     :return:
     '''
     existing_datasets = Dataset.query.all()
     existing_ds_names = set((ds.publisher, ds.name) for ds in existing_datasets)
 
+    if modified_since and iatikit.data()._last_updated > modified_since:
+        return Dataset.query.filter(sa.sql.false())
+
     iatikit.download.data()
+
     package_list = [
         tuple(x[:-4].rsplit('/', 2)[1:])
         for x in glob('__iatikitcache__/registry/data/*/*')]
@@ -463,8 +468,9 @@ def enqueue(careful=False):
 @click.option('--limit', "limit", type=int,
               help="max no of datasets to update")
 @click.option('-v', '--verbose', "verbose")
+@click.option('-t', '--timedelta', "timedelta", type=int)
 @manager.cli.command('update')
-def update(verbose=False, limit=None, dataset=None):
+def update(verbose=False, limit=None, dataset=None, timedelta=None):
     """
     Fetch all datasets from IATI registry; update any that have changed.
     This is done by adding to the dataset table, and then adding an update command to
@@ -475,12 +481,12 @@ def update(verbose=False, limit=None, dataset=None):
     if dataset:
         print("Enqueuing {0} for update".format(dataset))
         queue.enqueue(update_dataset, args=(dataset,), result_ttl=0)
-        res = Resource.query.filter(Resource.dataset_id == dataset)
-        for resource in res:
-            queue.enqueue(update_resource, args=(resource.url,), result_ttl=0)
-            queue.enqueue(update_activities, args=(resource.url,), result_ttl=0, timeout=1000)
     else:
-        datasets = fetch_dataset_list()
+        if timedelta:
+            modified_since = datetime.datetime.now() - datetime.timedelta(timedelta)
+        else:
+            modified_since = None
+        datasets = fetch_dataset_list(modified_since)
         db.session.commit()
 
         if limit:
