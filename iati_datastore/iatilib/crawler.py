@@ -5,11 +5,9 @@ import hashlib
 import logging
 import traceback
 
+import iatikit
 import sqlalchemy as sa
-import requests
-import ckanapi
 from dateutil.parser import parse as date_parser
-from werkzeug.http import http_date
 from flask import Blueprint
 import click
 
@@ -19,10 +17,6 @@ from iatilib.loghandlers import DatasetMessage as _
 
 log = logging.getLogger("crawler")
 
-CKAN_WEB_BASE = 'https://iatiregistry.org/dataset/%s'
-CKAN_API = 'https://iatiregistry.org'
-
-registry = ckanapi.RemoteCKAN(CKAN_API, get_only=True)
 
 manager = Blueprint('crawler', __name__)
 manager.cli.short_help = "Crawl IATI registry"
@@ -38,9 +32,10 @@ def fetch_dataset_list():
     existing_datasets = Dataset.query.all()
     existing_ds_names = set((ds.publisher, ds.name) for ds in existing_datasets)
 
+    iatikit.download.data()
     package_list = [
         tuple(x[:-4].rsplit('/', 2)[1:])
-        for x in glob('registry/data/*/*')]
+        for x in glob('__iatikitcache__/registry/data/*/*')]
     incoming_ds_names = set(package_list)
 
     new_datasets = [Dataset(name=n, publisher=p) for p, n
@@ -81,7 +76,7 @@ def delete_datasets(datasets):
 
 
 def fetch_dataset_metadata(dataset):
-    fname = 'registry/metadata/{0}/{1}.json'.format(
+    fname = '__iatikitcache__/registry/metadata/{0}/{1}.json'.format(
         dataset.publisher, dataset.name)
     with open(fname) as f:
         ds_entity = json.load(f)
@@ -120,7 +115,7 @@ def fetch_resource(resource):
     :return:
     '''
     dataset = Dataset.query.get(resource.dataset_id)
-    fname = 'registry/data/{0}/{1}.xml'.format(
+    fname = '__iatikitcache__/registry/data/{0}/{1}.xml'.format(
         dataset.publisher, dataset.name)
     with open(fname, 'rb') as f:
         content = f.read()
