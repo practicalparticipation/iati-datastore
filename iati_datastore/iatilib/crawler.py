@@ -1,5 +1,5 @@
 import json
-from glob import glob
+import glob
 import datetime
 import hashlib
 import logging
@@ -22,25 +22,18 @@ manager = Blueprint('crawler', __name__)
 manager.cli.short_help = "Crawl IATI registry"
 
 
-def fetch_dataset_list(modified_since=None):
+def fetch_dataset_list():
     '''
-    Fetches datasets from CKAN and stores them in the DB. Either passed a datetime to filter on more recently modified
-    datasets, or updates the entire set. Used in update() to update the Flask job queue. Uses CKAN metadata to determine
-    if an activity is active or deleted, and tries to determine if a dataset is actually new or not.
-    :param modified_since:
+    Fetches datasets from iatikit and stores them in the DB. Used in update() to update the Flask job queue. Uses CKAN metadata to determine
+    if an activity is active or deleted.
     :return:
     '''
     existing_datasets = Dataset.query.all()
     existing_ds_names = set((ds.publisher, ds.name) for ds in existing_datasets)
 
-    if modified_since and iatikit.data()._last_updated > modified_since:
-        return Dataset.query.filter(sa.sql.false())
-
-    iatikit.download.data()
-
     package_list = [
         tuple(x[:-4].rsplit('/', 2)[1:])
-        for x in glob('__iatikitcache__/registry/data/*/*')]
+        for x in glob.glob('__iatikitcache__/registry/data/*/*')]
     incoming_ds_names = set(package_list)
 
     new_datasets = [Dataset(name=n, publisher=p) for p, n
@@ -288,35 +281,6 @@ def update_dataset(dataset_name):
     queue.enqueue(update_activities, args=(dataset_name,), result_ttl=0, timeout=100000)
 
 
-@manager.cli.command('dataset_list')
-def dataset_list():
-    fetch_dataset_list()
-    db.session.commit()
-
-
-@manager.cli.command('metadata')
-def metadata(verbose=False):
-    for dataset in Dataset.query.all():
-        if verbose:
-            print("Fetching metadata for %s" % dataset.name)
-        fetch_dataset_metadata(dataset)
-
-
-@manager.cli.command('documents')
-def documents(verbose=False):
-    for dataset in Dataset.query.all():
-        if verbose:
-            print("Fetching documents for %s" % dataset.name)
-        for resource in dataset.resources:
-            if verbose:
-                print("Fetching %s" % resource.url,)
-            try:
-                fetch_resource(resource)
-            except IOError:
-                print("Failed to fetch %s" % resource.url,)
-            db.session.commit()
-
-
 def status_line(msg, filt, tot):
     total_count = tot.count()
     filtered_count = filt.count()
@@ -330,22 +294,6 @@ def status_line(msg, filt, tot):
             pct=ratio,
             msg=msg
     )
-
-
-@click.option('--dataset', 'dataset', type=str)
-@manager.cli.command('manual_update')
-def manual_update(dataset=None):
-    """Update a single dataset"""
-    if dataset:
-        print("Updating {0}".format(dataset))
-        ds = Dataset.query.get(dataset)
-        fetch_dataset_metadata(ds)
-        db.session.commit()
-        res = Resource.query.filter(Resource.dataset_id == dataset)
-        for resource in res:
-            fetch_resource(resource)
-            db.session.commit()
-            update_activities(resource.url)
 
 
 @manager.cli.command('status')
@@ -422,55 +370,35 @@ def status():
     ))
 
 
-@manager.cli.command('enqueue')
-def enqueue(careful=False):
+def download_data():
+    iatikit.download.data()
     queue = rq.get_queue()
-    if careful and queue.count > 0:
-        print("%d jobs on queue, not adding more" % queue.count)
-        return
+    print("Enqueuing a full registry update")
+    queue.enqueue(update_registry, result_ttl=0)
 
-    yesterday = datetime.datetime.utcnow() - datetime.timedelta(days=1)
 
-    unfetched_resources = Resource.query.filter(
-            sa.or_(
-                    Resource.last_fetch == None,
-                    sa.and_(
-                            Resource.last_succ == None,
-                            Resource.last_fetch <= yesterday
-                    )))
-    print("Enqueuing {0:d} unfetched resources".format(
-            unfetched_resources.count()
-    ))
-    for resource in unfetched_resources:
-        queue.enqueue(
-                update_resource,
-                args=(resource.url,),
-                result_ttl=0)
+@manager.cli.command('download')
+def download():
+    """
+    Download all IATI data from IATI Data Dump.
+    """
+    queue = rq.get_queue()
+    print("Enqueuing a download from IATI Data Dump")
+    queue.enqueue(download_data, result_ttl=0)
 
-    ood_resources = Resource.query.filter(sa.or_(
-            Resource.last_parsed == None,
-            Resource.activities.any(Activity.created < Resource.last_parsed)
-    ))
 
-    print("Enqueuing {0:d} resources with out of date activities".format(
-            ood_resources.count()
-    ))
-    for resource in ood_resources:
-        queue.enqueue(
-                update_activities,
-                args=(resource.url,),
-                result_ttl=0,
-                timeout=100000)
+def update_registry():
+    queue = rq.get_queue()
+    datasets = fetch_dataset_list()
+    print("Enqueuing %d datasets for update" % datasets.count())
+    for dataset in datasets:
+        queue.enqueue(update_dataset, args=(dataset.name,), result_ttl=0)
 
 
 @click.option('--dataset', 'dataset', type=str,
               help="update a single dataset")
-@click.option('--limit', "limit", type=int,
-              help="max no of datasets to update")
-@click.option('-v', '--verbose', "verbose")
-@click.option('-t', '--timedelta', "timedelta", type=int)
 @manager.cli.command('update')
-def update(verbose=False, limit=None, dataset=None, timedelta=None):
+def update(dataset=None):
     """
     Fetch all datasets from IATI registry; update any that have changed.
     This is done by adding to the dataset table, and then adding an update command to
@@ -482,20 +410,5 @@ def update(verbose=False, limit=None, dataset=None, timedelta=None):
         print("Enqueuing {0} for update".format(dataset))
         queue.enqueue(update_dataset, args=(dataset,), result_ttl=0)
     else:
-        if timedelta:
-            modified_since = datetime.datetime.now() - datetime.timedelta(timedelta)
-        else:
-            modified_since = None
-        datasets = fetch_dataset_list(modified_since)
-        db.session.commit()
-
-        if limit:
-            datasets = datasets.limit(limit)
-
-        print("Enqueuing %d datasets for update" % datasets.count())
-
-        for dataset in datasets:
-            if verbose:
-                print("Enqueuing %s" % dataset.name)
-            queue.enqueue(update_dataset, args=(dataset.name,), result_ttl=0)
-    db.session.close()
+        print("Enqueuing a full registry update")
+        queue.enqueue(update_registry, result_ttl=0)
