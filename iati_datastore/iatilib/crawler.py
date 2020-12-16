@@ -39,14 +39,14 @@ def fetch_dataset_list():
     :return:
     '''
     existing_datasets = Dataset.query.all()
-    existing_ds_names = set(ds.name for ds in existing_datasets)
+    existing_ds_names = set((ds.publisher, ds.name) for ds in existing_datasets)
 
     package_list = [
-        x[:-4].rsplit('/', 1)[-1]
+        tuple(x[:-4].rsplit('/', 2)[1:])
         for x in glob('registry/data/*/*')]
     incoming_ds_names = set(package_list)
 
-    new_datasets = [Dataset(name=n) for n
+    new_datasets = [Dataset(name=n, publisher=p) for p, n
                     in incoming_ds_names - existing_ds_names]
     all_datasets = existing_datasets + new_datasets
     for dataset in all_datasets:
@@ -57,7 +57,7 @@ def fetch_dataset_list():
 
     deleted_ds_names = existing_ds_names - incoming_ds_names
     if deleted_ds_names:
-        delete_datasets(deleted_ds_names)
+        delete_datasets([d[1] for d in deleted_ds_names])
 
     all_datasets = Dataset.query
     return all_datasets
