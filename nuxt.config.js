@@ -1,4 +1,8 @@
-
+const routerBase = process.env.DEPLOY_ENV === 'WITH_SUBFOLDER' ? {
+  router: {
+    base: '/vuejs-datastore-query-builder/'
+  }
+} : {}
 export default {
   mode: 'spa',
   /*
@@ -59,5 +63,6 @@ export default {
     */
     extend (config, ctx) {
     }
-  }
+  },
+  ...routerBase
 }
