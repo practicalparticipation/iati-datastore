@@ -153,17 +153,17 @@
             <b-col>
               <b-form-group
               label="Start date (after)">
-                <b-input type="date"
+                <b-form-datepicker
                   v-model="filters['start-date__gt']">
-                </b-input>
+                </b-form-datepicker>
               </b-form-group>
             </b-col>
             <b-col>
               <b-form-group
               label="Start date (before)">
-                <b-input type="date"
+                <b-form-datepicker
                   v-model="filters['start-date__lt']">
-                </b-input>
+                </b-form-datepicker>
               </b-form-group>
             </b-col>
           </b-row>
@@ -171,17 +171,17 @@
             <b-col>
               <b-form-group
               label="End date (after)">
-                <b-input type="date"
+                <b-form-datepicker
                   v-model="filters['end-date__gt']">
-                </b-input>
+                </b-form-datepicker>
               </b-form-group>
             </b-col>
             <b-col>
               <b-form-group
               label="End date (before)">
-                <b-input type="date"
+                <b-form-datepicker
                   v-model="filters['end-date__lt']">
-                </b-input>
+                </b-form-datepicker>
               </b-form-group>
             </b-col>
           </b-row>
@@ -230,7 +230,27 @@
         <b-row>
           <b-col>
             <b-alert variant="success" show>
-              <strong>Your link:</strong> <a :href="queryLink" target="_blank">{{ queryLink }} </a>
+              <strong>Your link:</strong>
+              <b-input-group>
+                <b-input
+                  type="plaintext"
+                  :value="queryLink"
+                  id="query-link">
+                </b-input>
+                <b-input-group-append>
+                  <b-btn
+                    variant="secondary"
+                    @click="copyLink"
+                    id="query-link-copy">Copy</b-btn>
+                </b-input-group-append>
+              </b-input-group>
+              <b-tooltip
+                disabled
+                ref="tooltip"
+                id="query-link-copy-tooltip"
+                target="query-link-copy">
+                Copied!
+              </b-tooltip>
             </b-alert>
           </b-col>
         </b-row>
@@ -261,6 +281,7 @@ export default {
         'reporting-org.type': [],
         'recipient-country': [],
         'recipient-region': [],
+        'sector': [],
         'start-date__lt': null,
         'start-date__gt': null,
         'end-date__lt': null,
@@ -373,6 +394,14 @@ export default {
     }
   },
   methods: {
+    copyLink() {
+      navigator.clipboard.writeText(this.queryLink)
+      this.$root.$emit('bv::show::tooltip', 'query-link-copy-tooltip')
+      const hideTooltip = () => {
+        this.$root.$emit('bv::hide::tooltip', 'query-link-copy-tooltip')
+      }
+      setTimeout(hideTooltip, 1000)
+    },
     formatNumber(number) {
       return parseFloat(number).toLocaleString()
     },
