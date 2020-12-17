@@ -239,6 +239,8 @@
   </b-container>
 </template>
 <script>
+
+import { get } from 'axios'
 export default {
   data() {
     return {
@@ -365,7 +367,7 @@ export default {
       this.filters = {}
     },
     async loadHealthData() {
-      await this.$axios.get(`https://datastore.codeforiati.org/api/1/about`)
+      await get(`https://datastore.codeforiati.org/api/1/about`)
         .then(response => {
           this.healthData = response.data
         })
@@ -373,7 +375,7 @@ export default {
     },
     async loadData() {
       this.codelistURLs.forEach(codelist => {
-        this.$axios.get(`https://codelists.codeforiati.org/api/json/en/${codelist}.json`)
+        get(`https://codelists.codeforiati.org/api/json/en/${codelist}.json`)
         .then(response => {
           this.codelists[codelist] = response.data.data.map(item => {
             return {
@@ -383,7 +385,7 @@ export default {
           })
         })
       })
-      this.$axios.get(`https://codeforiati.org/vuejs-datastore-query-builder/publishers.json`)
+      get(`https://codeforiati.org/vuejs-datastore-query-builder/publishers.json`)
       .then(response => {
         this.codelists['ReportingOrg'] = response.data.data.map(publisher => {
           return {
