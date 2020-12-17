@@ -16,7 +16,7 @@
     <footer class="bg-light p-4">
       <b-container>
         <b-row>
-          <b-col>
+          <b-col md="6">
             <p>Based on the original <a href="http://datastore.iatistandard.org/query/">Datastore Query Builder</a>, which is free software licenced under the GNU General Public License.<br/>
             <ul>
               <li><a href="https://github.com/codeforIATI/datastore-query-builder">Datastore Query Builder on GitHub</a></li>
@@ -24,7 +24,7 @@
             </ul>
             </p>
           </b-col>
-          <b-col class="text-right">
+          <b-col class="text-md-right" md="6">
             IATI Datastore Classic is a project of <a href="https://codeforiati.org">Code for IATI</a>
           </b-col>
         </b-row>
