@@ -189,7 +189,7 @@
         <h3>How would you like to view this information?</h3>
         <p>These options allow you to configure the way in which your data is disaggregated, making different sorts of analysis possible.</p>
         <b-row>
-          <b-col>
+          <b-col md="4">
             <b-form-group
               label="Choose format">
               <b-radio-group
@@ -199,7 +199,7 @@
               </b-radio-group>
             </b-form-group>
           </b-col>
-          <b-col>
+          <b-col md="4">
             <b-form-group
               label="Repeat rows">
               <b-radio-group
@@ -209,13 +209,13 @@
               </b-radio-group>
             </b-form-group>
           </b-col>
-          <b-col>
+          <b-col md="4">
             <b-form-group
               label="Choose sample size">
               <b-radio-group
                 stacked
-                v-model="sampleSize"
-                :options="sampleSizeOptions">
+                v-model="stream"
+                :options="streamOptions">
               </b-radio-group>
             </b-form-group>
           </b-col>
@@ -309,15 +309,15 @@ export default {
           'description': "Each Activity, Transaction or Budget row is repeated for each separate Country reported. The corresponding percentage for the sector split is reported in a separate column. This allows you to easily add arithmetic to your spreadsheet to calculate values proportionately."
         }
       ],
-      sampleSize: '50',
-      sampleSizeOptions: [
+      stream: false,
+      streamOptions: [
         {
-          'value': '50',
+          'value': false,
           'text': '50 rows',
           'description': "Preview your selection by viewing only the first 20 rows of data."
         },
         {
-          'value': 'all',
+          'value': true,
           'text': 'Entire selection',
           'description': "Preview your selection by viewing only the first 20 rows of data."
         }
@@ -330,10 +330,23 @@ export default {
   },
   computed: {
     urlQuery() {
+      var _query = {...this.urlQueryFilters}
+      if ((this.grouping) && (this.grouping != '')) {
+        _query.grouping = this.grouping
+      }
+      if ((this.stream) && (this.stream == true)) {
+        _query.stream = this.stream
+      }
+      if ((this.format) && (this.format != 'activity')) {
+        _query.format = this.format
+      }
+      return _query
+    },
+    urlQueryFilters() {
       var _query = {}
       Object.entries(this.filters).forEach(item => {
         if ((item[1]!=null) && (item[1].length > 0)) {
-          if (typeof(item[1])=='object') {
+          if ((typeof(item[1])=='object') && (item[1] != null)) {
             _query[item[0]] = item[1].join("|")
           } else {
             _query[item[0]] = item[1]
@@ -351,11 +364,11 @@ export default {
       })
     },
     queryLink() {
-      const _params = Object.entries(this.urlQuery).map(item => {
+      const _params = Object.entries(this.urlQueryFilters).map(item => {
         return `${item[0]}=${item[1]}`
       }).join("&")
       const params = _params.length > 0 ? `?${_params}` : ''
-      const stream = this.sampleSize == 'all' ? '&stream=True' : ''
+      const stream = this.stream == true ? '&stream=True' : ''
       return `${this.baseURL}${this.format}${this.grouping}.csv${params}${stream}`
     }
   },
@@ -402,7 +415,19 @@ export default {
     setupFilters() {
       Object.keys(this.$route.query).forEach(item => {
         if (item in this.filters) {
-          this.filters[item] = this.$route.query[item]
+          if ((typeof(this.filters[item])=='object') && (this.filters[item] != null)) {
+            this.filters[item] = this.$route.query[item].split("|")
+          } else {
+            this.filters[item] = this.$route.query[item]
+          }
+        } else {
+          if (item == 'grouping') {
+            this.grouping = this.$route.query[item]
+          } else if (item == 'stream') {
+            this.stream = true
+          } else if (item=='format') {
+            this.format = this.$route.query[item]
+          }
         }
       })
     }
@@ -410,6 +435,21 @@ export default {
   watch: {
     filters: {
       deep: true,
+      handler: function(newFilters) {
+        this.updateParams()
+      }
+    },
+    grouping: {
+      handler: function(newFilters) {
+        this.updateParams()
+      }
+    },
+    stream: {
+      handler: function(newFilters) {
+        this.updateParams()
+      }
+    },
+    format: {
       handler: function(newFilters) {
         this.updateParams()
       }
