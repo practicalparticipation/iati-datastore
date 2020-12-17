@@ -383,7 +383,7 @@ export default {
           })
         })
       })
-      this.$axios.get(`/publishers.json`)
+      this.$axios.get(`publishers.json`)
       .then(response => {
         this.codelists['ReportingOrg'] = response.data.data.map(publisher => {
           return {
