@@ -383,7 +383,7 @@ export default {
           })
         })
       })
-      this.$axios.get(`publishers.json`)
+      this.$axios.get(`https://codeforiati.org/vuejs-datastore-query-builder/publishers.json`)
       .then(response => {
         this.codelists['ReportingOrg'] = response.data.data.map(publisher => {
           return {
