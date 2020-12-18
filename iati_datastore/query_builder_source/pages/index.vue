@@ -47,7 +47,7 @@
       <b-row>
         <b-col>
           <h1>
-            Get the data
+            <a id="get-the-data" href="#get-the-data">Get the data</a>
           </h1>
           <p>You can obtain data from IATI Datastore Classic in various formats.</p>
           <p>You can choose to filter based on which organisation is reporting the information, where the activity is happening, and the activity's sector. You can choose to output individual activities, transactions or budgets.</p>
