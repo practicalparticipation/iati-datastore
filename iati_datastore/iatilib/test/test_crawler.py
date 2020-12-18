@@ -11,37 +11,46 @@ from iatilib.model import Dataset, Resource, Activity, DeletedActivity
 
 
 class TestCrawler(AppTestCase):
+    @mock.patch('iatikit.data')
     @mock.patch('glob.glob')
-    def test_fetch_package_list(self, mock):
-        mock.return_value = [
+    def test_fetch_package_list(self, glob_mock, iatikit_mock):
+        glob_mock.return_value = [
             "__iatikitcache__/registry/data/tst/tst-a.xml",
             "__iatikitcache__/registry/data/tst/tst-b.xml",
         ]
+        data_mock = iatikit_mock.return_value
+        data_mock.last_updated = datetime.datetime.utcnow()
         datasets = crawler.fetch_dataset_list()
         self.assertIn("tst-a", [ds.name for ds in datasets])
         self.assertIn("tst-b", [ds.name for ds in datasets])
 
+    @mock.patch('iatikit.data')
     @mock.patch('glob.glob')
-    def test_update_adds_datasets(self, mock):
-        mock.return_value = [
+    def test_update_adds_datasets(self, glob_mock, iatikit_mock):
+        glob_mock.return_value = [
             "__iatikitcache__/registry/data/tst/tst-a.xml",
         ]
+        data_mock = iatikit_mock.return_value
+        data_mock.last_updated = datetime.datetime.utcnow()
         datasets = crawler.fetch_dataset_list()
-        mock.return_value = [
+        glob_mock.return_value = [
             "__iatikitcache__/registry/data/tst/tst-a.xml",
             "__iatikitcache__/registry/data/tst/tst-b.xml",
         ]
         datasets = crawler.fetch_dataset_list()
         self.assertEquals(2, datasets.count())
 
+    @mock.patch('iatikit.data')
     @mock.patch('glob.glob')
-    def test_update_deletes_datasets(self, mock):
-        mock.return_value = [
+    def test_update_deletes_datasets(self, glob_mock, iatikit_mock):
+        glob_mock.return_value = [
             "__iatikitcache__/registry/data/tst/tst-a.xml",
             "__iatikitcache__/registry/data/tst/tst-b.xml",
         ]
+        data_mock = iatikit_mock.return_value
+        data_mock.last_updated = datetime.datetime.utcnow()
         datasets = crawler.fetch_dataset_list()
-        mock.return_value = [
+        glob_mock.return_value = [
             "__iatikitcache__/registry/data/tst/tst-a.xml",
         ]
         datasets = crawler.fetch_dataset_list()
@@ -83,7 +92,10 @@ class TestCrawler(AppTestCase):
         db.session.commit()
         self.assertEquals(3, Resource.query.count())
 
-    def test_fetch_resource_succ(self):
+    @mock.patch('iatikit.data')
+    def test_fetch_resource_succ(self, iatikit_mock):
+        data_mock = iatikit_mock.return_value
+        data_mock.last_updated = datetime.datetime.utcnow()
         fac.DatasetFactory.create(
             name='tst-a',
             resources=[fac.ResourceFactory.create(
@@ -191,8 +203,9 @@ class TestCrawler(AppTestCase):
             resource = crawler.parse_resource(resource)
             self.assertEquals(None, resource.last_parsed)
 
+    @mock.patch('iatikit.data')
     @mock.patch('glob.glob')
-    def test_deleted_activities(self, mock):
+    def test_deleted_activities(self, glob_mock, iatikit_mock):
         fac.DatasetFactory.create(
             name='deleteme',
             resources=[fac.ResourceFactory.create(
@@ -206,7 +219,9 @@ class TestCrawler(AppTestCase):
             )]
         )
         self.assertIn("deleteme", [ds.name for ds in Dataset.query.all()])
-        mock.return_value = [
+        data_mock = iatikit_mock.return_value
+        data_mock.last_updated = datetime.datetime.utcnow()
+        glob_mock.return_value = [
             "__iatikitcache__/registry/data/tst/tst-a.xml",
             "__iatikitcache__/registry/data/tst/tst-b.xml",
         ]
