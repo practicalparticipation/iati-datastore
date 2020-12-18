@@ -63,7 +63,7 @@ def build_query_builder(deploy_url=None):
     """Build query builder (front page)."""
     current_path = dirname(dirname(realpath(__file__)))
     cwd = join(current_path, 'query_builder_source')
-    #subprocess.run(['npm', 'i'], cwd=cwd)
+    subprocess.run(['npm', 'i'], cwd=cwd)
 
     if deploy_url is not None:
         env = {
