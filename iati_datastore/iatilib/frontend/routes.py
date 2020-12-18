@@ -7,11 +7,6 @@ from flask import Blueprint, redirect, \
 routes = Blueprint('routes', __name__, template_folder='templates')
 
 
-@routes.route('/')
-def homepage():
-    return redirect(url_for('routes.docs', path=''))
-
-
 @routes.route('/error/')
 def error():
     return redirect(url_for('routes.docs', path='api/error/'))
@@ -26,6 +21,15 @@ def api_latest():
 @routes.route('/docs/<path:path>')
 def docs(path=''):
     folder = join('frontend', 'docs', 'dirhtml')
+    if path.endswith('/') or path == '':
+        path += 'index.html'
+    return send_from_directory(folder, path)
+
+
+@routes.route('/')
+@routes.route('/<path:path>')
+def homepage(path=''):
+    folder = join('frontend', 'querybuilder')
     if path.endswith('/') or path == '':
         path += 'index.html'
     return send_from_directory(folder, path)
