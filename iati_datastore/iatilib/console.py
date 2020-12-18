@@ -56,6 +56,15 @@ def build_docs():
     subprocess.run(['make', 'dirhtml'], cwd=cwd)
 
 
+@cli.command()
+def build_query_builder():
+    """Build query builder (front page)."""
+    current_path = dirname(dirname(realpath(__file__)))
+    cwd = join(current_path, 'query_builder_source')
+    subprocess.run(['npm', 'i'], cwd=cwd)
+    subprocess.run(['npm', 'run', 'generate'], cwd=cwd)
+
+
 @click.option(
         '-x', '--fail-on-xml-errors', "fail_xml")
 @click.option(
