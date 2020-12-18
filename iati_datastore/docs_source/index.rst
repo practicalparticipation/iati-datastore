@@ -31,7 +31,7 @@ How to access the Datastore
 
 * :doc:`An API </api/>` is available that enables people to construct queries.
 
-* For those wishing to just access the data in CSV format, an :doc:`online form </csv-query-builder/>` is available to assist with queries
+* For those wishing to just access the data in CSV format, an :doc:`online form </#get-the-data>` is available to assist with queries
 
 Are there any limitations on the Datastore?
 -------------------------------------------
