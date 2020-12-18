@@ -1,4 +1,5 @@
 /iati_datastore/iatilib/frontend/docs
+/iati_datastore/iatilib/frontend/querybuilder
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
