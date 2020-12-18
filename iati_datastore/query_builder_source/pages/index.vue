@@ -236,7 +236,7 @@
                 <strong>Your link:</strong>
                 <b-input-group>
                   <b-input
-                    type="plaintext"
+                    readonly
                     :value="queryLink"
                     id="query-link">
                   </b-input>
