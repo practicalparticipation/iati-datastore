@@ -4,7 +4,7 @@
       <b-jumbotron
         header="IATI Datastore Classic"
         lead="The classic version of the IATI Datastore, reloaded."
-        class="mb-0 mt-2 text-center"
+        class="mb-0 mt-0 text-center"
         bg-variant="dark"
         text-variant="light"
         >
