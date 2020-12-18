@@ -25,9 +25,10 @@ def list_routes():
         r for r in current_app.url_map.iter_rules()
         if r.endpoint.startswith('api1.')]
     for rule in rules:
-        options = {}
-        for arg in rule.arguments:
-            options[arg] = "[{0}]".format(arg)
+        options = {
+            arg: arg.upper()
+            for arg in rule.arguments
+        }
         url = url_for(rule.endpoint, _external=True, **options)
         urls.append(url)
     urls = sorted(urls)
@@ -284,10 +285,10 @@ class ActivityView(DataStoreView):
 
     def get(self, format):
         forms = {
-            ".xml": (serialize.xml, "application/xml"),
-            ".json": (serialize.json, "application/json"),  # rfc4627
-            ".db.json": (serialize.datastore_json, "application/json"),
-            ".csv": (serialize.csv, "text/csv")  # rfc4180
+            "xml": (serialize.xml, "application/xml"),
+            "json": (serialize.json, "application/json"),  # rfc4627
+            "db.json": (serialize.datastore_json, "application/json"),
+            "csv": (serialize.csv, "text/csv")  # rfc4180
         }
         if format not in forms:
             abort(404)
@@ -296,7 +297,7 @@ class ActivityView(DataStoreView):
 
 class DataStoreCSVView(DataStoreView):
     def get(self, format):
-        if format != ".csv":
+        if format != "csv":
             abort(404)
         return self.get_response()
 
@@ -347,43 +348,43 @@ activity_view = ActivityView.as_view('activity')
 
 api.add_url_rule(
     '/access/activity/',
-    defaults={"format": ".json"},
+    defaults={"format": "json"},
     view_func=activity_view
 )
 
 api.add_url_rule(
-    '/access/activity<format>',
+    '/access/activity.<format>',
     view_func=activity_view
 )
 
 api.add_url_rule(
-    '/access/activity/by_country<format>',
+    '/access/activity/by_country.<format>',
     view_func=ActivityByCountryView.as_view('activity_by_country'))
 
 api.add_url_rule(
-    '/access/activity/by_sector<format>',
+    '/access/activity/by_sector.<format>',
     view_func=ActivityBySectorView.as_view('activity_by_sector'))
 
 api.add_url_rule(
-    '/access/transaction<format>',
+    '/access/transaction.<format>',
     view_func=TransactionsView.as_view('transaction_list'))
 
 api.add_url_rule(
-    '/access/transaction/by_country<format>',
+    '/access/transaction/by_country.<format>',
     view_func=TransactionsByCountryView.as_view('transaction_by_country'))
 
 api.add_url_rule(
-    '/access/transaction/by_sector<format>',
+    '/access/transaction/by_sector.<format>',
     view_func=TransactionsBySectorView.as_view('transaction_by_sector'))
 
 api.add_url_rule(
-    '/access/budget<format>',
+    '/access/budget.<format>',
     view_func=BudgetsView.as_view('budget_list'))
 
 api.add_url_rule(
-    '/access/budget/by_country<format>',
+    '/access/budget/by_country.<format>',
     view_func=BudgetsByCountryView.as_view('budget_by_country'))
 
 api.add_url_rule(
-    '/access/budget/by_sector<format>',
+    '/access/budget/by_sector.<format>',
     view_func=BudgetsBySectorView.as_view('budget_by_sector'))
