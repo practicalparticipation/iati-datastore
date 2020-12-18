@@ -348,7 +348,7 @@ export default {
         }
       ],
       codelistURLs: ['Country', 'Region', 'Sector', 'OrganisationType'],
-      baseURL: "api/1/access/"
+      baseURL: `${this.$axios.defaults.baseURL}/api/1/access/`
     }
   },
   components: {
