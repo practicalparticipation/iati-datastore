@@ -347,8 +347,7 @@ export default {
           'description': "Preview your selection by viewing only the first 20 rows of data."
         }
       ],
-      codelistURLs: ['Country', 'Region', 'Sector', 'OrganisationType'],
-      apiURL: `${this.baseURL}/api/1/access/`
+      codelistURLs: ['Country', 'Region', 'Sector', 'OrganisationType']
     }
   },
   components: {
@@ -356,6 +355,9 @@ export default {
   computed: {
     baseURL() {
       return this.$axios.defaults.baseURL
+    },
+    apiURL() {
+      return `${this.baseURL}/api/1/access/`
     },
     urlQuery() {
       var _query = {...this.urlQueryFilters}
