@@ -20,11 +20,6 @@ class TestDocs(ClientTestCase):
 
 
 class TestDocsRedirects(ClientTestCase):
-    def test_homepage_redirect(self):
-        resp = self.client.get('/')
-        self.assertEquals(302, resp.status_code)
-        self.assertRegex(resp.headers['Location'], '/docs/$')
-
     def test_error_api_redirect(self):
         resp = self.client.get('/error/')
         self.assertEquals(302, resp.status_code)

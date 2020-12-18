@@ -1,3 +1,4 @@
+import os
 from os.path import dirname, realpath, join
 import codecs
 import logging
@@ -54,6 +55,24 @@ def build_docs():
     current_path = dirname(dirname(realpath(__file__)))
     cwd = join(current_path, 'docs_source')
     subprocess.run(['make', 'dirhtml'], cwd=cwd)
+
+
+@click.option('--deploy-url', 'deploy_url', type=str)
+@cli.command()
+def build_query_builder(deploy_url=None):
+    """Build query builder (front page)."""
+    current_path = dirname(dirname(realpath(__file__)))
+    cwd = join(current_path, 'query_builder_source')
+    subprocess.run(['npm', 'i'], cwd=cwd)
+
+    if deploy_url is not None:
+        env = {
+            **os.environ,
+            "IATI_DATASTORE_DEPLOY_URL": deploy_url,
+        }
+        subprocess.run(['npm', 'run', 'generate'], cwd=cwd, env=env)
+    else:
+        subprocess.run(['npm', 'run', 'generate'], cwd=cwd)
 
 
 @click.option(
