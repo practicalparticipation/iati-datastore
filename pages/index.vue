@@ -1,262 +1,266 @@
 <template>
-  <b-container class="bg-light p-4">
-    <b-jumbotron
-      header="IATI Datastore Classic"
-      lead="The classic version of the IATI Datastore, reloaded."
-      class="mt-2 text-center"
-      bg-variant="dark"
-      text-variant="light"
-      border-variant="white"
-      >
-      <template v-if="busy">
-        <b-spinner label="Checking health..." variant="secondary"></b-spinner>
-        <br />
-        <p class="text-center">Checking Datastore status...</p>
-      </template>
-      <template v-else>
-        <p class="lead">
-          Access <code>{{ formatNumber(healthData.indexed_activities) }}</code> activities and <code>{{ formatNumber(healthData.indexed_transactions) }}</code> transactions.
-        </p>
-        <hr />
-        <h5>
+  <div>
+    <b-container class="bg-dark ml-0 mr-0" fluid>
+      <b-jumbotron
+        header="IATI Datastore Classic"
+        lead="The classic version of the IATI Datastore, reloaded."
+        class="mb-0 mt-2 text-center"
+        bg-variant="dark"
+        text-variant="light"
+        >
+        <b-container>
+          <template v-if="busy">
+            <b-spinner label="Checking health..." variant="secondary"></b-spinner>
+            <br />
+            <p class="text-center">Checking Datastore status...</p>
+          </template>
+          <template v-else>
+            <p class="lead">
+              Access <code>{{ formatNumber(healthData.indexed_activities) }}</code> activities and <code>{{ formatNumber(healthData.indexed_transactions) }}</code> transactions.
+            </p>
+            <hr />
+            <h5>
+              <b-row>
+                <b-col class="bg-success p-2" v-if="healthData.ok == true" md="6">
+                  Datastore fully operational
+                </b-col>
+                <b-col class="bg-danger p-2" v-else md="6">
+                    Datastore has some problems
+                </b-col>
+                <b-col class="bg-secondary p-2" md="6">
+                  Last updated {{ healthData.status_data.last_parsed }}
+                </b-col>
+              </b-row>
+            </h5>
+          </template>
+          <hr />
           <b-row>
-            <b-col class="bg-success p-2" v-if="healthData.ok == true" md="6">
-              Datastore fully operational
-            </b-col>
-            <b-col class="bg-danger p-2" v-else md="6">
-                Datastore has some problems
-            </b-col>
-            <b-col class="bg-secondary p-2" md="6">
-              Last updated {{ healthData.status_data.last_parsed }}
+            <b-col>
+              <b-btn href="https://datastore.codeforiati.org/docs/" variant="primary">View documentation</b-btn>
+              <b-btn href="https://datastore.codeforiati.org/api/" variant="warning">View API</b-btn>
             </b-col>
           </b-row>
-        </h5>
-      </template>
-      <hr />
+        </b-container>
+      </b-jumbotron>
+    </b-container>
+    <b-container class="bg-light p-4">
       <b-row>
         <b-col>
-          <b-btn href="https://datastore.codeforiati.org/docs/" variant="primary">View documentation</b-btn>
-          <b-btn href="https://datastore.codeforiati.org/api/" variant="warning">View API</b-btn>
+          <h1>
+            Get the data
+          </h1>
+          <p>You can obtain data from <a href="https://datastore.codeforiati.org/">IATI Datastore Classic</a> in various formats.</p>
+          <p>You can choose to filter based on which organisation is reporting the information, where the activity is happening, and the activity's sector. You can choose to output individual activities, transactions or budgets.</p>
         </b-col>
       </b-row>
-    </b-jumbotron>
-    <hr />
-    <b-row>
-      <b-col>
-        <h1>
-          Get the data
-        </h1>
-        <p>You can obtain data from <a href="https://datastore.codeforiati.org/">IATI Datastore Classic</a> in various formats.</p>
-        <p>You can choose to filter based on which organisation is reporting the information, where the activity is happening, and the activity's sector. You can choose to output individual activities, transactions or budgets.</p>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
-        <h2>Choose your filters</h2>
-        <p>These options let you filter IATI data, depending on what you are looking for. Additional filters <a href="https://datastore.codeforiati.org/docs/api/#filtering">are available</a> by querying the datastore directly.</p>
-        <b-card
-          header="Reporting Organisation"
-          header-tag="h4"
-          class="mb-3">
-          <b-card-text>
-            The reporting organisation is the publisher of the IATI data.
-          </b-card-text>
-          <b-row>
-            <b-col>
-              <b-form-group
-                label="Reporting Organisation Type"
-                description="All types of publishers (e.g. Governments).">
-                <v-select
-                  v-model="filters['reporting-org.type']"
-                  :options="codelists['OrganisationType']"
-                  placeholder="All types of reporting organisation"
-                  :reduce="item => item.code"
-                  multiple>
-                </v-select>
-              </b-form-group>
-            </b-col>
-            <b-col>
-              <b-form-group
-                label="Reporting Organisation"
-                description="Select only a particular publisher's data (e.g. DFID).">
-                <v-select
-                  v-model="filters['reporting-org']"
-                  :options="filteredReportingOrganisations"
-                  placeholder="All reporting organisations"
-                  :reduce="item => item.code"
-                  multiple>
+      <b-row>
+        <b-col>
+          <h2>Choose your filters</h2>
+          <p>These options let you filter IATI data, depending on what you are looking for. Additional filters <a href="https://datastore.codeforiati.org/docs/api/#filtering">are available</a> by querying the datastore directly.</p>
+          <b-card
+            header="Reporting Organisation"
+            header-tag="h4"
+            class="mb-3">
+            <b-card-text>
+              The reporting organisation is the publisher of the IATI data.
+            </b-card-text>
+            <b-row>
+              <b-col>
+                <b-form-group
+                  label="Reporting Organisation Type"
+                  description="All types of publishers (e.g. Governments).">
+                  <v-select
+                    v-model="filters['reporting-org.type']"
+                    :options="codelists['OrganisationType']"
+                    placeholder="All types of reporting organisation"
+                    :reduce="item => item.code"
+                    multiple>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group
+                  label="Reporting Organisation"
+                  description="Select only a particular publisher's data (e.g. DFID).">
+                  <v-select
+                    v-model="filters['reporting-org']"
+                    :options="filteredReportingOrganisations"
+                    placeholder="All reporting organisations"
+                    :reduce="item => item.code"
+                    multiple>
 
-                </v-select>
-              </b-form-group>
-            </b-col>
-          </b-row>
-        </b-card>
-        <b-card
-          header="Sector"
-          header-tag="h4"
-          class="mb-3">
-          <b-form-group
-            label="Sector"
-            description="Choose the sector or sectors you are looking for.">
-            <v-select
-              v-model="filters['sector']"
-              :options="codelists['Sector']"
-              placeholder="All sectors"
-              :reduce="item => item.code"
-              multiple></v-select>
-          </b-form-group>
-          <b-alert variant="info" show>
-            For more details of the sectors, see the <a href="https://codelists.codeforiati.org/Sector" rel="noopener noreferrer" target="_blank">DAC 5 Digit Sector</a> codelist.
-          </b-alert>
-        </b-card>
-        <b-card
-          header="Recipient location"
-          header-tag="h4"
-          class="mb-3">
-          <b-row>
-            <b-col>
-              <b-form-group
-              label="Recipient country">
-                <v-select
-                  v-model="filters['recipient-country']"
-                  :options="codelists['Country']"
-                  placeholder="All recipient countries"
-                  :reduce="item => item.code"
-                  multiple>
-                </v-select>
-              </b-form-group>
-            </b-col>
-            <b-col>
-              <b-form-group
-              label="Recipient region">
-                <v-select
-                  v-model="filters['recipient-region']"
-                  :options="codelists['Region']"
-                  placeholder="All recipient regions"
-                  :reduce="item => item.code"
-                  multiple>
-                </v-select>
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <b-alert
-            variant="warning"
-            :show="(filters['recipient-country'].length > 0) && (filters['recipient-region'].length > 0)">
-            Choosing a region and a country will likely not return data as most publishers publish either a country or a region.
-          </b-alert>
-        </b-card>
-        <b-card
-          header="Dates"
-          header-tag="h4"
-          class="mb-3">
-          <b-row>
-            <b-col>
-              <b-form-group
-              label="Start date (after)">
-                <b-form-datepicker
-                  v-model="filters['start-date__gt']">
-                </b-form-datepicker>
-              </b-form-group>
-            </b-col>
-            <b-col>
-              <b-form-group
-              label="Start date (before)">
-                <b-form-datepicker
-                  v-model="filters['start-date__lt']">
-                </b-form-datepicker>
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              <b-form-group
-              label="End date (after)">
-                <b-form-datepicker
-                  v-model="filters['end-date__gt']">
-                </b-form-datepicker>
-              </b-form-group>
-            </b-col>
-            <b-col>
-              <b-form-group
-              label="End date (before)">
-                <b-form-datepicker
-                  v-model="filters['end-date__lt']">
-                </b-form-datepicker>
-              </b-form-group>
-            </b-col>
-          </b-row>
-        </b-card>
-        <h3>How would you like to view this information?</h3>
-        <p>These options allow you to configure the way in which your data is disaggregated, making different sorts of analysis possible.</p>
-        <b-row>
-          <b-col md="4">
+                  </v-select>
+                </b-form-group>
+              </b-col>
+            </b-row>
+          </b-card>
+          <b-card
+            header="Sector"
+            header-tag="h4"
+            class="mb-3">
             <b-form-group
-              label="Choose format">
-              <b-radio-group
-                stacked
-                v-model="format"
-                :options="formatOptions">
-              </b-radio-group>
+              label="Sector"
+              description="Choose the sector or sectors you are looking for.">
+              <v-select
+                v-model="filters['sector']"
+                :options="codelists['Sector']"
+                placeholder="All sectors"
+                :reduce="item => item.code"
+                multiple></v-select>
             </b-form-group>
-          </b-col>
-          <b-col md="4">
-            <b-form-group
-              label="Repeat rows">
-              <b-radio-group
-                stacked
-                v-model="grouping"
-                :options="groupingOptions">
-              </b-radio-group>
-            </b-form-group>
-          </b-col>
-          <b-col md="4">
-            <b-form-group
-              label="Choose sample size">
-              <b-radio-group
-                stacked
-                v-model="stream"
-                :options="streamOptions">
-              </b-radio-group>
-            </b-form-group>
-          </b-col>
-        </b-row>
-        <hr />
-        <b-row class="mb-2">
-          <b-col>
-            <b-btn variant="primary" value="Download" :href="queryLink">Download</b-btn>
-            <b-btn variant="secondary" value="Reset" @click="reset">Reset</b-btn>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col>
-            <b-alert variant="success" show>
-              <strong>Your link:</strong>
-              <b-input-group>
-                <b-input
-                  type="plaintext"
-                  :value="queryLink"
-                  id="query-link">
-                </b-input>
-                <b-input-group-append>
-                  <b-btn
-                    variant="secondary"
-                    @click="copyLink"
-                    id="query-link-copy">Copy</b-btn>
-                </b-input-group-append>
-              </b-input-group>
-              <b-tooltip
-                disabled
-                ref="tooltip"
-                id="query-link-copy-tooltip"
-                target="query-link-copy">
-                Copied!
-              </b-tooltip>
+            <b-alert variant="info" show>
+              For more details of the sectors, see the <a href="https://codelists.codeforiati.org/Sector" rel="noopener noreferrer" target="_blank">DAC 5 Digit Sector</a> codelist.
             </b-alert>
-          </b-col>
-        </b-row>
-      </b-col>
-    </b-row>
-  </b-container>
+          </b-card>
+          <b-card
+            header="Recipient location"
+            header-tag="h4"
+            class="mb-3">
+            <b-row>
+              <b-col>
+                <b-form-group
+                label="Recipient country">
+                  <v-select
+                    v-model="filters['recipient-country']"
+                    :options="codelists['Country']"
+                    placeholder="All recipient countries"
+                    :reduce="item => item.code"
+                    multiple>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group
+                label="Recipient region">
+                  <v-select
+                    v-model="filters['recipient-region']"
+                    :options="codelists['Region']"
+                    placeholder="All recipient regions"
+                    :reduce="item => item.code"
+                    multiple>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-alert
+              variant="warning"
+              :show="(filters['recipient-country'].length > 0) && (filters['recipient-region'].length > 0)">
+              Choosing a region and a country will likely not return data as most publishers publish either a country or a region.
+            </b-alert>
+          </b-card>
+          <b-card
+            header="Dates"
+            header-tag="h4"
+            class="mb-3">
+            <b-row>
+              <b-col>
+                <b-form-group
+                label="Start date (after)">
+                  <b-form-datepicker
+                    v-model="filters['start-date__gt']">
+                  </b-form-datepicker>
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group
+                label="Start date (before)">
+                  <b-form-datepicker
+                    v-model="filters['start-date__lt']">
+                  </b-form-datepicker>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col>
+                <b-form-group
+                label="End date (after)">
+                  <b-form-datepicker
+                    v-model="filters['end-date__gt']">
+                  </b-form-datepicker>
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group
+                label="End date (before)">
+                  <b-form-datepicker
+                    v-model="filters['end-date__lt']">
+                  </b-form-datepicker>
+                </b-form-group>
+              </b-col>
+            </b-row>
+          </b-card>
+          <h3>How would you like to view this information?</h3>
+          <p>These options allow you to configure the way in which your data is disaggregated, making different sorts of analysis possible.</p>
+          <b-row>
+            <b-col md="4">
+              <b-form-group
+                label="Choose format">
+                <b-radio-group
+                  stacked
+                  v-model="format"
+                  :options="formatOptions">
+                </b-radio-group>
+              </b-form-group>
+            </b-col>
+            <b-col md="4">
+              <b-form-group
+                label="Repeat rows">
+                <b-radio-group
+                  stacked
+                  v-model="grouping"
+                  :options="groupingOptions">
+                </b-radio-group>
+              </b-form-group>
+            </b-col>
+            <b-col md="4">
+              <b-form-group
+                label="Choose sample size">
+                <b-radio-group
+                  stacked
+                  v-model="stream"
+                  :options="streamOptions">
+                </b-radio-group>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <hr />
+          <b-row class="mb-2">
+            <b-col>
+              <b-btn variant="primary" value="Download" :href="queryLink">Download</b-btn>
+              <b-btn variant="secondary" value="Reset" @click="reset">Reset</b-btn>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-alert variant="success" show>
+                <strong>Your link:</strong>
+                <b-input-group>
+                  <b-input
+                    type="plaintext"
+                    :value="queryLink"
+                    id="query-link">
+                  </b-input>
+                  <b-input-group-append>
+                    <b-btn
+                      variant="secondary"
+                      @click="copyLink"
+                      id="query-link-copy">Copy</b-btn>
+                  </b-input-group-append>
+                </b-input-group>
+                <b-tooltip
+                  disabled
+                  ref="tooltip"
+                  id="query-link-copy-tooltip"
+                  target="query-link-copy">
+                  Copied!
+                </b-tooltip>
+              </b-alert>
+            </b-col>
+          </b-row>
+        </b-col>
+      </b-row>
+    </b-container>
+  </div>
 </template>
 <script>
 
