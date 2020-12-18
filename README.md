@@ -211,3 +211,8 @@ Generation of Documentation
 API documentation in the docs folder is generated using [Sphinx](https://www.sphinx-doc.org).
 
     iati build-docs
+
+Generation of the front page and query builder
+----------------------------------------------
+
+    iati build-query-builder
