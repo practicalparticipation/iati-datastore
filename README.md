@@ -216,3 +216,7 @@ Generation of the front page and query builder
 ----------------------------------------------
 
     iati build-query-builder
+
+By default, the query builder will look for files served from http://127.0.0.1:5000 - if you would like to point it elsewhere (e.g. to https://datastore.codeforiati.org) then you should add the argument `deploy-url`:
+
+    iati build-query-builder --deploy-url https://datastore.codeforiati.org
