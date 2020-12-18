@@ -36,8 +36,8 @@
           <hr />
           <b-row>
             <b-col>
-              <b-btn href="https://datastore.codeforiati.org/docs/" variant="primary">View documentation</b-btn>
-              <b-btn href="https://datastore.codeforiati.org/api/" variant="warning">View API</b-btn>
+              <b-btn href="/docs/" variant="primary">View documentation</b-btn>
+              <b-btn href="/api/" variant="warning">View API</b-btn>
             </b-col>
           </b-row>
         </b-container>
@@ -49,14 +49,14 @@
           <h1>
             Get the data
           </h1>
-          <p>You can obtain data from <a href="https://datastore.codeforiati.org/">IATI Datastore Classic</a> in various formats.</p>
+          <p>You can obtain data from IATI Datastore Classic in various formats.</p>
           <p>You can choose to filter based on which organisation is reporting the information, where the activity is happening, and the activity's sector. You can choose to output individual activities, transactions or budgets.</p>
         </b-col>
       </b-row>
       <b-row>
         <b-col>
           <h2>Choose your filters</h2>
-          <p>These options let you filter IATI data, depending on what you are looking for. Additional filters <a href="https://datastore.codeforiati.org/docs/api/#filtering">are available</a> by querying the datastore directly.</p>
+          <p>These options let you filter IATI data, depending on what you are looking for. Additional filters <a href="/docs/api/#filtering">are available</a> by querying the datastore directly.</p>
           <b-card
             header="Reporting Organisation"
             header-tag="h4"
@@ -264,7 +264,7 @@
 </template>
 <script>
 
-import { get } from 'axios'
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -348,7 +348,7 @@ export default {
         }
       ],
       codelistURLs: ['Country', 'Region', 'Sector', 'OrganisationType'],
-      baseURL: "https://datastore.codeforiati.org/api/1/access/"
+      baseURL: "api/1/access/"
     }
   },
   components: {
@@ -413,7 +413,7 @@ export default {
       this.filters = {}
     },
     async loadHealthData() {
-      await get(`https://datastore.codeforiati.org/api/1/about`)
+      await this.$axios.get(`api/1/about/`)
         .then(response => {
           this.healthData = response.data
         })
@@ -421,7 +421,7 @@ export default {
     },
     async loadData() {
       this.codelistURLs.forEach(codelist => {
-        get(`https://codelists.codeforiati.org/api/json/en/${codelist}.json`)
+        axios.get(`https://codelists.codeforiati.org/api/json/en/${codelist}.json`)
         .then(response => {
           this.codelists[codelist] = response.data.data.map(item => {
             return {
@@ -431,7 +431,7 @@ export default {
           })
         })
       })
-      get(`https://codeforiati.org/vuejs-datastore-query-builder/publishers.json`)
+      this.$axios.get(`publishers.json`)
       .then(response => {
         this.codelists['ReportingOrg'] = response.data.data.map(publisher => {
           return {
