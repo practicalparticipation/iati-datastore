@@ -3,6 +3,15 @@ const routerBase = process.env.DEPLOY_ENV === 'WITH_SUBFOLDER' ? {
     base: '/vuejs-datastore-query-builder/'
   }
 } : {}
+
+const axiosBase = process.env.IATI_DATASTORE_DEPLOY_URL ? {
+  axios: {
+    baseURL: process.env.IATI_DATASTORE_DEPLOY_URL
+  }
+} : {
+  axios: {
+  }
+}
 export default {
   mode: 'spa',
   generate: {
@@ -55,8 +64,6 @@ export default {
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
-  axios: {
-  },
   /*
   ** Build configuration
   */
@@ -67,5 +74,5 @@ export default {
     extend (config, ctx) {
     }
   },
-  ...routerBase
+  ...routerBase, ...axiosBase
 }
