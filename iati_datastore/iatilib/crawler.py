@@ -39,8 +39,9 @@ def fetch_dataset_list():
     new_datasets = [Dataset(name=n, publisher=p) for p, n
                     in incoming_ds_names - existing_ds_names]
     all_datasets = existing_datasets + new_datasets
+    last_seen = iatikit.data().last_updated
     for dataset in all_datasets:
-        dataset.last_seen = datetime.datetime.utcnow()
+        dataset.last_seen = last_seen
 
     db.session.add_all(all_datasets)
     db.session.commit()
@@ -119,7 +120,7 @@ def fetch_resource(resource):
         content = f.read()
 
     resource.document = content
-    resource.last_succ = datetime.datetime.utcnow()
+    resource.last_succ = iatikit.data().last_updated
     resource.last_parsed = None
     resource.last_parse_error = None
 
@@ -180,7 +181,6 @@ def parse_activity(new_identifiers, old_xml, resource):
 
 def parse_resource(resource):
     db.session.add(resource)
-    now = datetime.datetime.utcnow()
     current = Activity.query.filter_by(resource_url=resource.url)
     current_identifiers = set([i.iati_identifier for i in current.all()])
 
