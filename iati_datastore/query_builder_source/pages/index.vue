@@ -36,8 +36,8 @@
           <hr />
           <b-row>
             <b-col>
-              <b-btn href="/docs/" variant="primary">View documentation</b-btn>
-              <b-btn href="/api/" variant="warning">View API</b-btn>
+              <b-btn :href="`${baseURL}/docs/`" variant="primary">View documentation</b-btn>
+              <b-btn :href="`${baseURL}/api/`" variant="warning">View API</b-btn>
             </b-col>
           </b-row>
         </b-container>
@@ -56,7 +56,7 @@
       <b-row>
         <b-col>
           <h2>Choose your filters</h2>
-          <p>These options let you filter IATI data, depending on what you are looking for. Additional filters <a href="/docs/api/#filtering">are available</a> by querying the datastore directly.</p>
+          <p>These options let you filter IATI data, depending on what you are looking for. Additional filters <a :href="`${baseURL}/docs/api/#filtering`">are available</a> by querying the datastore directly.</p>
           <b-card
             header="Reporting Organisation"
             header-tag="h4"
@@ -348,12 +348,15 @@ export default {
         }
       ],
       codelistURLs: ['Country', 'Region', 'Sector', 'OrganisationType'],
-      baseURL: `${this.$axios.defaults.baseURL}/api/1/access/`
+      apiURL: `${this.baseURL}/api/1/access/`
     }
   },
   components: {
   },
   computed: {
+    baseURL() {
+      return this.$axios.defaults.baseURL
+    },
     urlQuery() {
       var _query = {...this.urlQueryFilters}
       if ((this.grouping) && (this.grouping != '')) {
@@ -394,7 +397,7 @@ export default {
       }).join("&")
       const params = _params.length > 0 ? `?${_params}` : ''
       const stream = this.stream == true ? '&stream=True' : ''
-      return `${this.baseURL}${this.format}${this.grouping}.csv${params}${stream}`
+      return `${this.apiURL}${this.format}${this.grouping}.csv${params}${stream}`
     }
   },
   methods: {
