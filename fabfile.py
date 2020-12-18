@@ -24,7 +24,7 @@ def deploy(conn):
         # build the docs
         conn.run('iati build-docs')
         # build the query builder
-        conn.run('iati build-query-builder')
+        conn.run('iati build-query-builder --deploy-url https://datastore.codeforiati.org')
         # stop everything
         conn.run('sudo systemctl stop iati-datastore')
         conn.run('sudo systemctl stop iati-datastore-queue')
