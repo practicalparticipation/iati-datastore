@@ -4,6 +4,7 @@ from flask_cors import CORS
 from iatilib import db, rq, migrate
 
 from .api1 import api
+from .builder import builder
 from iatilib.frontend.routes import routes
 from iatilib.crawler import manager as crawler_manager
 from iatilib.queue import manager as queue_manager
@@ -19,6 +20,7 @@ def create_app(config_object='iatilib.config'):
 
 def register_blueprints(app):
     app.register_blueprint(routes, url_prefix="")
+    app.register_blueprint(builder, url_prefix="/build/api/1/access")
     app.register_blueprint(api, url_prefix="/api/1")
     app.register_blueprint(crawler_manager)
     app.register_blueprint(queue_manager)
