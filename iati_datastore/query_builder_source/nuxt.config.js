@@ -14,7 +14,7 @@ const axiosBase = process.env.IATI_DATASTORE_DEPLOY_URL ? {
   }
 }
 export default {
-  mode: 'spa',
+  target: 'static',
   generate: {
     dir: '../iatilib/frontend/querybuilder/'
   },
