@@ -145,7 +145,7 @@
             <b-alert
               variant="warning"
               :show="(filters['recipient-country'].length > 0) && (filters['recipient-region'].length > 0)">
-              Choosing a region and a country will likely not return data as most publishers publish either a country or a region.
+              Choosing a region and a country will likely not return data, as most publishers publish either a country or a region.
             </b-alert>
           </b-card>
           <b-card
@@ -339,12 +339,12 @@ export default {
         {
           'value': false,
           'text': '50 rows',
-          'description': "Preview your selection by viewing only the first 20 rows of data."
+          'description': "Preview your selection by viewing only the first 50 rows of data."
         },
         {
           'value': true,
           'text': 'Entire selection',
-          'description': "Preview your selection by viewing only the first 20 rows of data."
+          'description': "Get all results that match your search criteria."
         }
       ],
       codelistURLs: ['Country', 'Region', 'Sector', 'OrganisationType']
