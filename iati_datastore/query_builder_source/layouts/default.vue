@@ -17,7 +17,7 @@
       <b-container>
         <b-row>
           <b-col md="6">
-            <p><a href="https://github.com/codeforIATI/iati-datastore">IATI Datastore Classic on GitHub</a>, free software licenced under the GNU Affero General Public License v3.</p>
+            <p><a href="https://github.com/codeforIATI/iati-datastore">IATI Datastore Classic on GitHub</a>, free software licensed under the GNU Affero General Public License v3.</p>
           </b-col>
           <b-col class="text-md-right" md="6">
             IATI Datastore Classic is a project of <a href="https://codeforiati.org">Code for IATI</a>
