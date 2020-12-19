@@ -4,6 +4,7 @@ import datetime
 import hashlib
 import logging
 import traceback
+from os.path import exists
 
 import iatikit
 import sqlalchemy as sa
@@ -32,8 +33,8 @@ def fetch_dataset_list():
     existing_ds_names = set((ds.publisher, ds.name) for ds in existing_datasets)
 
     package_list = [
-        tuple(x[:-4].rsplit('/', 2)[1:])
-        for x in glob.glob('__iatikitcache__/registry/data/*/*')]
+        tuple(x[:-5].rsplit('/', 2)[1:])
+        for x in glob.glob('__iatikitcache__/registry/metadata/*/*')]
     incoming_ds_names = set(package_list)
 
     new_datasets = [Dataset(name=n, publisher=p) for p, n
@@ -116,12 +117,18 @@ def fetch_resource(resource):
     dataset = Dataset.query.get(resource.dataset_id)
     fname = '__iatikitcache__/registry/data/{0}/{1}.xml'.format(
         dataset.publisher, dataset.name)
+
+    last_updated = iatikit.data().last_updated
+    resource.last_fetch = last_updated
+
+    if not exists(fname):
+        # TODO: this isn't true
+        resource.last_status_code = 404
+
     with open(fname, 'rb') as f:
         content = f.read()
 
-    last_updated = iatikit.data().last_updated
     resource.last_status_code = 200
-    resource.last_fetch = last_updated
     resource.document = content
     resource.last_succ = last_updated
     resource.last_parsed = None
