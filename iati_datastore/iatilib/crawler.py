@@ -119,8 +119,11 @@ def fetch_resource(resource):
     with open(fname, 'rb') as f:
         content = f.read()
 
+    last_updated = iatikit.data().last_updated
+    resource.last_status_code = 200
+    resource.last_fetch = last_updated
     resource.document = content
-    resource.last_succ = iatikit.data().last_updated
+    resource.last_succ = last_updated
     resource.last_parsed = None
     resource.last_parse_error = None
 
