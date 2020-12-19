@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 requirements = """
 Flask==1.1.2
 Flask-SQLAlchemy==2.4.4
-ckanapi==4.5
+iatikit==2.3.0
 lxml==4.6.2
 python-dateutil==2.8.1
 six==1.15.0

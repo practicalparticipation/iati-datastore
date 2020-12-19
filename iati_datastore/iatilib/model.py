@@ -386,6 +386,7 @@ class Budget(db.Model):
 class Dataset(db.Model):
     __tablename__ = "dataset"
     name = sa.Column(sa.Unicode, primary_key=True)
+    publisher = sa.Column(sa.Unicode)
     first_seen = sa.Column(
             sa.DateTime,
             nullable=False,

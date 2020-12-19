@@ -1,13 +1,14 @@
+import json
+import glob
 import datetime
 import hashlib
 import logging
 import traceback
+from os.path import exists
 
+import iatikit
 import sqlalchemy as sa
-import requests
-import ckanapi
 from dateutil.parser import parse as date_parser
-from werkzeug.http import http_date
 from flask import Blueprint
 import click
 
@@ -17,94 +18,41 @@ from iatilib.loghandlers import DatasetMessage as _
 
 log = logging.getLogger("crawler")
 
-CKAN_WEB_BASE = 'https://iatiregistry.org/dataset/%s'
-CKAN_API = 'https://iatiregistry.org'
-
-registry = ckanapi.RemoteCKAN(CKAN_API, get_only=True)
 
 manager = Blueprint('crawler', __name__)
 manager.cli.short_help = "Crawl IATI registry"
 
 
-class CouldNotFetchPackageList(Exception):
-    pass
-
-
-def fetch_dataset_list(modified_since=None):
+def fetch_dataset_list():
     '''
-    Fetches datasets from CKAN and stores them in the DB. Either passed a datetime to filter on more recently modified
-    datasets, or updates the entire set. Used in update() to update the Flask job queue. Uses CKAN metadata to determine
-    if an activity is active or deleted, and tries to determine if a dataset is actually new or not.
-    :param modified_since:
+    Fetches datasets from iatikit and stores them in the DB. Used in update() to update the Flask job queue. Uses CKAN metadata to determine
+    if an activity is active or deleted.
     :return:
     '''
     existing_datasets = Dataset.query.all()
-    existing_ds_names = set(ds.name for ds in existing_datasets)
-    if modified_since:
-        solr_date_format = modified_since.strftime('%Y-%m-%dT%H:%M:%SZ')
-        try:
-            search_result = registry.action.package_search(
-                    fq='metadata_modified:[{0} TO NOW]'.format(solr_date_format),
-            )
-        except Exception:
-            raise CouldNotFetchPackageList()
-        step = 50
-        count = search_result['count']
-        package_list = []
-        for current_start in range(0, count, step):
-            packages = registry.action.package_search(
-                    fq='metadata_modified:[{0} TO NOW]'.format(solr_date_format),
-                    start=current_start,
-                    rows=step,
+    existing_ds_names = set((ds.publisher, ds.name) for ds in existing_datasets)
 
-            )
-            package_list = package_list + packages['results']
+    package_list = [
+        tuple(x[:-5].rsplit('/', 2)[1:])
+        for x in glob.glob('__iatikitcache__/registry/metadata/*/*')]
+    incoming_ds_names = set(package_list)
 
-        incoming_ds_names = set()
-        deleted_ds_names = set()
+    new_datasets = [Dataset(name=n, publisher=p) for p, n
+                    in incoming_ds_names - existing_ds_names]
+    all_datasets = existing_datasets + new_datasets
+    last_seen = iatikit.data().last_updated
+    for dataset in all_datasets:
+        dataset.last_seen = last_seen
 
-        for dataset in package_list:
-            if dataset['state'] == 'active':
-                incoming_ds_names.add(dataset['name'])
-            elif dataset['state'] == 'deleted':
-                deleted_ds_names.add(dataset['name'])
+    db.session.add_all(all_datasets)
+    db.session.commit()
 
-        # TODO check if the following line is the source of activity mismatch.
-        new_datasets = [Dataset(name=n) for n
-                        in incoming_ds_names - existing_ds_names]
+    deleted_ds_names = existing_ds_names - incoming_ds_names
+    if deleted_ds_names:
+        delete_datasets([d[1] for d in deleted_ds_names])
 
-        db.session.add_all(new_datasets)
-        db.session.commit()
-
-        if deleted_ds_names:
-            delete_datasets(deleted_ds_names)
-
-        datasets = db.session.query(Dataset).filter(
-                Dataset.name.in_(incoming_ds_names))
-        return datasets
-
-    else:
-        try:
-            package_list = registry.action.package_list()
-        except Exception:
-            raise CouldNotFetchPackageList()
-        incoming_ds_names = set(package_list)
-
-        new_datasets = [Dataset(name=n) for n
-                        in incoming_ds_names - existing_ds_names]
-        all_datasets = existing_datasets + new_datasets
-        for dataset in all_datasets:
-            dataset.last_seen = datetime.datetime.utcnow()
-
-        db.session.add_all(all_datasets)
-        db.session.commit()
-
-        deleted_ds_names = existing_ds_names - incoming_ds_names
-        if deleted_ds_names:
-            delete_datasets(deleted_ds_names)
-
-        all_datasets = Dataset.query
-        return all_datasets
+    all_datasets = Dataset.query
+    return all_datasets
 
 
 def delete_datasets(datasets):
@@ -128,10 +76,10 @@ def delete_datasets(datasets):
 
 
 def fetch_dataset_metadata(dataset):
-    try:
-        ds_entity = registry.action.package_show(id=dataset.name)
-    except Exception:
-        raise CouldNotFetchPackageList()
+    fname = '__iatikitcache__/registry/metadata/{0}/{1}.json'.format(
+        dataset.publisher, dataset.name)
+    with open(fname) as f:
+        ds_entity = json.load(f)
 
     dataset.last_modified = date_parser(
         ds_entity.get(
@@ -166,30 +114,26 @@ def fetch_resource(resource):
     :param resource:
     :return:
     '''
-    headers = {
-        'User-Agent': 'codeforIATI datastore classic',
-    }
-    if resource.last_succ:
-        headers['If-Modified-Since'] = http_date(resource.last_succ)
-    if resource.etag:
-        headers["If-None-Match"] = resource.etag
-    resp = requests.get(resource.url, headers=headers)
-    resource.last_status_code = resp.status_code
-    resource.last_fetch = datetime.datetime.utcnow()
-    if resp.status_code == 200:
-        if isinstance(resp.content, bytes):
-            resource.document = resp.content
-        else:
-            resource.document = resp.content.encode()
-        if "etag" in resp.headers:
-            resource.etag = resp.headers.get('etag')
-        else:
-            resource.etag = None
-        resource.last_succ = datetime.datetime.utcnow()
-        resource.last_parsed = None
-        resource.last_parse_error = None
-    if resp.status_code == 304:
-        resource.last_succ = datetime.datetime.utcnow()
+    dataset = Dataset.query.get(resource.dataset_id)
+    fname = '__iatikitcache__/registry/data/{0}/{1}.xml'.format(
+        dataset.publisher, dataset.name)
+
+    last_updated = iatikit.data().last_updated
+    resource.last_fetch = last_updated
+
+    if not exists(fname):
+        # TODO: this isn't true
+        resource.last_status_code = 404
+
+    with open(fname, 'rb') as f:
+        content = f.read()
+
+    resource.last_status_code = 200
+    resource.document = content
+    resource.last_succ = last_updated
+    resource.last_parsed = None
+    resource.last_parse_error = None
+
     db.session.add(resource)
     return resource
 
@@ -247,7 +191,6 @@ def parse_activity(new_identifiers, old_xml, resource):
 
 def parse_resource(resource):
     db.session.add(resource)
-    now = datetime.datetime.utcnow()
     current = Activity.query.filter_by(resource_url=resource.url)
     current_identifiers = set([i.iati_identifier for i in current.all()])
 
@@ -286,7 +229,7 @@ def parse_resource(resource):
     return resource  # , new_identifiers
 
 
-def update_activities(resource_url):
+def update_activities(dataset_name):
     '''
     Parses and stores the raw XML associated with a resource [see parse_resource()], or logs the invalid resource
     :param resource_url:
@@ -295,16 +238,17 @@ def update_activities(resource_url):
     # clear up previous job queue log errors
     db.session.query(Log).filter(sa.and_(
             Log.logger == 'job iatilib.crawler.update_activities',
-            Log.resource == resource_url,
+            Log.resource == dataset_name,
     )).delete(synchronize_session=False)
     db.session.commit()
 
-    resource = Resource.query.get(resource_url)
+    dataset = Dataset.query.get(dataset_name)
+    resource = dataset.resources[0]
     try:
         db.session.query(Log).filter(sa.and_(
                 Log.logger.in_(
                         ['activity_importer', 'failed_activity', 'xml_parser']),
-                Log.resource == resource_url,
+                Log.resource == dataset_name,
         )).delete(synchronize_session=False)
         parse_resource(resource)
         db.session.commit()
@@ -315,33 +259,12 @@ def update_activities(resource_url):
                 dataset=resource.dataset_id,
                 resource=resource.url,
                 logger="xml_parser",
-                msg="Failed to parse XML file {0} error was".format(resource_url, exc),
+                msg="Failed to parse XML file {0} error was".format(dataset_name, exc),
                 level="error",
                 trace=traceback.format_exc(),
                 created_at=datetime.datetime.now()
         ))
         db.session.commit()
-
-
-def update_resource(resource_url):
-    '''
-    Fetches the resource based on the URL passed to it, then enqueues an activity update if the url is still live.
-    :param resource_url:
-    :return:
-    '''
-    # clear up previous job queue log errors
-    db.session.query(Log).filter(sa.and_(
-            Log.logger == 'job iatilib.crawler.update_resource',
-            Log.resource == resource_url,
-    )).delete(synchronize_session=False)
-    db.session.commit()
-
-    queue = rq.get_queue()
-    resource = fetch_resource(Resource.query.get(resource_url))
-    db.session.commit()
-
-    if resource.last_status_code == 200:
-        queue.enqueue(update_activities, args=(resource.url,), result_ttl=0, timeout=100000)
 
 
 def update_dataset(dataset_name):
@@ -362,44 +285,10 @@ def update_dataset(dataset_name):
     dataset = Dataset.query.get(dataset_name)
 
     fetch_dataset_metadata(dataset)
+    fetch_resource(dataset.resources[0])
     db.session.commit()
 
-    # TODO: check if the following line is the source of the mismatch problem - passing the URL seems very dodgy!!
-    need_update = [r for r in dataset.resources
-                   if not r.last_succ or r.last_succ < dataset.last_modified]
-    for resource in need_update:
-        queue.enqueue(update_resource, args=(resource.url,), result_ttl=0)
-
-
-@manager.cli.command('dataset_list')
-def dataset_list():
-    fetch_dataset_list()
-    db.session.commit()
-
-
-@manager.cli.command('metadata')
-def metadata(verbose=False):
-    for dataset in Dataset.query.all():
-        if verbose:
-            print("Fetching metadata for %s" % dataset.name)
-        fetch_dataset_metadata(dataset)
-
-
-@manager.cli.command('documents')
-def documents(verbose=False):
-    for dataset in Dataset.query.all():
-        if verbose:
-            print("Fetching documents for %s" % dataset.name)
-        for resource in dataset.resources:
-            if verbose:
-                print("Fetching %s" % resource.url,)
-            try:
-                fetch_resource(resource)
-            except IOError:
-                print("Failed to fetch %s" % resource.url,)
-            if verbose:
-                print(resource.last_status_code)
-            db.session.commit()
+    queue.enqueue(update_activities, args=(dataset_name,), result_ttl=0, timeout=100000)
 
 
 def status_line(msg, filt, tot):
@@ -417,24 +306,8 @@ def status_line(msg, filt, tot):
     )
 
 
-@click.option('--dataset', 'dataset', type=str)
-@manager.cli.command('manual_update')
-def manual_update(dataset=None):
-    """Update a single dataset"""
-    if dataset:
-        print("Updating {0}".format(dataset))
-        ds = Dataset.query.get(dataset)
-        fetch_dataset_metadata(ds)
-        db.session.commit()
-        res = Resource.query.filter(Resource.dataset_id == dataset)
-        for resource in res:
-            fetch_resource(resource)
-            db.session.commit()
-            update_activities(resource.url)
-
-
 @manager.cli.command('status')
-def status():
+def status_cmd():
     """Show status of current jobs"""
     print("%d jobs on queue" % rq.get_queue().count)
 
@@ -507,85 +380,51 @@ def status():
     ))
 
 
-@manager.cli.command('enqueue')
-def enqueue(careful=False):
+@manager.cli.command('download')
+def download_cmd():
+    """
+    Download all IATI data from IATI Data Dump.
+    """
+    iatikit.download.data()
+
+
+def download_and_update():
+    iatikit.download.data()
+    update_registry()
+
+
+@manager.cli.command('download_and_update')
+def download_and_update_cmd():
+    """
+    Enqueue a download of all IATI data from
+    IATI Data Dump, and then start an update.
+    """
     queue = rq.get_queue()
-    if careful and queue.count > 0:
-        print("%d jobs on queue, not adding more" % queue.count)
-        return
+    print("Enqueuing a download from IATI Data Dump")
+    queue.enqueue(download_and_update, result_ttl=0)
 
-    yesterday = datetime.datetime.utcnow() - datetime.timedelta(days=1)
 
-    unfetched_resources = Resource.query.filter(
-            sa.or_(
-                    Resource.last_fetch == None,
-                    sa.and_(
-                            Resource.last_succ == None,
-                            Resource.last_fetch <= yesterday
-                    )))
-    print("Enqueuing {0:d} unfetched resources".format(
-            unfetched_resources.count()
-    ))
-    for resource in unfetched_resources:
-        queue.enqueue(
-                update_resource,
-                args=(resource.url,),
-                result_ttl=0)
-
-    ood_resources = Resource.query.filter(sa.or_(
-            Resource.last_parsed == None,
-            Resource.activities.any(Activity.created < Resource.last_parsed)
-    ))
-
-    print("Enqueuing {0:d} resources with out of date activities".format(
-            ood_resources.count()
-    ))
-    for resource in ood_resources:
-        queue.enqueue(
-                update_activities,
-                args=(resource.url,),
-                result_ttl=0,
-                timeout=100000)
+def update_registry():
+    queue = rq.get_queue()
+    datasets = fetch_dataset_list()
+    print("Enqueuing %d datasets for update" % datasets.count())
+    for dataset in datasets:
+        queue.enqueue(update_dataset, args=(dataset.name,), result_ttl=0)
 
 
 @click.option('--dataset', 'dataset', type=str,
               help="update a single dataset")
-@click.option('--limit', "limit", type=int,
-              help="max no of datasets to update")
-@click.option('-v', '--verbose', "verbose")
-@click.option('-t', '--timedelta', "timedelta", type=int)
 @manager.cli.command('update')
-def update(verbose=False, limit=None, dataset=None, timedelta=None):
+def update_cmd(dataset=None):
     """
-    Fetch all datasets from IATI registry; update any that have changed.
-    This is done by adding to the dataset table, and then adding an update command to
-    the Flask job queue. See fetch_dataset_list, then update_dataset for next actions.
+    Step through downloaded datasets, adding them to the dataset table, and then adding an update command to
+    the Flask job queue. See update_registry, then update_dataset for next actions.
     """
     queue = rq.get_queue()
 
     if dataset:
         print("Enqueuing {0} for update".format(dataset))
         queue.enqueue(update_dataset, args=(dataset,), result_ttl=0)
-        res = Resource.query.filter(Resource.dataset_id == dataset)
-        for resource in res:
-            queue.enqueue(update_resource, args=(resource.url,), result_ttl=0)
-            queue.enqueue(update_activities, args=(resource.url,), result_ttl=0, timeout=1000)
     else:
-        if timedelta:
-            modified_since = datetime.date.today() - datetime.timedelta(timedelta)
-        else:
-            modified_since = None
-
-        datasets = fetch_dataset_list(modified_since)
-        db.session.commit()
-
-        if limit:
-            datasets = datasets.limit(limit)
-
-        print("Enqueuing %d datasets for update" % datasets.count())
-
-        for dataset in datasets:
-            if verbose:
-                print("Enqueuing %s" % dataset.name)
-            queue.enqueue(update_dataset, args=(dataset.name,), result_ttl=0)
-    db.session.close()
+        print("Enqueuing a full registry update")
+        queue.enqueue(update_registry, result_ttl=0)

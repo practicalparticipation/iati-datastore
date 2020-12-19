@@ -28,7 +28,7 @@
                     Datastore has some problems
                 </b-col>
                 <b-col class="bg-secondary p-2" md="6">
-                  Last updated {{ healthData.status_data.last_parsed }}
+                  Last updated: {{ healthData.status_data.last_parsed }}
                 </b-col>
               </b-row>
             </h5>
@@ -422,6 +422,11 @@ export default {
         .then(response => {
           this.healthData = response.data
         })
+        .catch(response => {
+          this.healthData.ok = false
+          this.healthData.status_data.last_parsed = "unknown"
+        }
+        )
       this.busy = false
     },
     async loadData() {

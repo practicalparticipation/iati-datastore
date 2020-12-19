@@ -1,5 +1,5 @@
+import json
 import datetime
-from unittest import TestCase
 
 import mock
 
@@ -11,141 +11,104 @@ from iatilib.model import Dataset, Resource, Activity, DeletedActivity
 
 
 class TestCrawler(AppTestCase):
-    @mock.patch('iatilib.crawler.registry')
-    def test_fetch_package_list(self, mock):
-        mock.action.package_list.return_value = [u"tst-a", u"tst-b"]
+    @mock.patch('iatikit.data')
+    @mock.patch('glob.glob')
+    def test_fetch_package_list(self, glob_mock, iatikit_mock):
+        glob_mock.return_value = [
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
+            "__iatikitcache__/registry/metadata/tst/tst-b.json",
+        ]
+        data_mock = iatikit_mock.return_value
+        data_mock.last_updated = datetime.datetime.utcnow()
         datasets = crawler.fetch_dataset_list()
-        mock.action.package_list.assert_called_once_with()
         self.assertIn("tst-a", [ds.name for ds in datasets])
         self.assertIn("tst-b", [ds.name for ds in datasets])
 
-    @mock.patch('iatilib.crawler.registry')
-    def test_update_adds_datasets(self, mock):
-        mock.action.package_list.return_value = [u"tst-a"]
+    @mock.patch('iatikit.data')
+    @mock.patch('glob.glob')
+    def test_update_adds_datasets(self, glob_mock, iatikit_mock):
+        glob_mock.return_value = [
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
+        ]
+        data_mock = iatikit_mock.return_value
+        data_mock.last_updated = datetime.datetime.utcnow()
         datasets = crawler.fetch_dataset_list()
-        mock.action.package_list.assert_called_once_with()
-        mock.action.package_list.return_value = [u"tst-a", u"tst-b"]
+        glob_mock.return_value = [
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
+            "__iatikitcache__/registry/metadata/tst/tst-b.json",
+        ]
         datasets = crawler.fetch_dataset_list()
         self.assertEquals(2, datasets.count())
 
-    @mock.patch('iatilib.crawler.registry')
-    def test_update_deletes_datasets(self, mock):
-        mock.action.package_list.return_value = [u"tst-a", u"tst-b"]
+    @mock.patch('iatikit.data')
+    @mock.patch('glob.glob')
+    def test_update_deletes_datasets(self, glob_mock, iatikit_mock):
+        glob_mock.return_value = [
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
+            "__iatikitcache__/registry/metadata/tst/tst-b.json",
+        ]
+        data_mock = iatikit_mock.return_value
+        data_mock.last_updated = datetime.datetime.utcnow()
         datasets = crawler.fetch_dataset_list()
-        mock.action.package_list.assert_called_once_with()
-        mock.action.package_list.return_value = [u"tst-a"]
+        glob_mock.return_value = [
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
+        ]
         datasets = crawler.fetch_dataset_list()
         self.assertEquals(1, datasets.count())
 
-    @mock.patch('iatilib.crawler.registry')
-    def test_fetch_dataset(self, mock):
-        mock.action.package_show.return_value = {
+    def test_fetch_dataset(self):
+        read_data = json.dumps({
             "resources": [{"url": "http://foo"}],
-        }
-        dataset = crawler.fetch_dataset_metadata(Dataset())
-        mock.action.package_show.assert_called_once_with(id=None)
+        })
+        mock_open = mock.mock_open(read_data=read_data)
+        with mock.patch('builtins.open', mock_open):
+            dataset = crawler.fetch_dataset_metadata(Dataset())
         self.assertEquals(1, len(dataset.resources))
         self.assertEquals("http://foo", dataset.resources[0].url)
 
-    @mock.patch('iatilib.crawler.registry')
-    def test_fetch_package_search(self, mock):
-        mock.action.package_search.return_value = {
-            'count': 2,
-            'results': [
-                {'name': 'tst-a', 'state': 'active'},
-                {'name': 'tst-b', 'state': 'active'},
-            ]
-        }
-        date = datetime.date(2000, 1, 2)
-        datasets = crawler.fetch_dataset_list(date)
-        # check the solr parameters are formed correctly
-        mock.action.package_search.assert_any_call(
-            fq='metadata_modified:[2000-01-02T00:00:00Z TO NOW]')
-
-        # check that the result of of fetch_dataset_list are only the 2 datasets
-        self.assertEquals(set(['tst-a', 'tst-b']), set([ds.name for ds in datasets]))
-
-    @mock.patch('iatilib.crawler.registry')
-    def test_fetch_package_search_update(self, mock):
-        # initial call to fetch dataset list sets up 3 datasets inside the
-        # datastore
-        mock.action.package_list.return_value = [
-            u"tst-deleted", u"tst-not-modified", 'tst-modified'
-        ]
-        crawler.fetch_dataset_list()
-
-        # the second call, we are giving a time delta, this time the registry
-        # has 3 modified datasets, 1 deleted, 1 modified, 1 new
-        mock.action.package_search.return_value = {
-            'count': 3,
-            'results': [
-                {'name': 'tst-deleted', 'state': 'deleted'},
-                {'name': 'tst-modified', 'state': 'active'},
-                {'name': 'tst-new', 'state': 'active'},
-            ]
-        }
-        date = datetime.date(2000, 1, 2)
-        datasets = set([ds.name for ds in crawler.fetch_dataset_list(date)])
-
-        # we want to check that the result returned are only the modified/new
-        # datasets as these are the ones that are sent to the job queues
-        # normally a call without a time delta results in all the datasets
-        # being sent to the job queues
-        self.assertEquals(set(['tst-modified', 'tst-new']), datasets)
-
-        # finally we check over all the datasets to make sure nothing has
-        # happened to the not modified dataset, and that tst-deleted was
-        # actually deleted.
-        all_datasets = set([i.name for i in Dataset.query.all()])
-        self.assertEquals(
-            set(['tst-not-modified', 'tst-modified', 'tst-new']),
-            all_datasets,
-        )
-
-    @mock.patch('iatilib.crawler.registry')
-    def test_fetch_dataset_with_many_resources(self, mock):
-        mock.action.package_show.return_value = {
+    def test_fetch_dataset_with_many_resources(self):
+        read_data = json.dumps({
             "resources": [
                 {"url": "http://foo"}, {"url": "http://bar"},
                 {"url": "http://baz"},
             ]
-        }
-        dataset = crawler.fetch_dataset_metadata(Dataset())
-        mock.action.package_show.assert_called_once_with(id=None)
+        })
+        mock_open = mock.mock_open(read_data=read_data)
+        with mock.patch('builtins.open', mock_open):
+            dataset = crawler.fetch_dataset_metadata(Dataset())
         self.assertEquals(3, len(dataset.resources))
 
-    @mock.patch('iatilib.crawler.registry')
-    def test_fetch_dataset_count_commited_resources(self, mock):
-        mock.action.package_show.return_value = {
+    def test_fetch_dataset_count_commited_resources(self):
+        read_data = json.dumps({
             "resources": [
                 {"url": "http://foo"},
                 {"url": "http://bar"},
                 {"url": "http://baz"},
             ]
-        }
-        crawler.fetch_dataset_metadata(Dataset(name=u"tstds"))
-        mock.action.package_show.assert_called_once_with(id="tstds")
+        })
+        mock_open = mock.mock_open(read_data=read_data)
+        with mock.patch('builtins.open', mock_open):
+            crawler.fetch_dataset_metadata(Dataset(name="tstds"))
         db.session.commit()
         self.assertEquals(3, Resource.query.count())
 
-    @mock.patch('iatilib.crawler.requests')
-    def test_fetch_resource_succ(self, mock):
-        mock.get.return_value.content = "test"
-        mock.get.return_value.status_code = 200
-        resource = crawler.fetch_resource(Resource(url="http://foo"))
+    @mock.patch('iatikit.data')
+    def test_fetch_resource_succ(self, iatikit_mock):
+        data_mock = iatikit_mock.return_value
+        data_mock.last_updated = datetime.datetime.utcnow()
+        fac.DatasetFactory.create(
+            name='tst-a',
+            resources=[fac.ResourceFactory.create(
+                url="http://foo",
+            )]
+        )
+        read_data = b"test"
+        mock_open = mock.mock_open(read_data=read_data)
+        with mock.patch('builtins.open', mock_open):
+            resource = crawler.fetch_resource(Resource(dataset_id="tst-a"))
         self.assertEquals(b"test", resource.document)
         self.assertEquals(None, resource.last_parsed)
         self.assertEquals(None, resource.last_parse_error)
-
-    @mock.patch('iatilib.crawler.requests')
-    def test_fetch_resource_perm_fail(self, mock):
-        mock.get.return_value.status_code = 404
-        resource = crawler.fetch_resource(Resource(
-            url="http://foo",
-            document=b"stillhere"
-        ))
-        self.assertEquals(404, resource.last_status_code)
-        self.assertEquals(b"stillhere", resource.document)
 
     def test_parse_resource_succ(self):
         resource = Resource(document=b"<iati-activities />", url="http://foo")
@@ -162,7 +125,7 @@ class TestCrawler(AppTestCase):
         # what's in the db before the resource is updated
         act = fac.ActivityFactory.build(iati_identifier="deleted_activity")
         resource = fac.ResourceFactory.create(
-            url=u"http://test",
+            url="http://test",
             activities=[act]
         )
         # the updated resource (will remove the activities)
@@ -182,7 +145,7 @@ class TestCrawler(AppTestCase):
                 deletion_date=datetime.datetime(2000, 1, 1)))
         db.session.commit()
         resource = fac.ResourceFactory.create(
-            url=u"http://test",
+            url="http://test",
             document=b"""
                 <iati-activities>
                   <iati-activity>
@@ -206,7 +169,7 @@ class TestCrawler(AppTestCase):
 
     def test_last_changed_datetime(self):
         resource = fac.ResourceFactory.create(
-            url=u"http://test",
+            url="http://test",
             document=b"""
                 <iati-activities>
                   <iati-activity>
@@ -240,22 +203,28 @@ class TestCrawler(AppTestCase):
             resource = crawler.parse_resource(resource)
             self.assertEquals(None, resource.last_parsed)
 
-    @mock.patch('iatilib.crawler.registry')
-    def test_deleted_activities(self, mock):
+    @mock.patch('iatikit.data')
+    @mock.patch('glob.glob')
+    def test_deleted_activities(self, glob_mock, iatikit_mock):
         fac.DatasetFactory.create(
             name='deleteme',
             resources=[fac.ResourceFactory.create(
-                url=u"http://yes",
+                url="http://yes",
                 activities=[
                     fac.ActivityFactory.build(
-                        iati_identifier=u"deleted_activity",
-                        title=u"orig",
+                        iati_identifier="deleted_activity",
+                        title="orig",
                     )
                 ]
             )]
         )
-        mock.action.package_list.return_value = [u"tst-a", u"tst-b"]
         self.assertIn("deleteme", [ds.name for ds in Dataset.query.all()])
+        data_mock = iatikit_mock.return_value
+        data_mock.last_updated = datetime.datetime.utcnow()
+        glob_mock.return_value = [
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
+            "__iatikitcache__/registry/metadata/tst/tst-b.json",
+        ]
         datasets = crawler.fetch_dataset_list()
         self.assertNotIn("deleteme", [ds.name for ds in datasets])
         self.assertIn(
@@ -265,7 +234,7 @@ class TestCrawler(AppTestCase):
 
     def test_document_metadata(self):
         res = fac.ResourceFactory.create(
-            url=u"http://res2",
+            url="http://res2",
             document=open(fixture_filename("complex_example_dfid.xml")).read().encode()
         )
         result = crawler.parse_resource(res)
@@ -283,48 +252,31 @@ class TestResourceUpdate(AppTestCase):
         # 'http://projects.dfid.gov.uk/iati/Country/CD'
 
         # this resouce was the first to import activity "47045-ARM-202-G05-H-00"
-        fac.ResourceFactory.create(
-            url=u"http://res1",
-            activities=[
-                fac.ActivityFactory.build(
-                    iati_identifier=u"47045-ARM-202-G05-H-00",
-                    title=u"orig",
-                )
-            ]
-        )
-        # this resource has just been retreived, it also contains an
-        # activity "47045-ARM-202-G05-H-00"
-        fac.ResourceFactory.create(
-            url=u"http://res2",
-            document=open(fixture_filename("single_activity.xml")).read().encode()
+        fac.DatasetFactory.create(
+            name='tst-a',
+            resources=[fac.ResourceFactory.create(
+                url=u"http://res1",
+                activities=[
+                    fac.ActivityFactory.build(
+                        iati_identifier=u"47045-ARM-202-G05-H-00",
+                        title=u"orig",
+                    )
+                ]
+            )]
         )
 
-        crawler.update_activities(u"http://res2")
+        # this resource has just been retrieved, it also contains an
+        # activity "47045-ARM-202-G05-H-00"
+        fac.DatasetFactory.create(
+            name='tst-b',
+            resources=[fac.ResourceFactory.create(
+                url=u"http://res2",
+                document=open(fixture_filename("single_activity.xml")).read().encode()
+            )]
+        )
+
+        crawler.update_activities("tst-b")
         self.assertEquals(
             u"orig",
             Activity.query.get(u"47045-ARM-202-G05-H-00").title
-        )
-
-
-class TestDate(TestCase):
-    def test_date(self):
-        # I'm not installing pytz for a single unit test
-        ZERO = datetime.timedelta(0)
-
-        class UTC(datetime.tzinfo):
-            def utcoffset(self, dt):
-                return ZERO
-
-            def tzname(self, dt):
-                return "UTC"
-
-            def dst(self, dt):
-                return ZERO
-
-        utc = UTC()
-
-        self.assertEquals(
-            "Wed, 22 Oct 2008 11:52:40 GMT",
-            crawler.http_date(
-                datetime.datetime(2008, 10, 22, 11, 52, 40, tzinfo=utc))
         )
