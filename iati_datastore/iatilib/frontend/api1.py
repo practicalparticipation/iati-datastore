@@ -55,14 +55,15 @@ def about():
         sa.func.max(Resource.last_parsed).label('last_parsed')
     ).first()
     now = datetime.now()
-    # If the file was last fetched and parsed less than 1 day
+    # If the file was last fetched less than 2 days
+    # ago and parsed less than 1 day
     # ago, then the API is healthy.
     if ((updated.last_fetch is not None) and
             (updated.last_succ is not None) and
             (updated.last_parsed is not None)):
         healthy = (
-            ((now-updated.last_fetch).days < 1) and
-            ((now-updated.last_succ).days < 1) and
+            ((now-updated.last_fetch).days < 2) and
+            ((now-updated.last_succ).days < 2) and
             ((now-updated.last_parsed).days < 1)
         )
     else:
