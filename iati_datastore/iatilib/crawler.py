@@ -4,6 +4,7 @@ import datetime
 import hashlib
 import logging
 import traceback
+from os.path import exists
 
 import iatikit
 import sqlalchemy as sa
@@ -32,8 +33,8 @@ def fetch_dataset_list():
     existing_ds_names = set((ds.publisher, ds.name) for ds in existing_datasets)
 
     package_list = [
-        tuple(x[:-4].rsplit('/', 2)[1:])
-        for x in glob.glob('__iatikitcache__/registry/data/*/*')]
+        tuple(x[:-5].rsplit('/', 2)[1:])
+        for x in glob.glob('__iatikitcache__/registry/metadata/*/*')]
     incoming_ds_names = set(package_list)
 
     new_datasets = [Dataset(name=n, publisher=p) for p, n
@@ -116,11 +117,20 @@ def fetch_resource(resource):
     dataset = Dataset.query.get(resource.dataset_id)
     fname = '__iatikitcache__/registry/data/{0}/{1}.xml'.format(
         dataset.publisher, dataset.name)
+
+    last_updated = iatikit.data().last_updated
+    resource.last_fetch = last_updated
+
+    if not exists(fname):
+        # TODO: this isn't true
+        resource.last_status_code = 404
+
     with open(fname, 'rb') as f:
         content = f.read()
 
+    resource.last_status_code = 200
     resource.document = content
-    resource.last_succ = iatikit.data().last_updated
+    resource.last_succ = last_updated
     resource.last_parsed = None
     resource.last_parse_error = None
 
@@ -297,7 +307,7 @@ def status_line(msg, filt, tot):
 
 
 @manager.cli.command('status')
-def status():
+def status_cmd():
     """Show status of current jobs"""
     print("%d jobs on queue" % rq.get_queue().count)
 
@@ -370,21 +380,28 @@ def status():
     ))
 
 
-def download_data():
-    iatikit.download.data()
-    queue = rq.get_queue()
-    print("Enqueuing a full registry update")
-    queue.enqueue(update_registry, result_ttl=0)
-
-
 @manager.cli.command('download')
-def download():
+def download_cmd():
     """
     Download all IATI data from IATI Data Dump.
     """
+    iatikit.download.data()
+
+
+def download_and_update():
+    iatikit.download.data()
+    update_registry()
+
+
+@manager.cli.command('download_and_update')
+def download_and_update_cmd():
+    """
+    Enqueue a download of all IATI data from
+    IATI Data Dump, and then start an update.
+    """
     queue = rq.get_queue()
     print("Enqueuing a download from IATI Data Dump")
-    queue.enqueue(download_data, result_ttl=0)
+    queue.enqueue(download_and_update, result_ttl=0)
 
 
 def update_registry():
@@ -398,11 +415,10 @@ def update_registry():
 @click.option('--dataset', 'dataset', type=str,
               help="update a single dataset")
 @manager.cli.command('update')
-def update(dataset=None):
+def update_cmd(dataset=None):
     """
-    Fetch all datasets from IATI registry; update any that have changed.
-    This is done by adding to the dataset table, and then adding an update command to
-    the Flask job queue. See fetch_dataset_list, then update_dataset for next actions.
+    Step through downloaded datasets, adding them to the dataset table, and then adding an update command to
+    the Flask job queue. See update_registry, then update_dataset for next actions.
     """
     queue = rq.get_queue()
 

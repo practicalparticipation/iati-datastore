@@ -15,8 +15,8 @@ class TestCrawler(AppTestCase):
     @mock.patch('glob.glob')
     def test_fetch_package_list(self, glob_mock, iatikit_mock):
         glob_mock.return_value = [
-            "__iatikitcache__/registry/data/tst/tst-a.xml",
-            "__iatikitcache__/registry/data/tst/tst-b.xml",
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
+            "__iatikitcache__/registry/metadata/tst/tst-b.json",
         ]
         data_mock = iatikit_mock.return_value
         data_mock.last_updated = datetime.datetime.utcnow()
@@ -28,14 +28,14 @@ class TestCrawler(AppTestCase):
     @mock.patch('glob.glob')
     def test_update_adds_datasets(self, glob_mock, iatikit_mock):
         glob_mock.return_value = [
-            "__iatikitcache__/registry/data/tst/tst-a.xml",
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
         ]
         data_mock = iatikit_mock.return_value
         data_mock.last_updated = datetime.datetime.utcnow()
         datasets = crawler.fetch_dataset_list()
         glob_mock.return_value = [
-            "__iatikitcache__/registry/data/tst/tst-a.xml",
-            "__iatikitcache__/registry/data/tst/tst-b.xml",
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
+            "__iatikitcache__/registry/metadata/tst/tst-b.json",
         ]
         datasets = crawler.fetch_dataset_list()
         self.assertEquals(2, datasets.count())
@@ -44,14 +44,14 @@ class TestCrawler(AppTestCase):
     @mock.patch('glob.glob')
     def test_update_deletes_datasets(self, glob_mock, iatikit_mock):
         glob_mock.return_value = [
-            "__iatikitcache__/registry/data/tst/tst-a.xml",
-            "__iatikitcache__/registry/data/tst/tst-b.xml",
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
+            "__iatikitcache__/registry/metadata/tst/tst-b.json",
         ]
         data_mock = iatikit_mock.return_value
         data_mock.last_updated = datetime.datetime.utcnow()
         datasets = crawler.fetch_dataset_list()
         glob_mock.return_value = [
-            "__iatikitcache__/registry/data/tst/tst-a.xml",
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
         ]
         datasets = crawler.fetch_dataset_list()
         self.assertEquals(1, datasets.count())
@@ -222,8 +222,8 @@ class TestCrawler(AppTestCase):
         data_mock = iatikit_mock.return_value
         data_mock.last_updated = datetime.datetime.utcnow()
         glob_mock.return_value = [
-            "__iatikitcache__/registry/data/tst/tst-a.xml",
-            "__iatikitcache__/registry/data/tst/tst-b.xml",
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
+            "__iatikitcache__/registry/metadata/tst/tst-b.json",
         ]
         datasets = crawler.fetch_dataset_list()
         self.assertNotIn("deleteme", [ds.name for ds in datasets])
