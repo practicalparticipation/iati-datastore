@@ -14,7 +14,7 @@ def virtualenv(conn):
 def deploy(conn):
     with virtualenv(conn):
         # pull latest copy of code in version control
-        conn.run('git pull origin master')
+        conn.run('git pull origin main')
         # start the virtual environment
         conn.run('source pyenv/bin/activate')
         # install dependencies
