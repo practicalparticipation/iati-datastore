@@ -20,7 +20,7 @@ How to contribute code and documents
 How we use branches in this repository
 --------------------------------------
 
-* master represents our main development branch
+* main represents our main development branch
 * live is the branch we are currently using for our deployed instance of the code
 * Other branches represent development work or bug fixes.
 
