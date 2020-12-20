@@ -4,7 +4,7 @@ import datetime
 import hashlib
 import logging
 import traceback
-from os.path import exists
+import os
 
 import iatikit
 import sqlalchemy as sa
@@ -121,18 +121,18 @@ def fetch_resource(resource):
     last_updated = iatikit.data().last_updated
     resource.last_fetch = last_updated
 
-    if not exists(fname):
+    if os.path.exists(fname):
+        with open(fname, 'rb') as f:
+            content = f.read()
+
+        resource.last_status_code = 200
+        resource.document = content
+        resource.last_succ = last_updated
+        resource.last_parsed = None
+        resource.last_parse_error = None
+    else:
         # TODO: this isn't true
         resource.last_status_code = 404
-
-    with open(fname, 'rb') as f:
-        content = f.read()
-
-    resource.last_status_code = 200
-    resource.document = content
-    resource.last_succ = last_updated
-    resource.last_parsed = None
-    resource.last_parse_error = None
 
     db.session.add(resource)
     return resource
@@ -285,10 +285,13 @@ def update_dataset(dataset_name):
     dataset = Dataset.query.get(dataset_name)
 
     fetch_dataset_metadata(dataset)
-    fetch_resource(dataset.resources[0])
+    resource = fetch_resource(dataset.resources[0])
     db.session.commit()
 
-    queue.enqueue(update_activities, args=(dataset_name,), result_ttl=0, timeout=100000)
+    if resource.last_status_code == 200:
+        queue.enqueue(
+          update_activities, args=(dataset_name,),
+          result_ttl=0, timeout=100000)
 
 
 def status_line(msg, filt, tot):

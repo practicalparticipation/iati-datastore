@@ -92,8 +92,9 @@ class TestCrawler(AppTestCase):
         db.session.commit()
         self.assertEquals(3, Resource.query.count())
 
+    @mock.patch('os.path.exists', return_value=True)
     @mock.patch('iatikit.data')
-    def test_fetch_resource_succ(self, iatikit_mock):
+    def test_fetch_resource_succ(self, iatikit_mock, exists_mock):
         data_mock = iatikit_mock.return_value
         data_mock.last_updated = datetime.datetime.utcnow()
         fac.DatasetFactory.create(
