@@ -96,7 +96,7 @@ def fetch_dataset_metadata(dataset):
         dataset.resource_urls.remove(deleted)
 
     try:
-        dataset.license = ds_entity['license']
+        dataset.license = ds_entity['license_id']
     except KeyError:
         pass
     dataset.is_open = ds_entity.get('isopen', False)
