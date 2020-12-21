@@ -424,7 +424,7 @@ def update_cmd(dataset=None):
     """
     queue = rq.get_queue()
 
-    if dataset:
+    if dataset is not None:
         print("Enqueuing {0} for update".format(dataset))
         queue.enqueue(update_dataset, args=(dataset,), result_ttl=0)
     else:

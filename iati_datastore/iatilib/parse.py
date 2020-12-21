@@ -525,7 +525,12 @@ def activity(xml_resource, resource=no_resource, major_version='1', version=None
         try:
             data[field] = function(xml, resource, major_version)
         except (MissingValue, InvalidDateError, ValueError, InvalidOperation) as exe:
-            data[field] = None
+            if field in ['websites', 'participating_orgs', 'recipient_country_percentages',
+                'recipient_region_percentages', 'sector_percentages', 'transactions',
+                'budgets', 'policy_markers', 'related_activities']:
+                data[field] = []
+            else:
+                data[field] = None
             log.warn(
                 _(u"Failed to import a valid {0} in activity {1}, error was: {2}".format(
                     field, data['iati_identifier'], exe),
