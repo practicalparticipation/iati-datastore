@@ -446,11 +446,10 @@ def from_codelist_with_major_version(codelist_name, path, xml, resource, major_v
     return from_codelist(getattr(codelists.by_major_version[major_version], codelist_name), path, xml, resource)
 
 
-def activity(xml_resource, resource=no_resource, major_version='1', version=None):
+def activity(xml, resource=no_resource, major_version='1', version=None):
     """
-    Expects xml_resource of type lxml.etree._Element
+    Expects xml argument of type lxml.etree._Element
     """
-    xml = xml_resource
 
     if major_version == '2':
         start_planned = partial(xval_date, "./activity-date[@type='1']")
