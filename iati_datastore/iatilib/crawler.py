@@ -287,8 +287,8 @@ def update_dataset(dataset_name):
 
     if resource.last_status_code == 200:
         queue.enqueue(
-          update_activities, args=(dataset_name,),
-          result_ttl=0, timeout=100000)
+            update_activities, args=(dataset_name,),
+            result_ttl=0, job_timeout=100000)
 
 
 def status_line(msg, filt, tot):
@@ -401,7 +401,9 @@ def download_and_update_cmd():
     """
     queue = rq.get_queue()
     print("Enqueuing a download from IATI Data Dump")
-    queue.enqueue(download_and_update, result_ttl=0)
+    queue.enqueue(
+        download_and_update,
+        result_ttl=0, job_timeout=100000)
 
 
 def update_registry():
