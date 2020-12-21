@@ -401,6 +401,25 @@ def default_language(xml, resource=None, major_version='1'):
     return codelists.by_major_version[major_version].Language.from_string(xml_value)
 
 
+def _open_resource_from_file(filename):
+    """
+    Expects a filename.
+    Returns a bytes file object.
+    """
+    if os.path.exists(filename):
+        return open(filename, 'rb')
+    else:
+        raise Exception("Filename {} does not exist.".format(filename))
+
+
+def _open_resource_from_bytes(_bytes):
+    """
+    Expects a bytes object.
+    Returns a bytes file object.
+    """
+    return BytesIO(_bytes)
+
+
 def _open_resource(xml_resource, detect_encoding=False):
     """
     Must return bytes object.
@@ -545,6 +564,14 @@ def document(xml_resource, resource=no_resource):
         return activities(_open_resource(xml_resource), resource)
     except UnicodeDecodeError:
         return activities(_open_resource(xml_resource, detect_encoding=True), resource)
+
+
+def document_from_bytes(xml_resource, resource=no_resource):
+    return activities(_open_resource_from_bytes(xml_resource), resource)
+
+
+def document_from_file(xml_resource, resource=no_resource):
+    return activities(_open_resource_from_file(xml_resource), resource)
 
 
 def activities(xmlfile, resource=no_resource):
