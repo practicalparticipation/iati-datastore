@@ -160,7 +160,7 @@ def hash(string):
 
 
 def parse_activity(new_identifiers, old_xml, resource):
-    for activity in parse.document(resource.document, resource):
+    for activity in parse.document_from_bytes(resource.document, resource):
         activity.resource = resource
 
         if activity.iati_identifier not in new_identifiers:
