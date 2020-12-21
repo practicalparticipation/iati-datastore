@@ -401,7 +401,9 @@ def download_and_update_cmd():
     """
     queue = rq.get_queue()
     print("Enqueuing a download from IATI Data Dump")
-    queue.enqueue(download_and_update, result_ttl=0)
+    queue.enqueue(
+        download_and_update,
+        result_ttl=0, job_timeout=100000)
 
 
 def update_registry():
