@@ -420,42 +420,6 @@ def _open_resource_from_bytes(_bytes):
     return BytesIO(_bytes)
 
 
-def _open_resource(xml_resource, detect_encoding=False):
-    """
-    Must return bytes object.
-    """
-    if isinstance(xml_resource, str):
-        # If it is a string...
-        if detect_encoding:
-            encoding = chardet.detect(xml_resource)['encoding']
-            if encoding in ('UTF-16LE', 'UTF-16BE'):
-                xml_resource = xml_resource.decode('UTF-16').encode('utf-8')
-
-        try:  # https://github.com/IATI/iati-datastore/issues/160
-            xml_resource_is_path = os.path.exists(xml_resource)
-        except TypeError:
-            xml_resource_is_path = False
-
-        # Previously included a workaround to this bug, but now appears to be fixed
-        # https://bugzilla.redhat.com/show_bug.cgi?id=874546
-        # appears now to be fixed
-        if xml_resource_is_path:
-            xmlfile = open(xml_resource, 'rb')
-        else:
-            xmlfile = BytesIO(xml_resource.encode())
-    else:
-        # It is bytes.
-        # so it's a xml literal, probably from a test. It shouldn't be
-        # big enough that a round trip through the serializer is a problem
-        if isinstance(xml_resource, bytes):
-            xmlfile = BytesIO(xml_resource)
-        elif isinstance(xml_resource, str):
-            xmlfile = BytesIO(xml_resource.encode())
-        else:
-            xmlfile = BytesIO(ET.tostring(xml_resource))
-    return xmlfile
-
-
 def from_codelist(codelist, path, xml, resource=no_resource):
     code = xval(xml, path, None)
     if code:
