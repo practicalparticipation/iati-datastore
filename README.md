@@ -63,7 +63,7 @@ sudo -u postgres psql -c "CREATE USER [SYSTEM USER]"
 sudo -u postgres psql -c "GRANT ALL ON DATABASE iati_datastore TO [SYSTEM USER]"
 
 # Start the process of grabbing the source data
-iati crawler download
+iati crawler download-and-update
 
 # Start a development server – this should be run in a seperate terminal window
 iati run
@@ -177,7 +177,7 @@ Deploying with apache
 * Run `iati create_database` to create the db tables
 * Set up a cron job for updates. (Add the following line after running `crontab -e`)
 
-        0 0 * * * export DATABASE_URL='postgres:///iati-datastore'; /usr/local/bin/iati crawler download
+        0 0 * * * export DATABASE_URL='postgres:///iati-datastore'; /usr/local/bin/iati crawler download-and-update
 
 * Run a worker with `iati queue background`
     - This needs to persist when you close your ssh connection. A simple way of doing this is using [screen](https://www.gnu.org/software/screen/).
@@ -202,7 +202,7 @@ Updating activities after changing import code
 
 * Run this SQL query on the database - `UPDATE resource SET last_succ=NULL;`
 * Restart background process
-* Run `iati crawler download` (or wait for cron to run it for you)
+* Run `iati crawler download-and-update` (or wait for cron to run it for you)
 
 
 Generation of Documentation

@@ -396,7 +396,7 @@ def download_and_update():
     update_registry()
 
 
-@manager.cli.command('download_and_update')
+@manager.cli.command('download-and-update')
 def download_and_update_cmd():
     """
     Enqueue a download of all IATI data from
