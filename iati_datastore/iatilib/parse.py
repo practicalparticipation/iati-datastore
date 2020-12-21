@@ -483,7 +483,10 @@ def from_codelist_with_major_version(codelist_name, path, xml, resource, major_v
 
 
 def activity(xml_resource, resource=no_resource, major_version='1', version=None):
-    xml = ET.parse(_open_resource(xml_resource))
+    """
+    Expects xml_resource of type lxml.etree._Element
+    """
+    xml = xml_resource
 
     if major_version == '2':
         start_planned = partial(xval_date, "./activity-date[@type='1']")
@@ -498,7 +501,7 @@ def activity(xml_resource, resource=no_resource, major_version='1', version=None
         end_actual = partial(xval_date, "./activity-date[@type='end-actual']")
 
     data = {
-        "iati_identifier": xval(xml.getroot(), "./iati-identifier/text()"),
+        "iati_identifier": xval(xml, "./iati-identifier/text()"),
         "title": xval(xml, "./title/"+TEXT_ELEMENT[major_version], u""),
         "description": xval(xml, "./description/"+TEXT_ELEMENT[major_version], u""),
         "raw_xml": ET.tostring(xml, encoding='utf-8').decode()
@@ -597,7 +600,7 @@ def activities(xmlfile, resource=no_resource):
 
 def document_metadata(xml_resource):
     version = None
-    for event, elem in ET.iterparse(_open_resource(xml_resource)):
+    for event, elem in ET.iterparse(_open_resource_from_bytes(xml_resource)):
         if elem.tag == 'iati-activities':
             version = elem.get('version')
         elem.clear()
