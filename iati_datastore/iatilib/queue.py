@@ -3,7 +3,7 @@ import traceback
 from flask import Blueprint
 
 from iatilib import db, rq
-from iatilib.model import Log, Resource
+from iatilib.model import Log, Dataset
 
 
 manager = Blueprint('queue', __name__)
@@ -13,13 +13,14 @@ manager.cli.short_help = 'Background task queue'
 def db_log_exception(job, exc_type, exc_value, tb):
     # as this is called when an exception occurs session is probably a mess
     db.session.remove()
-    resource = Resource.query.get(job.args[0])
-    if resource:
-        dataset = resource.dataset_id
-        url = resource.url
-    else:
+
+    url = "noresource"
+    dataset = Dataset.query.get(job.args[0])
+    if not dataset:
         dataset = "nodataset"
-        url = "noresource"
+    elif dataset.resources:
+        url = dataset.resources[0].url
+
     log = Log(
         logger="job {0}".format(job.func_name),
         dataset=dataset,
