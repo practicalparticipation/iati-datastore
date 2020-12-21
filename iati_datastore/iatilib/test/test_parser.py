@@ -717,15 +717,15 @@ class TestParticipation(AppTestCase):
 class TestActivity(AppTestCase):
     def test_missing_id(self):
         # missing activity id means don't parse
-        activities = parse.document(ET.XML(
-            u'''
+        activities = parse.document_from_bytes(
+            b'''
               <iati-activities>
                 <iati-activity default-currency="GBP" xml:lang="en">
                     <reporting-org ref="GB-2" type="15">CDC Group plc</reporting-org>
                     <activity-status code="2">Implementation</activity-status>
                 </iati-activity>
               </iati-activities>
-                '''))
+                ''')
         self.assertEquals(0, len(list(activities)))
 
     def test_dates(self):
@@ -737,15 +737,15 @@ class TestActivity(AppTestCase):
 
     def test_missing_reporting_org(self):
         # missing reporting org should still parse
-        activities = list(parse.document(ET.XML(
-            u'''
+        activities = list(parse.document_from_bytes(
+            b'''
               <iati-activities>
                 <iati-activity default-currency="GBP" xml:lang="en">
                     <iati-identifier>AAA-AA</iati-identifier>
                     <activity-status code="2">Implementation</activity-status>
                 </iati-activity>
               </iati-activities>
-                ''')))
+                '''))
         self.assertEquals(1, len(activities))
         self.assertEquals(u"AAA-AA", activities[0].iati_identifier)
 
