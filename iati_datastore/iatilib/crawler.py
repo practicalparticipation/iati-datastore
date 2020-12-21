@@ -393,6 +393,14 @@ def download_and_update():
     update_registry()
 
 
+@manager.cli.command('fetch-dataset-metadata')
+def fetch_dataset_metadata_cmd():
+    """
+    Fetches dataset metadata from existing IATI Data Dump cache.
+    """
+    fetch_dataset_list()
+
+
 @manager.cli.command('download-and-update')
 def download_and_update_cmd():
     """
