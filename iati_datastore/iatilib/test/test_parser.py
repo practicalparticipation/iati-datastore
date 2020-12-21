@@ -15,10 +15,14 @@ def fixture(fix_name, encoding='utf-8'):
     return open(fixture_filename(fix_name), encoding=encoding).read()
 
 
+def parse_fixture(fix_name, encoding='utf-8'):
+    return ET.parse(fixture_filename(fix_name))
+
+
 class TestParse2xxActivity(AppTestCase):
     def setUp(self):
         super().setUp()
-        self.activities = list(parse.document(fixture_filename("2.01-example-annotated.xml")))
+        self.activities = list(parse.document_from_file(fixture_filename("2.01-example-annotated.xml")))
         self.act = self.activities[0]
 
     def test_id(self):
@@ -251,7 +255,7 @@ class TestParse2xxActivity(AppTestCase):
         self.assertEquals(None, self.act.end_actual)
 
     def test_raw_xml(self):
-        norm_xml = ET.tostring(ET.parse(fixture_filename("2.01-example-annotated.xml")).find('iati-activity'), encoding='utf-8').decode("utf-8").strip('\n ')
+        norm_xml = ET.tostring(ET.parse(fixture_filename("2.01-example-annotated.xml")).find('iati-activity'), encoding='utf-8').decode("utf-8")
         self.assertEquals(norm_xml, self.act.raw_xml)
 
     def test_budget(self):
@@ -296,11 +300,11 @@ class TestParse2xxActivity(AppTestCase):
 class TestParseActivity(AppTestCase):
     def setUp(self):
         super().setUp()
-        self.act = parse.activity(fixture("default_currency.xml"))
+        self.act = parse.activity(parse_fixture("default_currency.xml"))
 
     def test_bad_xml(self):
         with self.assertRaises(ET.LxmlError):
-            parse.activity(fixture("broken.xml"))
+            parse.activity(parse_fixture("broken.xml"))
 
     def test_id(self):
         self.assertEquals(
@@ -360,7 +364,7 @@ class TestParseActivity(AppTestCase):
             self.act.recipient_country_percentages[0].percentage)
 
     def test_recipient_region_percentages(self):
-        act = parse.activity(fixture("iati_activity_JP.xml"))
+        act = parse.activity(parse_fixture("iati_activity_JP.xml"))
         self.assertEquals(1, len(act.recipient_region_percentages))
         self.assertEquals(
             cl.Country.japan,
@@ -396,29 +400,29 @@ class TestParseActivity(AppTestCase):
 
     def test_transaction_currency(self):
         # currency is picked up from default currency
-        act = parse.activity(fixture("transaction_provider.xml"))
+        act = parse.activity(parse_fixture("transaction_provider.xml"))
         self.assertEquals(
             cl.Currency.pound_sterling,
             act.transactions[0].value_currency)
 
     def test_transaction_value_composite(self):
-        act = parse.activity(fixture("transaction_provider.xml"))
+        act = parse.activity(parse_fixture("transaction_provider.xml"))
         self.assertEquals(
             (datetime.date(2011, 8, 19), 29143, cl.Currency.pound_sterling),
             act.transactions[0].value)
 
     def test_transaction_ref(self):
-        act = parse.activity(fixture("transaction_ref.xml"))
+        act = parse.activity(parse_fixture("transaction_ref.xml"))
         self.assertEquals(u'36258', act.transactions[0].ref)
         self.assertEquals(None, act.transactions[1].ref)
 
     def test_transaction_provider_org_ref(self):
-        act = parse.activity(fixture("transaction_provider.xml"))
+        act = parse.activity(parse_fixture("transaction_provider.xml"))
         self.assertEquals(u'GB-1-201242-101',
                           act.transactions[0].provider_org.ref)
 
     def test_transaction_reciever_org_ref(self):
-        act = parse.activity(fixture("transaction_provider.xml"))
+        act = parse.activity(parse_fixture("transaction_provider.xml"))
         self.assertEquals(u'GB-CHC-313139',
                           act.transactions[0].receiver_org.ref)
 
@@ -435,8 +439,8 @@ class TestParseActivity(AppTestCase):
         self.assertEquals(datetime.date(2009, 10, 2), self.act.end_actual)
 
     def test_sector_percentage_count(self):
-        act = next(parse.document(
-            fixture("complex_example_dfid.xml", encoding=None)))
+        act = next(parse.document_from_file(
+            fixture_filename("complex_example_dfid.xml")))
         self.assertEquals(5, len(act.sector_percentages))
 
     def test_raw_xml(self):
@@ -444,7 +448,7 @@ class TestParseActivity(AppTestCase):
         self.assertEquals(norm_xml, self.act.raw_xml)
 
     def test_no_start_actual(self):
-        activities = parse.document(fixture_filename("missing_dates.xml"))
+        activities = parse.document_from_file(fixture_filename("missing_dates.xml"))
         act = {a.iati_identifier: a for a in activities}
         self.assertEquals(None, act[u"GB-CHC-272465-680"].start_actual)
 
@@ -452,7 +456,7 @@ class TestParseActivity(AppTestCase):
         self.assertEquals(6, len(self.act.budgets))
 
     def test_policy_markers(self):
-        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
+        activities = [a for a in parse.document_from_file(fixture_filename("CD.xml"))]
 
         self.assertEquals(8, len(activities[1].policy_markers))
         self.assertEquals(cl.PolicyMarker.gender_equality, activities[1].policy_markers[0].code)
@@ -463,44 +467,44 @@ class TestParseActivity(AppTestCase):
         self.assertEquals(cl.PolicyMarker.trade_development, activities[1].policy_markers[3].code)
 
     def test_related_activity(self):
-        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
+        activities = [a for a in parse.document_from_file(fixture_filename("CD.xml"))]
         self.assertEquals(4, len(activities[0].related_activities))
         self.assertEquals("GB-1-105838-101", activities[0].related_activities[0].ref)
 
     def test_activity_status(self):
-        activities = [a for a in parse.document(fixture_filename("default_currency.xml"))]
+        activities = [a for a in parse.document_from_file(fixture_filename("default_currency.xml"))]
         self.assertEquals(cl.ActivityStatus.implementation, activities[0].activity_status)
 
     def test_collaboration_type(self):
-        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
+        activities = [a for a in parse.document_from_file(fixture_filename("CD.xml"))]
         self.assertEquals(cl.CollaborationType.bilateral, activities[1].collaboration_type)
 
     def test_default_finance_type(self):
-        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
+        activities = [a for a in parse.document_from_file(fixture_filename("CD.xml"))]
         self.assertEquals(
             cl.FinanceType.standard_grant,
             activities[1].default_finance_type)
 
     def test_default_flow_type(self):
-        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
+        activities = [a for a in parse.document_from_file(fixture_filename("CD.xml"))]
         self.assertEquals(cl.FlowType.oda, activities[1].default_flow_type)
 
     def test_default_aid_type(self):
-        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
+        activities = [a for a in parse.document_from_file(fixture_filename("CD.xml"))]
         self.assertEquals(
             cl.AidType.projecttype_interventions,
             activities[1].default_aid_type)
 
     def test_default_tied_status(self):
-        activities = [a for a in parse.document(fixture_filename("CD.xml"))]
+        activities = [a for a in parse.document_from_file(fixture_filename("CD.xml"))]
         self.assertEquals(cl.TiedStatus.untied, activities[1].default_tied_status)
 
     def test_default_hierarchy(self):
-        activities = [a for a in parse.document(fixture_filename("default_currency.xml"))]
+        activities = [a for a in parse.document_from_file(fixture_filename("default_currency.xml"))]
         self.assertEquals(1, activities[0].hierarchy)
 
     def test_default_language(self):
-        activities = [a for a in parse.document(fixture_filename("default_currency.xml"))]
+        activities = [a for a in parse.document_from_file(fixture_filename("default_currency.xml"))]
         self.assertEquals(cl.Language.english, activities[0].default_language)
 
     def test_default_language_none(self):
@@ -514,33 +518,33 @@ class TestParseActivity(AppTestCase):
 
 class TestFunctional(AppTestCase):
     def test_save_parsed_activity(self):
-        act = parse.activity(fixture("default_currency.xml"))
+        act = parse.activity(parse_fixture("default_currency.xml"))
         db.session.add(act)
         db.session.commit()
 
     def test_save_parsed_201(self):
-        activities = parse.document(fixture_filename("2.01-example-annotated.xml"))
+        activities = parse.document_from_file(fixture_filename("2.01-example-annotated.xml"))
         db.session.add_all(activities)
         db.session.commit()
 
     def test_save_complex_example(self):
-        acts = parse.document(
-            fixture("complex_example_dfid.xml", encoding=None))
+        acts = parse.document_from_file(
+            fixture_filename("complex_example_dfid.xml"))
         db.session.add_all(acts)
         db.session.commit()
 
     def test_save_repeated_participation(self):
-        activities = parse.document(fixture_filename("repeated_participation.xml"))
+        activities = parse.document_from_file(fixture_filename("repeated_participation.xml"))
         db.session.add_all(activities)
         db.session.commit()
 
     def test_different_roles(self):
-        activities = parse.document(fixture_filename("same_orgs_different_roles.xml"))
+        activities = parse.document_from_file(fixture_filename("same_orgs_different_roles.xml"))
         db.session.add_all(activities)
         db.session.commit()
 
     def test_big_values(self):
-        activities = parse.document(fixture_filename("big_value.xml"))
+        activities = parse.document_from_file(fixture_filename("big_value.xml"))
         db.session.add_all(activities)
         db.session.commit()
 
@@ -725,7 +729,7 @@ class TestActivity(AppTestCase):
         self.assertEquals(0, len(list(activities)))
 
     def test_dates(self):
-        activities = list(parse.document(fixture_filename("CD.xml")))
+        activities = list(parse.document_from_file(fixture_filename("CD.xml")))
         self.assertEquals(datetime.date(2004, 1, 1), activities[0].start_planned)
         self.assertEquals(datetime.date(2004, 1, 1), activities[0].start_actual)
         self.assertEquals(datetime.date(2010, 12, 31), activities[0].end_planned)
