@@ -287,8 +287,8 @@ def update_dataset(dataset_name):
 
     if resource.last_status_code == 200:
         queue.enqueue(
-          update_activities, args=(dataset_name,),
-          result_ttl=0, timeout=100000)
+            update_activities, args=(dataset_name,),
+            result_ttl=0, job_timeout=100000)
 
 
 def status_line(msg, filt, tot):
