@@ -155,7 +155,7 @@ def check_for_duplicates(activities):
 
 def hash(string):
     m = hashlib.md5()
-    m.update(string.encode('utf-8'))
+    m.update(string)
     return m.digest()
 
 
@@ -166,7 +166,7 @@ def parse_activity(new_identifiers, old_xml, resource):
         if activity.iati_identifier not in new_identifiers:
             new_identifiers.add(activity.iati_identifier)
             try:
-                if hash(activity.raw_xml) == old_xml[activity.iati_identifier][1]:
+                if hash(activity.raw_xml.encode('utf-8')) == old_xml[activity.iati_identifier][1]:
                     activity.last_change_datetime = old_xml[activity.iati_identifier][0]
                 else:
                     activity.last_change_datetime = datetime.datetime.now()
@@ -193,7 +193,7 @@ def parse_resource(resource):
 
     # obtains the iati-identifier, last-updated datetime, and a hash of the existing xml associated with
     # every activity associated with the current url.
-    old_xml = dict([(i[0], (i[1], hash(i[2]))) for i in db.session.query(
+    old_xml = dict([(i[0], (i[1], hash(i[2].encode('utf-8')))) for i in db.session.query(
             Activity.iati_identifier, Activity.last_change_datetime,
             Activity.raw_xml).filter_by(resource_url=resource.url)])
 
