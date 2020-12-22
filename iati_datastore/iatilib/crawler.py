@@ -123,10 +123,12 @@ def fetch_resource(dataset):
             content = f.read()
 
         resource.last_status_code = 200
-        resource.document = content
         resource.last_succ = last_updated
-        resource.last_parsed = None
-        resource.last_parse_error = None
+        if not resource.document or \
+                hash(resource.document) != hash(content):
+            resource.document = content
+            resource.last_parsed = None
+            resource.last_parse_error = None
     else:
         # TODO: this isn't true
         resource.last_status_code = 404
@@ -285,7 +287,7 @@ def update_dataset(dataset_name):
     resource = fetch_resource(dataset)
     db.session.commit()
 
-    if resource.last_status_code == 200:
+    if resource.last_status_code == 200 and not resource.last_parsed:
         queue.enqueue(
             update_activities, args=(dataset_name,),
             result_ttl=0, job_timeout=100000)
