@@ -506,13 +506,6 @@ def activity(xml, resource=no_resource, major_version='1', version=None):
     return Activity(**data)
 
 
-def document(xml_resource, resource=no_resource):
-    try:
-        return activities(_open_resource(xml_resource), resource)
-    except UnicodeDecodeError:
-        return activities(_open_resource(xml_resource, detect_encoding=True), resource)
-
-
 def document_from_bytes(xml_resource, resource=no_resource):
     return activities(BytesIO(xml_resource), resource)
 
