@@ -105,17 +105,17 @@ def fetch_dataset_metadata(dataset):
     return dataset
 
 
-def fetch_resource(resource):
+def fetch_resource(dataset):
     '''
-    Gets the resource using the request library and sets the times of last successful update based on the status code.
+    Gets the resource and sets the times of last successful update based on the status code.
     :param resource:
     :return:
     '''
-    dataset = Dataset.query.get(resource.dataset_id)
     fname = '__iatikitcache__/registry/data/{0}/{1}.xml'.format(
         dataset.publisher, dataset.name)
 
     last_updated = iatikit.data().last_updated
+    resource = dataset.resources[0]
     resource.last_fetch = last_updated
 
     if os.path.exists(fname):
@@ -282,7 +282,7 @@ def update_dataset(dataset_name):
     dataset = Dataset.query.get(dataset_name)
 
     fetch_dataset_metadata(dataset)
-    resource = fetch_resource(dataset.resources[0])
+    resource = fetch_resource(dataset)
     db.session.commit()
 
     if resource.last_status_code == 200:

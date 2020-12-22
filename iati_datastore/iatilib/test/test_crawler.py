@@ -97,7 +97,7 @@ class TestCrawler(AppTestCase):
     def test_fetch_resource_succ(self, iatikit_mock, exists_mock):
         data_mock = iatikit_mock.return_value
         data_mock.last_updated = datetime.datetime.utcnow()
-        fac.DatasetFactory.create(
+        dataset = fac.DatasetFactory.create(
             name='tst-a',
             resources=[fac.ResourceFactory.create(
                 url="http://foo",
@@ -106,7 +106,7 @@ class TestCrawler(AppTestCase):
         read_data = b"test"
         mock_open = mock.mock_open(read_data=read_data)
         with mock.patch('builtins.open', mock_open):
-            resource = crawler.fetch_resource(Resource(dataset_id="tst-a"))
+            resource = crawler.fetch_resource(dataset)
         self.assertEquals(b"test", resource.document)
         self.assertEquals(None, resource.last_parsed)
         self.assertEquals(None, resource.last_parse_error)
