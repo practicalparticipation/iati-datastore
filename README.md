@@ -1,7 +1,7 @@
 IATI Datastore Classic
 ======================
 
-[![Build Status](https://travis-ci.com/codeforIATI/iati-datastore.svg?branch=main)](https://travis-ci.com/codeforIATI/iati-datastore)
+[![Build Status](https://github.com/codeforIATI/iati-datastore/workflows/CI/badge.svg?branch=main)](https://github.com/codeforIATI/iati-datastore/actions?query=workflow%3ACI)
 [![Coverage Status](https://img.shields.io/coveralls/codeforIATI/iati-datastore.svg)](https://coveralls.io/r/codeforIATI/iati-datastore?branch=main)
 [![License: MIT](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://github.com/codeforIATI/iati-datastore/blob/main/LICENSE.txt)
 
