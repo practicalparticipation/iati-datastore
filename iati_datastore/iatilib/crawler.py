@@ -63,12 +63,11 @@ def delete_datasets(datasets):
         filter(Resource.dataset_id.in_(datasets))
 
     now = datetime.datetime.now()
-    deleted_activities = [DeletedActivity(
+    for a in activities_to_delete:
+        db.session.merge(DeletedActivity(
             iati_identifier=a.iati_identifier,
             deletion_date=now
-    )
-                          for a in activities_to_delete]
-    db.session.add_all(deleted_activities)
+        ))
     db.session.commit()
     deleted = deleted_datasets.delete(synchronize_session='fetch')
     log.info("Deleted {0} datasets".format(deleted))
