@@ -104,17 +104,17 @@ def fetch_dataset_metadata(dataset):
     return dataset
 
 
-def fetch_resource(resource):
+def fetch_resource(dataset):
     '''
-    Gets the resource using the request library and sets the times of last successful update based on the status code.
+    Gets the resource and sets the times of last successful update based on the status code.
     :param resource:
     :return:
     '''
-    dataset = Dataset.query.get(resource.dataset_id)
     fname = '__iatikitcache__/registry/data/{0}/{1}.xml'.format(
         dataset.publisher, dataset.name)
 
     last_updated = iatikit.data().last_updated
+    resource = dataset.resources[0]
     resource.last_fetch = last_updated
 
     if os.path.exists(fname):
@@ -122,10 +122,12 @@ def fetch_resource(resource):
             content = f.read()
 
         resource.last_status_code = 200
-        resource.document = content
         resource.last_succ = last_updated
-        resource.last_parsed = None
-        resource.last_parse_error = None
+        if not resource.document or \
+                hash(resource.document) != hash(content):
+            resource.document = content
+            resource.last_parsed = None
+            resource.last_parse_error = None
     else:
         # TODO: this isn't true
         resource.last_status_code = 404
@@ -154,7 +156,7 @@ def check_for_duplicates(activities):
 
 def hash(string):
     m = hashlib.md5()
-    m.update(string.encode('utf-8'))
+    m.update(string)
     return m.digest()
 
 
@@ -165,7 +167,7 @@ def parse_activity(new_identifiers, old_xml, resource):
         if activity.iati_identifier not in new_identifiers:
             new_identifiers.add(activity.iati_identifier)
             try:
-                if hash(activity.raw_xml) == old_xml[activity.iati_identifier][1]:
+                if hash(activity.raw_xml.encode('utf-8')) == old_xml[activity.iati_identifier][1]:
                     activity.last_change_datetime = old_xml[activity.iati_identifier][0]
                 else:
                     activity.last_change_datetime = datetime.datetime.now()
@@ -192,7 +194,7 @@ def parse_resource(resource):
 
     # obtains the iati-identifier, last-updated datetime, and a hash of the existing xml associated with
     # every activity associated with the current url.
-    old_xml = dict([(i[0], (i[1], hash(i[2]))) for i in db.session.query(
+    old_xml = dict([(i[0], (i[1], hash(i[2].encode('utf-8')))) for i in db.session.query(
             Activity.iati_identifier, Activity.last_change_datetime,
             Activity.raw_xml).filter_by(resource_url=resource.url)])
 
@@ -281,10 +283,10 @@ def update_dataset(dataset_name):
     dataset = Dataset.query.get(dataset_name)
 
     fetch_dataset_metadata(dataset)
-    resource = fetch_resource(dataset.resources[0])
+    resource = fetch_resource(dataset)
     db.session.commit()
 
-    if resource.last_status_code == 200:
+    if resource.last_status_code == 200 and not resource.last_parsed:
         queue.enqueue(
             update_activities, args=(dataset_name,),
             result_ttl=0, job_timeout=100000)
