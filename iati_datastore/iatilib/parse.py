@@ -401,42 +401,6 @@ def default_language(xml, resource=None, major_version='1'):
     return codelists.by_major_version[major_version].Language.from_string(xml_value)
 
 
-def _open_resource(xml_resource, detect_encoding=False):
-    """
-    Must return bytes object.
-    """
-    if isinstance(xml_resource, str):
-        # If it is a string...
-        if detect_encoding:
-            encoding = chardet.detect(xml_resource)['encoding']
-            if encoding in ('UTF-16LE', 'UTF-16BE'):
-                xml_resource = xml_resource.decode('UTF-16').encode('utf-8')
-
-        try:  # https://github.com/IATI/iati-datastore/issues/160
-            xml_resource_is_path = os.path.exists(xml_resource)
-        except TypeError:
-            xml_resource_is_path = False
-
-        # Previously included a workaround to this bug, but now appears to be fixed
-        # https://bugzilla.redhat.com/show_bug.cgi?id=874546
-        # appears now to be fixed
-        if xml_resource_is_path:
-            xmlfile = open(xml_resource, 'rb')
-        else:
-            xmlfile = BytesIO(xml_resource.encode())
-    else:
-        # It is bytes.
-        # so it's a xml literal, probably from a test. It shouldn't be
-        # big enough that a round trip through the serializer is a problem
-        if isinstance(xml_resource, bytes):
-            xmlfile = BytesIO(xml_resource)
-        elif isinstance(xml_resource, str):
-            xmlfile = BytesIO(xml_resource.encode())
-        else:
-            xmlfile = BytesIO(ET.tostring(xml_resource))
-    return xmlfile
-
-
 def from_codelist(codelist, path, xml, resource=no_resource):
     code = xval(xml, path, None)
     if code:
@@ -463,8 +427,10 @@ def from_codelist_with_major_version(codelist_name, path, xml, resource, major_v
     return from_codelist(getattr(codelists.by_major_version[major_version], codelist_name), path, xml, resource)
 
 
-def activity(xml_resource, resource=no_resource, major_version='1', version=None):
-    xml = ET.parse(_open_resource(xml_resource))
+def activity(xml, resource=no_resource, major_version='1', version=None):
+    """
+    Expects xml argument of type lxml.etree._Element
+    """
 
     if major_version == '2':
         start_planned = partial(xval_date, "./activity-date[@type='1']")
@@ -479,7 +445,7 @@ def activity(xml_resource, resource=no_resource, major_version='1', version=None
         end_actual = partial(xval_date, "./activity-date[@type='end-actual']")
 
     data = {
-        "iati_identifier": xval(xml.getroot(), "./iati-identifier/text()"),
+        "iati_identifier": xval(xml, "./iati-identifier/text()"),
         "title": xval(xml, "./title/"+TEXT_ELEMENT[major_version], u""),
         "description": xval(xml, "./description/"+TEXT_ELEMENT[major_version], u""),
         "raw_xml": ET.tostring(xml, encoding='utf-8').decode()
@@ -540,11 +506,12 @@ def activity(xml_resource, resource=no_resource, major_version='1', version=None
     return Activity(**data)
 
 
-def document(xml_resource, resource=no_resource):
-    try:
-        return activities(_open_resource(xml_resource), resource)
-    except UnicodeDecodeError:
-        return activities(_open_resource(xml_resource, detect_encoding=True), resource)
+def document_from_bytes(xml_resource, resource=no_resource):
+    return activities(BytesIO(xml_resource), resource)
+
+
+def document_from_file(xml_resource, resource=no_resource):
+    return activities(open(xml_resource, 'rb'), resource)
 
 
 def activities(xmlfile, resource=no_resource):
@@ -570,7 +537,7 @@ def activities(xmlfile, resource=no_resource):
 
 def document_metadata(xml_resource):
     version = None
-    for event, elem in ET.iterparse(_open_resource(xml_resource)):
+    for event, elem in ET.iterparse(BytesIO(xml_resource)):
         if elem.tag == 'iati-activities':
             version = elem.get('version')
         elem.clear()

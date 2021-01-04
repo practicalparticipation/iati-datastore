@@ -88,7 +88,7 @@ def parse_file(filenames, verbose=False, fail_xml=False, fail_spec=False):
         if verbose:
             print("Parsing", filename)
         try:
-            db.session.add_all(parse.document(filename))
+            db.session.add_all(parse.document_from_file(filename))
             db.session.commit()
         except parse.ParserError as exc:
             logging.error("Could not parse file %r", filename)

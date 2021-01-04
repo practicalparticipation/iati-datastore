@@ -161,7 +161,7 @@ def hash(string):
 
 
 def parse_activity(new_identifiers, old_xml, resource):
-    for activity in parse.document(resource.document, resource):
+    for activity in parse.document_from_bytes(resource.document, resource):
         activity.resource = resource
 
         if activity.iati_identifier not in new_identifiers:
@@ -392,6 +392,14 @@ def download_cmd():
 def download_and_update():
     iatikit.download.data()
     update_registry()
+
+
+@manager.cli.command('fetch-dataset-list')
+def fetch_dataset_list_cmd():
+    """
+    Fetches dataset metadata from existing IATI Data Dump cache.
+    """
+    fetch_dataset_list()
 
 
 @manager.cli.command('download-and-update')

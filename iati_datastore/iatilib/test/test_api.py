@@ -183,7 +183,7 @@ def fixture_filename(fix_name):
 
 
 def load_fix(fix_name):
-    activities = parse.document(fixture_filename(fix_name))
+    activities = parse.document_from_file(fixture_filename(fix_name))
     db.session.add_all(activities)
     db.session.commit()
 
