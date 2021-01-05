@@ -16,6 +16,24 @@ class TestActivityFilter(AppTestCase):
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
 
+    def test_by_title(self):
+        act_in = fac.ActivityFactory.create(title='Technical Assistance to Support Improved Aid Effectiveness in Bangladesh')
+        act_not = fac.ActivityFactory.create(title='Accelerating Improved Nutrition for Extreme Poor in Bangladesh')
+        activities = dsfilter.activities({
+            "title": u"technical assistance"
+        })
+        self.assertIn(act_in, activities.all())
+        self.assertNotIn(act_not, activities.all())
+
+    def test_by_description(self):
+        act_in = fac.ActivityFactory.create(description='To improve dialogue and coordination at national, sectoral and programme levels, with greater aid predictability and increased alignment of Government-donor policies and systems')
+        act_not = fac.ActivityFactory.create(description='To reduce undernutrition in extreme poor household in Bangladesh. Improved nutrient intake and health status of adolescent girls, pregnant and breastfeeding women and young children.')
+        activities = dsfilter.activities({
+            "description": u"improve dialogue"
+        })
+        self.assertIn(act_in, activities.all())
+        self.assertNotIn(act_not, activities.all())
+
     def test_by_country_code(self):
         act_in = fac.ActivityFactory.create(
             recipient_country_percentages=[
