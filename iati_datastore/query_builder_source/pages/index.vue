@@ -57,6 +57,56 @@
         <b-col>
           <h2>Choose your filters</h2>
           <p>These options let you filter IATI data, depending on what you are looking for. Additional filters <a :href="`${baseURL}/docs/api/#filtering`">are available</a> by querying the datastore directly.</p>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <b-card
+          header="Specific activities"
+          header-tag="h4"
+          class="mb-3">
+            <b-card-text>
+              Search for specific activities using the IATI Identifier, Title or Description.
+            </b-card-text>
+            <b-row>
+              <b-col>
+                <b-form-group
+                  label="IATI Identifier"
+                  description="Search for an activity containing a specific IATI Identifier (similar to a project code).">
+                  <b-input
+                    v-model="filters['iati-identifier']"
+                    placeholder="All IATI Identifiers">
+                  </b-input>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col>
+                <b-form-group
+                  label="Title"
+                  description="Search for activities with titles containing the specified text.">
+                  <b-input
+                    v-model="filters.title"
+                    placeholder="All titles">
+                  </b-input>
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group
+                  label="Description"
+                  description="Search for activities with descriptions containing the specified text.">
+                  <b-input
+                    v-model="filters.description"
+                    placeholder="All descriptions">
+                  </b-input>
+                </b-form-group>
+              </b-col>
+            </b-row>
+          </b-card>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
           <b-card
             header="Reporting Organisation"
             header-tag="h4"
@@ -281,6 +331,9 @@ export default {
         }
       },
       filters: {
+        'iati-identifier': null,
+        'title': null,
+        'description': null,
         'reporting-org': [],
         'reporting-org.type': [],
         'recipient-country': [],
