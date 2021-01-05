@@ -200,8 +200,16 @@ def _filter(query, args):
             Resource.dataset_id == dataset_id
         )
 
+    def title(title):
+        return Activity.title.ilike("%{}%".format(title))
+
+    def description(description):
+        return Activity.description.ilike("%{}%".format(description))
+
     filter_conditions = {
             'iati-identifier': partial(eq, Activity.iati_identifier),
+            'title': title,
+            'description': description,
             'recipient-country': recipient_country,
             'recipient-country.code': recipient_country,
             'recipient-country.text': recipient_country_text,
