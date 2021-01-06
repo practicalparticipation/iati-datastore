@@ -28,6 +28,7 @@ def list_routes():
         options = {
             arg: arg.upper()
             for arg in rule.arguments
+            if arg not in rule.defaults
         }
         url = url_for(rule.endpoint, _external=True, **options)
         urls.append(url)
@@ -350,7 +351,8 @@ activity_view = ActivityView.as_view('activity')
 api.add_url_rule(
     '/access/activity/',
     defaults={"format": "json"},
-    view_func=activity_view
+    view_func=activity_view,
+    endpoint="activity-view"
 )
 
 api.add_url_rule(
