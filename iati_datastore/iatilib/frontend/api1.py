@@ -233,7 +233,7 @@ class Stream(object):
     offset = ''
 
     def __init__(self, query):
-        self.items = query.all()
+        self.items = query
         self.total = query.count()
 
 
