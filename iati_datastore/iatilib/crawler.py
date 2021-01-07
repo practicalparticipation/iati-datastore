@@ -281,10 +281,20 @@ def update_dataset(dataset_name):
     fetch_dataset_metadata(dataset)
     try:
         db.session.commit()
-    except sa.exc.IntegrityError:
+    except sa.exc.IntegrityError as exc:
         db.session.rollback()
         # the resource can't be added, so we should
         # give up.
+        db.session.add(Log(
+            dataset=dataset_name,
+            resource=None,
+            logger="update_dataset",
+            msg="Failed to update dataset {0}, error was".format(dataset_name, exc),
+            level="error",
+            trace=traceback.format_exc(),
+            created_at=datetime.datetime.now()
+        ))
+        db.session.commit()
         return
 
     resource = fetch_resource(dataset)
