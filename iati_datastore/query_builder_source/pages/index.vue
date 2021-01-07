@@ -494,13 +494,13 @@ export default {
           })
         })
       })
-      this.$axios.get(`publishers.json`)
+      axios.get(`https://codelists.codeforiati.org/api/json/en/ReportingOrganisation.json`)
       .then(response => {
         this.codelists['ReportingOrg'] = response.data.data.map(publisher => {
           return {
             code: publisher.code,
-            label: `${publisher.code} - ${publisher.label}`,
-            type: publisher.type
+            label: `${publisher.code} - ${publisher.name}`,
+            type: publisher['codeforiati:organisation-type-code']
           }
         })
       })
