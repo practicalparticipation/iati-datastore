@@ -34,6 +34,8 @@ activity_api_args = v.Schema({
     "date": apidate,
     "stream": v.All(v.Coerce(bool)),
     'iati-identifier': v.All(v.Coerce(str)),
+    'title': v.All(v.Coerce(str)),
+    'description': v.All(v.Coerce(str)),
     'recipient-country': v.All(v.Coerce(str), recipient_country),
     'recipient-country.code': v.All(v.Coerce(str), recipient_country),
     'recipient-country.text': v.All(v.Coerce(str)),

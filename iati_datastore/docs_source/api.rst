@@ -52,6 +52,30 @@ Example API call:
     `/api/1/access/activity.xml?iati-identifier=NL-KVK-41177206-C-002350 </api/1/access/activity.xml?iati-identifier=NL-KVK-41177206-C-002350>`__
 
 
+title
+`````
+
+Returns activities with any `Title <https://iatistandard.org/en/iati-standard/203/activity-standard/iati-activities/iati-activity/title/>`__ element containing the specified text (case-insensitive). NB: the Datastore currently only captures one title per activity.
+
+Parameters:
+    @title: String containing part or all of the title of the target activity.
+
+Example API call:
+    `/api/1/access/activity.xml?title=technical assistance </api/1/access/activity.xml?title=technical%20assistance>`__
+
+
+description
+```````````
+
+Returns activities with any `Description <https://iatistandard.org/en/iati-standard/203/activity-standard/iati-activities/iati-activity/description/>`__ element containing the specified text (case-insensitive). NB: the Datastore currently only captures one description per activity.
+
+Parameters:
+    @description: String containing part or all of the description of the target activity.
+
+Example API call:
+    `/api/1/access/activity.xml?description=evidence base </api/1/access/activity.xml?description=evidence%20base>`__
+
+
 recipient-country
 `````````````````
 
