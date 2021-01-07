@@ -447,12 +447,15 @@ export default {
       })
     },
     queryLink() {
-      const _params = Object.entries(this.urlQueryFilters).map(item => {
+      var _urlQueryFilters = Object.entries(this.urlQueryFilters)
+      if (this.stream === true) {
+        _urlQueryFilters.push(['stream', 'True'])
+      }
+      const _params = _urlQueryFilters.map(item => {
         return `${item[0]}=${item[1]}`
       }).join("&")
       const params = _params.length > 0 ? `?${_params}` : ''
-      const stream = this.stream == true ? '&stream=True' : ''
-      return `${this.apiURL}${this.format}${this.grouping}.csv${params}${stream}`
+      return `${this.apiURL}${this.format}${this.grouping}.csv${params}`
     }
   },
   methods: {
