@@ -6,6 +6,7 @@ from flask import current_app
 from flask import json as jsonlib
 
 import xmltodict
+from flask_sqlalchemy import BaseQuery
 
 from iatilib.model import (
     Activity, Organisation, Transaction, Participation, SectorPercentage,
@@ -18,6 +19,8 @@ class JSONEncoder(jsonlib.JSONEncoder):
     TWOPLACES = Decimal(10) ** -2
 
     def default(self, o):
+        if isinstance(o, BaseQuery):
+            return o.all()
         if isinstance(o, datetime.date):
             return o.strftime("%Y-%m-%d")
         if isinstance(o, codelists.enum.EnumSymbol):
@@ -31,16 +34,8 @@ class JSONEncoder(jsonlib.JSONEncoder):
         return super().default(o)
 
 
-class DatastoreJSONEncoder(jsonlib.JSONEncoder):
-    TWOPLACES = Decimal(10) ** -2
-
+class DatastoreJSONEncoder(JSONEncoder):
     def default(self, o):
-        if isinstance(o, datetime.date):
-            return o.strftime("%Y-%m-%d")
-        if isinstance(o, codelists.enum.EnumSymbol):
-            return o.value
-        if isinstance(o, Decimal):
-            return str(o.quantize(self.TWOPLACES))
         if isinstance(o, Activity):
             return json_rep(o)
         return super().default(o)
