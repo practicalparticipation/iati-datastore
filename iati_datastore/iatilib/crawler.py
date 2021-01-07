@@ -97,10 +97,6 @@ def fetch_dataset_metadata(dataset):
     dataset.license = ds_entity.get('license_id')
     dataset.is_open = ds_entity.get('isopen', False)
     db.session.add(dataset)
-    try:
-        db.session.commit()
-    except sa.exc.IntegrityError:
-        db.session.rollback()
     return dataset
 
 
@@ -283,6 +279,14 @@ def update_dataset(dataset_name):
     dataset = Dataset.query.get(dataset_name)
 
     fetch_dataset_metadata(dataset)
+    try:
+        db.session.commit()
+    except sa.exc.IntegrityError:
+        db.session.rollback()
+        # the resource can't be added, so we should
+        # give up.
+        return
+
     resource = fetch_resource(dataset)
     db.session.commit()
 
