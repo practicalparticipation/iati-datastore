@@ -7,7 +7,7 @@ from . import AppTestCase, fixture_filename
 from . import factories as fac
 
 from iatilib import crawler, db, parse
-from iatilib.model import Dataset, Resource, Activity, DeletedActivity
+from iatilib.model import Dataset, Log, Resource, Activity, DeletedActivity
 
 
 class TestCrawler(AppTestCase):
@@ -91,6 +91,30 @@ class TestCrawler(AppTestCase):
             crawler.fetch_dataset_metadata(Dataset(name="tstds"))
         db.session.commit()
         self.assertEquals(3, Resource.query.count())
+
+    def test_update_dataset_same_url(self):
+        dataset_old = fac.DatasetFactory.create(
+            name='tst-old',
+            resources=[fac.ResourceFactory.create(
+                url="http://foo",
+            )]
+        )
+        dataset_new = fac.DatasetFactory.create(
+            name='tst-new',
+            resources=[]
+        )
+        dataset_new_metadata = json.dumps({
+            "resources": [
+                {"url": "http://foo"},
+            ]
+        })
+        mock_open = mock.mock_open(read_data=dataset_new_metadata)
+        with mock.patch('builtins.open', mock_open):
+            crawler.update_dataset('tst-new')
+            # resource was not added
+            self.assertEquals(0, len(dataset_new.resources))
+            log = Log.query.filter_by(dataset="tst-new").first()
+            self.assertIn('Failed to update dataset tst-new', log.msg)
 
     @mock.patch('os.path.exists', return_value=True)
     @mock.patch('iatikit.data')
