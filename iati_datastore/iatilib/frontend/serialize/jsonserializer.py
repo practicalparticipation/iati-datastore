@@ -31,16 +31,8 @@ class JSONEncoder(jsonlib.JSONEncoder):
         return super().default(o)
 
 
-class DatastoreJSONEncoder(jsonlib.JSONEncoder):
-    TWOPLACES = Decimal(10) ** -2
-
+class DatastoreJSONEncoder(JSONEncoder):
     def default(self, o):
-        if isinstance(o, datetime.date):
-            return o.strftime("%Y-%m-%d")
-        if isinstance(o, codelists.enum.EnumSymbol):
-            return o.value
-        if isinstance(o, Decimal):
-            return str(o.quantize(self.TWOPLACES))
         if isinstance(o, Activity):
             return json_rep(o)
         return super().default(o)
