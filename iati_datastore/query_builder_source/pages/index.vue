@@ -607,7 +607,7 @@ export default {
         this.updateParams()
       }
     },
-    format: {
+    breakdown: {
       handler: function(newFilters) {
         this.updateParams()
       }
