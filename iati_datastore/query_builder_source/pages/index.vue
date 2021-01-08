@@ -512,7 +512,7 @@ export default {
         return `${item[0]}=${item[1]}`
       }).join("&")
       const params = _params.length > 0 ? `?${_params}` : ''
-      return `${this.apiURL}${this.format}${this.grouping}.csv${params}`
+      return `${this.apiURL}${this.breakdown}${this.grouping}.${this.format}${params}`
     }
   },
   methods: {
