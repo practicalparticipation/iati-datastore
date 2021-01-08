@@ -611,6 +611,15 @@ export default {
       handler: function(newFilters) {
         this.updateParams()
       }
+    },
+    format: {
+      handler: function(newFormat) {
+        if (newFormat == 'xml') {
+          this.grouping = ''
+          this.breakdown = 'activity'
+        }
+        this.updateParams()
+      }
     }
   },
   mounted() {
