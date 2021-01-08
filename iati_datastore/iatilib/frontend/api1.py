@@ -9,7 +9,7 @@ from werkzeug.datastructures import MultiDict
 
 from iatilib import db
 from iatilib.model import (Activity, Resource, Transaction, Dataset,
-                           Log, DeletedActivity)
+                           Log, DeletedActivity, Stats)
 
 from . import dsfilter, validators, serialize
 
@@ -46,8 +46,18 @@ def meta_filters():
 @api.route('/about/')
 def about():
     # General status info
-    count_activity = db.session.query(Activity).count()
-    count_transaction = db.session.query(Transaction).count()
+    count_activities = db.session.query(
+        Stats.count
+    ).filter_by(label='activities').scalar()
+
+    count_transactions = db.session.query(
+        Stats.count
+    ).filter_by(label='transactions').scalar()
+
+    count_budgets = db.session.query(
+        Stats.count
+    ).filter_by(label='budgets').scalar()
+
     # Check last updated times
 
     updated = db.session.query(
@@ -77,8 +87,9 @@ def about():
             'last_successful_fetch': updated.last_succ,
             'last_parsed': updated.last_parsed
         },
-        indexed_activities=count_activity,
-        indexed_transactions=count_transaction,
+        indexed_activities=count_activities,
+        indexed_transactions=count_transactions,
+        indexed_budgets=count_budgets,
     )
 
 
