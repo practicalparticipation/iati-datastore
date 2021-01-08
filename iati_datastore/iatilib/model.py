@@ -478,19 +478,9 @@ def insert_activity(mapper, connection, target):
     update_stats(connection, 'activities', 1)
 
 
-@event.listens_for(Activity, "after_delete")
-def delete_activity(mapper, connection, target):
-    update_stats(connection, 'activities', -1)
-
-
 @event.listens_for(Transaction, "after_insert")
 def insert_transaction(mapper, connection, target):
     update_stats(connection, 'transactions', 1)
-
-
-@event.listens_for(Transaction, "after_delete")
-def delete_transaction(mapper, connection, target):
-    update_stats(connection, 'transactions', -1)
 
 
 @event.listens_for(Budget, "after_insert")
@@ -498,9 +488,15 @@ def insert_budget(mapper, connection, target):
     update_stats(connection, 'budgets', 1)
 
 
-@event.listens_for(Budget, "after_delete")
-def delete_budget(mapper, connection, target):
-    update_stats(connection, 'budgets', -1)
+@event.listens_for(db.session, "before_flush")
+def before_flush(session, flush_context, instances):
+    for instance in session.deleted:
+        if isinstance(instance, Activity):
+            update_stats(session.connection(), 'activities', -1)
+        elif isinstance(instance, Transaction):
+            update_stats(session.connection(), 'transactions', -1)
+        elif isinstance(instance, Budget):
+            update_stats(session.connection(), 'budgets', -1)
 
 
 # We use sqlite for testing and postgres for prod. Sadly sqlite will only
