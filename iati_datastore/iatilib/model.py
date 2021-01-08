@@ -456,9 +456,11 @@ class Log(db.Model):
 
 class Stats(db.Model):
     __tablename__ = 'stats'
-    label = sa.Column(sa.Unicode, primary_key=True,
+    label = sa.Column(
+        sa.Unicode, primary_key=True,
         nullable=False)
-    count = sa.Column(sa.Integer,
+    count = sa.Column(
+        sa.Integer,
         nullable=False)
 
 
