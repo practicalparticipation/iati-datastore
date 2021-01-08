@@ -484,22 +484,22 @@ def delete_activity(mapper, connection, target):
 
 
 @event.listens_for(Transaction, "after_insert")
-def insert_activity(mapper, connection, target):
+def insert_transaction(mapper, connection, target):
     update_stats(connection, 'transactions', 1)
 
 
 @event.listens_for(Transaction, "after_delete")
-def delete_activity(mapper, connection, target):
+def delete_transaction(mapper, connection, target):
     update_stats(connection, 'transactions', -1)
 
 
 @event.listens_for(Budget, "after_insert")
-def insert_activity(mapper, connection, target):
+def insert_budget(mapper, connection, target):
     update_stats(connection, 'budgets', 1)
 
 
 @event.listens_for(Budget, "after_delete")
-def delete_activity(mapper, connection, target):
+def delete_budget(mapper, connection, target):
     update_stats(connection, 'budgets', -1)
 
 
