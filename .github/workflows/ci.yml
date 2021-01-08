@@ -49,6 +49,17 @@ jobs:
       run: |
         python -m pip install --upgrade pip wheel
         pip install -r requirements_dev.txt
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_KEY }}
+        name: id_rsa
+        known_hosts: ${{ secrets.SSH_HOSTNAME }}
+        config: |
+          Host datastore
+            HostName ${{ secrets.SSH_HOSTNAME }}
+            User ${{ secrets.SSH_USER }}
+            IdentityFile ~/.ssh/id_rsa
     - name: Deploy
       run: |
-        fab deploy -H ${{ secrets.ssh_user }}@${{ secrets.ssh_hostname }}
+        fab deploy -H datastore
