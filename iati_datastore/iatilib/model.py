@@ -3,6 +3,7 @@ import functools as ft
 from collections import namedtuple
 
 import sqlalchemy as sa
+from sqlalchemy import event
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declared_attr
 
@@ -451,6 +452,74 @@ class Log(db.Model):
             self.created_at.strftime('%m/%d/%Y-%H:%M:%S'),
             self.msg[:50]
         )
+
+
+class Stats(db.Model):
+    __tablename__ = 'stats'
+    label = sa.Column(sa.Unicode, primary_key=True,
+        nullable=False)
+    count = sa.Column(sa.Integer,
+        nullable=False)
+
+
+@event.listens_for(Activity, "after_insert")
+def insert_activity(mapper, connection, target):
+    stats = Stats.__table__
+    connection.execute(
+        stats.update().
+        where(stats.c.label=='activities').
+        values(count=stats.c.count + 1)
+    )
+
+
+@event.listens_for(Activity, "after_delete")
+def delete_activity(mapper, connection, target):
+    stats = Stats.__table__
+    connection.execute(
+        stats.update().
+        where(stats.c.label=='activities').
+        values(count=stats.c.count - 1)
+    )
+
+
+@event.listens_for(Transaction, "after_insert")
+def insert_activity(mapper, connection, target):
+    stats = Stats.__table__
+    connection.execute(
+        stats.update().
+        where(stats.c.label=='transactions').
+        values(count=stats.c.count + 1)
+    )
+
+
+@event.listens_for(Transaction, "after_delete")
+def delete_activity(mapper, connection, target):
+    stats = Stats.__table__
+    connection.execute(
+        stats.update().
+        where(stats.c.label=='transactions').
+        values(count=stats.c.count - 1)
+    )
+
+
+@event.listens_for(Budget, "after_insert")
+def insert_activity(mapper, connection, target):
+    stats = Stats.__table__
+    connection.execute(
+        stats.update().
+        where(stats.c.label=='budgets').
+        values(count=stats.c.count + 1)
+    )
+
+
+@event.listens_for(Budget, "after_delete")
+def delete_activity(mapper, connection, target):
+    stats = Stats.__table__
+    connection.execute(
+        stats.update().
+        where(stats.c.label=='budgets').
+        values(count=stats.c.count - 1)
+    )
 
 
 # We use sqlite for testing and postgres for prod. Sadly sqlite will only
