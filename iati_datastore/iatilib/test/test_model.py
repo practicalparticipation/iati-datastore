@@ -61,30 +61,4 @@ class TestResource(AppTestCase):
             0,
             Activity.query.filter_by(resource_url=res.url).count()
         )
-        # db.engine.echo = False
-
-    def test_stats_transaction_counts(self):
-        fac.TransactionFactory.create(
-            activity=fac.ActivityFactory.build())
-        self.assertEquals(
-            1, Activity.query.count()
-        )
-        self.assertEquals(
-            1, Transaction.query.count()
-        )
-        self.assertEquals(
-            1, Stats.query.filter_by(label='transactions').first().count
-        )
-        db.session.delete(Activity.query.first())
-        self.assertEquals(
-            0, Activity.query.count()
-        )
-        self.assertEquals(
-            0, Transaction.query.count()
-        )
-        self.assertEquals(
-            0, Stats.query.filter_by(label='activities').first().count
-        )
-        self.assertEquals(
-            0, Stats.query.filter_by(label='transactions').first().count
-        )
+        db.engine.echo = False
