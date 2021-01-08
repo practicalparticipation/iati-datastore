@@ -462,64 +462,43 @@ class Stats(db.Model):
         nullable=False)
 
 
-@event.listens_for(Activity, "after_insert")
-def insert_activity(mapper, connection, target):
+def update_stats(connection, label, amount):
     stats = Stats.__table__
     connection.execute(
         stats.update().
-        where(stats.c.label=='activities').
-        values(count=stats.c.count + 1)
+        where(stats.c.label==label).
+        values(count=stats.c.count + amount)
     )
+
+
+@event.listens_for(Activity, "after_insert")
+def insert_activity(mapper, connection, target):
+    update_stats(connection, 'activities', 1)
 
 
 @event.listens_for(Activity, "after_delete")
 def delete_activity(mapper, connection, target):
-    stats = Stats.__table__
-    connection.execute(
-        stats.update().
-        where(stats.c.label=='activities').
-        values(count=stats.c.count - 1)
-    )
+    update_stats(connection, 'activities', -1)
 
 
 @event.listens_for(Transaction, "after_insert")
 def insert_activity(mapper, connection, target):
-    stats = Stats.__table__
-    connection.execute(
-        stats.update().
-        where(stats.c.label=='transactions').
-        values(count=stats.c.count + 1)
-    )
+    update_stats(connection, 'transactions', 1)
 
 
 @event.listens_for(Transaction, "after_delete")
 def delete_activity(mapper, connection, target):
-    stats = Stats.__table__
-    connection.execute(
-        stats.update().
-        where(stats.c.label=='transactions').
-        values(count=stats.c.count - 1)
-    )
+    update_stats(connection, 'transactions', -1)
 
 
 @event.listens_for(Budget, "after_insert")
 def insert_activity(mapper, connection, target):
-    stats = Stats.__table__
-    connection.execute(
-        stats.update().
-        where(stats.c.label=='budgets').
-        values(count=stats.c.count + 1)
-    )
+    update_stats(connection, 'budgets', 1)
 
 
 @event.listens_for(Budget, "after_delete")
 def delete_activity(mapper, connection, target):
-    stats = Stats.__table__
-    connection.execute(
-        stats.update().
-        where(stats.c.label=='budgets').
-        values(count=stats.c.count - 1)
-    )
+    update_stats(connection, 'budgets', -1)
 
 
 # We use sqlite for testing and postgres for prod. Sadly sqlite will only
