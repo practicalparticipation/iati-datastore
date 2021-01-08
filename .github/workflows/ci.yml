@@ -27,29 +27,8 @@ jobs:
       run: coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  deploy:
-    name: Deploy
-    needs: test
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.8
-    - uses: actions/cache@v2
-      name: Cache dependencies
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements_dev.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip wheel
-        pip install -r requirements_dev.txt
     - name: Install SSH key
+      if: github.ref == 'refs/heads/main'
       uses: shimataro/ssh-key-action@v2
       with:
         key: ${{ secrets.SSH_KEY }}
@@ -61,5 +40,6 @@ jobs:
             User ${{ secrets.SSH_USER }}
             IdentityFile ~/.ssh/id_rsa
     - name: Deploy
+      if: github.ref == 'refs/heads/main'
       run: |
         fab deploy -H datastore
