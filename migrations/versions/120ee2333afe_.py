@@ -50,4 +50,15 @@ def upgrade():
 
 
 def downgrade():
-    pass
+    conn = op.get_bind()
+    conn.execute(sa.sql.text(
+        """
+        DROP TRIGGER IF EXISTS activities_count ON activity;
+
+        DROP TRIGGER IF EXISTS transactions_count ON transaction;
+
+        DROP TRIGGER IF EXISTS budgets_count ON budget;
+
+        DROP FUNCTION adjust_count;
+        """
+        ))
