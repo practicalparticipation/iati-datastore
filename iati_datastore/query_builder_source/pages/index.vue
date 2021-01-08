@@ -243,34 +243,73 @@
           <p>These options allow you to configure the way in which your data is disaggregated, making different sorts of analysis possible.</p>
           <b-row>
             <b-col md="4">
-              <b-form-group
-                label="Choose format">
-                <b-radio-group
-                  stacked
-                  v-model="format"
-                  :options="formatOptions">
-                </b-radio-group>
-              </b-form-group>
+              <b-row>
+                <b-col>
+                  <b-form-group
+                    label="Choose format">
+                    <b-radio-group
+                      buttons
+                      button-variant="outline-secondary"
+                      v-model="format"
+                      :options="formatOptions">
+                    </b-radio-group>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                  <b-form-group
+                    label="Choose sample size">
+                    <b-radio-group
+                      stacked
+                      v-model="stream"
+                      :options="streamOptions">
+                    </b-radio-group>
+                  </b-form-group>
+                </b-col>
+              </b-row>
             </b-col>
-            <b-col md="4">
-              <b-form-group
-                label="Repeat rows">
-                <b-radio-group
-                  stacked
-                  v-model="grouping"
-                  :options="groupingOptions">
-                </b-radio-group>
-              </b-form-group>
-            </b-col>
-            <b-col md="4">
-              <b-form-group
-                label="Choose sample size">
-                <b-radio-group
-                  stacked
-                  v-model="stream"
-                  :options="streamOptions">
-                </b-radio-group>
-              </b-form-group>
+            <b-col
+              md="8"
+              :class="format!='csv' ? 'text-muted' : null">
+              <b-card
+                header="CSV Options"
+                header-tag="h4"
+                class="mb-3"
+                id="csv-options">
+                <b-row>
+                  <b-col>
+                    <b-form-group
+                      label="Choose breakdown"
+                      :disabled="format!='csv'">
+                      <b-radio-group
+                        stacked
+                        v-model="breakdown"
+                        :options="breakdownOptions"
+                        :disabled="format!='csv'">
+                      </b-radio-group>
+                    </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group
+                      label="Repeat rows"
+                      :disabled="format!='csv'">
+                      <b-radio-group
+                        stacked
+                        v-model="grouping"
+                        :options="groupingOptions"
+                        :disabled="format!='csv'">
+                      </b-radio-group>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+              </b-card>
+              <b-tooltip
+                target="csv-options"
+                ref="tooltip"
+                :disabled="format=='csv'">
+                Options only available for CSV output.
+              </b-tooltip>
             </b-col>
           </b-row>
           <hr />
@@ -351,8 +390,23 @@ export default {
         'OrganisationType': [],
         'ReportingOrg': []
       },
-      format: 'activity',
+      format: 'xml',
       formatOptions: [
+        {
+          'value': 'xml',
+          'text': 'XML'
+        },
+        {
+          'value': 'json',
+          'text': 'JSON'
+        },
+        {
+          'value': 'csv',
+          'text': 'CSV'
+        }
+      ],
+      breakdown: 'activity',
+      breakdownOptions: [
         {
           'value': 'activity',
           'text': 'One activity per row',
@@ -420,7 +474,10 @@ export default {
       if ((this.stream) && (this.stream == true)) {
         _query.stream = this.stream
       }
-      if ((this.format) && (this.format != 'activity')) {
+      if ((this.breakdown) && (this.breakdown != 'activity')) {
+        _query.breakdown = this.breakdown
+      }
+      if ((this.format) && (this.format != 'xml')) {
         _query.format = this.format
       }
       return _query
@@ -524,6 +581,8 @@ export default {
             this.grouping = this.$route.query[item]
           } else if (item == 'stream') {
             this.stream = true
+          } else if (item=='breakdown') {
+            this.breakdown = this.$route.query[item]
           } else if (item=='format') {
             this.format = this.$route.query[item]
           }
