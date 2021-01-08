@@ -1,7 +1,7 @@
 from . import AppTestCase
 from . import factories as fac
 
-from iatilib.model import Activity, Resource
+from iatilib.model import Activity, Resource, Stats, Transaction
 from iatilib import db
 
 
@@ -61,3 +61,4 @@ class TestResource(AppTestCase):
             0,
             Activity.query.filter_by(resource_url=res.url).count()
         )
+        db.engine.echo = False

@@ -456,49 +456,12 @@ class Log(db.Model):
 
 class Stats(db.Model):
     __tablename__ = 'stats'
-    label = sa.Column(sa.Unicode, primary_key=True,
+    label = sa.Column(
+        sa.Unicode, primary_key=True,
         nullable=False)
-    count = sa.Column(sa.Integer,
+    count = sa.Column(
+        sa.Integer,
         nullable=False)
-
-
-def update_stats(connection, label, amount):
-    stats = Stats.__table__
-    connection.execute(
-        stats.update().
-        where(stats.c.label==label).
-        values(count=stats.c.count + amount)
-    )
-
-
-@event.listens_for(Activity, "after_insert")
-def insert_activity(mapper, connection, target):
-    update_stats(connection, 'activities', 1)
-
-
-@event.listens_for(Activity, "after_delete")
-def delete_activity(mapper, connection, target):
-    update_stats(connection, 'activities', -1)
-
-
-@event.listens_for(Transaction, "after_insert")
-def insert_activity(mapper, connection, target):
-    update_stats(connection, 'transactions', 1)
-
-
-@event.listens_for(Transaction, "after_delete")
-def delete_activity(mapper, connection, target):
-    update_stats(connection, 'transactions', -1)
-
-
-@event.listens_for(Budget, "after_insert")
-def insert_activity(mapper, connection, target):
-    update_stats(connection, 'budgets', 1)
-
-
-@event.listens_for(Budget, "after_delete")
-def delete_activity(mapper, connection, target):
-    update_stats(connection, 'budgets', -1)
 
 
 # We use sqlite for testing and postgres for prod. Sadly sqlite will only

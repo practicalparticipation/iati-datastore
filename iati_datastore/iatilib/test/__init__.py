@@ -8,10 +8,15 @@ from xml.etree import ElementTree as xml_etree
 
 from iatilib.frontend.app import create_app
 from iatilib import db
+from iatilib.model import Stats
 
 
 def create_db():
     db.create_all()
+    db.session.add(Stats(label='activities', count=0))
+    db.session.add(Stats(label='transactions', count=0))
+    db.session.add(Stats(label='budgets', count=0))
+    db.session.commit()
 
 
 _app = None
