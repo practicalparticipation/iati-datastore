@@ -614,7 +614,7 @@ export default {
     },
     format: {
       handler: function(newFormat) {
-        if (newFormat == 'xml') {
+        if (newFormat != 'csv') {
           this.grouping = ''
           this.breakdown = 'activity'
         }
