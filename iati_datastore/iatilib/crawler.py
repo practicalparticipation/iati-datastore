@@ -249,6 +249,7 @@ def update_activities(dataset_name):
     except parse.ParserError as exc:
         db.session.rollback()
         resource.last_parse_error = str(exc)
+        db.session.add(resource)
         db.session.add(Log(
                 dataset=resource.dataset_id,
                 resource=resource.url,
