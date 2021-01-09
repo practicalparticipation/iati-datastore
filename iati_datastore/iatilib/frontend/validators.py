@@ -28,9 +28,13 @@ reporting_org_type = partial(codelist_validator, codelists.OrganisationType)
 sector = partial(codelist_validator, codelists.Sector)
 policy_marker = partial(codelist_validator, codelists.PolicyMarker)
 
-activity_api_args = v.Schema({
+pagination_schema = {
     "limit": v.All(v.Coerce(int), v.Range(max=250000)),
     "offset": v.All(v.Coerce(int), v.Range(min=0)),
+}
+pagination_args = v.Schema(pagination_schema)
+
+activity_api_schema = {
     "date": apidate,
     "stream": v.All(v.Coerce(bool)),
     'iati-identifier': v.All(v.Coerce(str)),
@@ -76,4 +80,5 @@ activity_api_args = v.Schema({
     'last-updated-datetime__gt': apidate,
     'last-updated-datetime__lt': apidate,
     'registry-dataset': v.All(v.Coerce(str)),
-})
+}
+activity_api_args = v.Schema({**pagination_schema, **activity_api_schema})

@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 from datetime import datetime
 import sqlalchemy as sa
 from flask import (current_app, request, Response, Blueprint,
@@ -8,7 +8,7 @@ from flask.views import MethodView
 from werkzeug.datastructures import MultiDict
 
 from iatilib import db
-from iatilib.model import (Activity, Resource, Transaction, Dataset,
+from iatilib.model import (Resource, Dataset,
                            Log, DeletedActivity, Stats)
 
 from . import dsfilter, validators, serialize
@@ -152,17 +152,34 @@ def fetch_status_about_dataset():
 
 @api.route('/about/deleted/')
 def deleted_activities():
-    deleted_activities = db.session.query(DeletedActivity)\
-                                   .order_by(DeletedActivity.deletion_date)
-    return jsonify(
-        deleted_activities=[
-          {
+    try:
+        valid_args = validators.pagination_args(MultiDict(request.args))
+    except (validators.MultipleInvalid, validators.Invalid) as e:
+        return make_response(
+            render_template('invalid_filter.html', errors=e), 400)
+    offset = valid_args.get("offset", 0)
+    limit = valid_args.get("limit", 50)
+    query = db.session.query(
+        DeletedActivity)\
+        .order_by(DeletedActivity.deletion_date.desc())\
+        .limit(limit).offset(offset)
+
+    items = [
+        {
             'iati_identifier': da.iati_identifier,
             'deletion_date': da.deletion_date.isoformat(),
-          }
-          for da in deleted_activities
-        ],
-    )
+        }
+        for da in query
+    ]
+
+    return jsonify(OrderedDict((
+            ("ok", True),
+            ("total-count", query.count()),
+            ("start", offset),
+            ("limit", limit),
+            ("deleted_activities", items),
+        )
+    ))
 
 
 @api.route('/error/dataset/')
