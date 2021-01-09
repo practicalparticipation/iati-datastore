@@ -161,7 +161,7 @@ def deleted_activities():
     limit = valid_args.get("limit", 50)
     query = db.session.query(
         DeletedActivity)\
-        .order_by(DeletedActivity.deletion_date)\
+        .order_by(DeletedActivity.deletion_date.desc())\
         .limit(limit).offset(offset)
 
     items = [
