@@ -455,6 +455,10 @@ class Log(db.Model):
 
 
 class Stats(db.Model):
+    # A cache of table counts.
+    # The values in this table are updated automatically
+    # in postgres - see:
+    #   migrations/versions/120ee2333afe_.py
     __tablename__ = 'stats'
     label = sa.Column(
         sa.Unicode, primary_key=True,
