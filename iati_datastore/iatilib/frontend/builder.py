@@ -20,4 +20,4 @@ def builder_redirect(format, grouping=None):
     if grouping is not None:
         options['grouping'] = '/' + grouping
 
-    return redirect(url_for('routes.homepage', **options) + '#get-the-data')
+    return redirect(url_for('routes.homepage', **options))
