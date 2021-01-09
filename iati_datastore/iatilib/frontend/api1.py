@@ -8,7 +8,7 @@ from flask.views import MethodView
 from werkzeug.datastructures import MultiDict
 
 from iatilib import db
-from iatilib.model import (Activity, Resource, Transaction, Dataset,
+from iatilib.model import (Resource, Dataset,
                            Log, DeletedActivity, Stats)
 
 from . import dsfilter, validators, serialize
