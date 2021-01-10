@@ -22,11 +22,11 @@
         <div class="jumbotron mb-0 mt-0 text-center text-light bg-dark">
           <h1 class="display-3">Invalid Request</h1>
 
-          <p class="lead">Invalid arguments passed as filter<br>Bad filters were: [
-          {%- for error in errors.path -%}
-          {{ error }},
-          {%- endfor -%} ]
-          <br>details: {{ errors.msg }}</p>
+          <p class="lead">
+            Invalid arguments passed as filter<br>
+            Bad filters were: [{{ errors.path|join(', ') }}]<br>
+            Details: {{ errors.msg }}
+          </p>
 
           <div class="container">
             <div class="row">
