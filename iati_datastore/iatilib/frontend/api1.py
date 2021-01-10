@@ -156,7 +156,7 @@ def deleted_activities():
         valid_args = validators.pagination_args(MultiDict(request.args))
     except (validators.MultipleInvalid, validators.Invalid) as e:
         return make_response(
-            render_template('invalid_filter.html', errors=e), 400)
+            render_template('error/invalid_filter.html', errors=e), 400)
     offset = valid_args.get("offset", 0)
     limit = valid_args.get("limit", 50)
     query = db.session.query(
@@ -294,7 +294,8 @@ class DataStoreView(MethodView):
         try:
             valid_args = self.validate_args()
         except (validators.MultipleInvalid, validators.Invalid) as e:
-            return make_response(render_template('invalid_filter.html', errors=e), 400)
+            return make_response(
+                render_template('error/invalid_filter.html', errors=e), 400)
         query = self.filter(valid_args)
 
         if self.streaming:

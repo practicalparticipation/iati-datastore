@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_cors import CORS
 
 from iatilib import db, rq, migrate
@@ -15,6 +15,7 @@ def create_app(config_object='iatilib.config'):
     app.config.from_object(config_object)
     register_extensions(app)
     register_blueprints(app)
+    register_error_handlers(app)
     return app
 
 
@@ -31,3 +32,11 @@ def register_extensions(app):
     rq.init_app(app)
     CORS(app)
     migrate.init_app(app, db)
+
+
+def register_error_handlers(app):
+    app.register_error_handler(
+        404, lambda x: (render_template('error/404.html'), 404))
+    for code in (500, 501, 502, 503, 504):
+        app.register_error_handler(
+            code, lambda x: (render_template('error/5xx.html'), code))
