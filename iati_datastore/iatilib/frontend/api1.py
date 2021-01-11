@@ -246,7 +246,7 @@ def dataset_log_error(dataset_id):
         error['resource_url'] = log.resource
         error['logger'] = log.logger
         error['msg'] = log.msg
-        error['traceback'] = log.trace.split('\n')
+        error['traceback'] = log.trace.split('\n') if log.trace else []
         error['datestamp'] = log.created_at.isoformat()
         errors.append(error)
 
