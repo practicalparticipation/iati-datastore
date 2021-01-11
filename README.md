@@ -142,9 +142,24 @@ Deploying with nginx
             gzip_min_length 1000;
             error_log  /var/www/logs/error.log;
             access_log /var/www/logs/access.log;
+
+            error_page 404 /error/404.html;
+            error_page 500 501 502 503 504 /error/5xx.html;
+            location /error {
+                root /path/to/iati-datastore/iati_datastore/iatilib/frontend/templates;
+                internal;
+            }
+
+            location /docs {
+                alias /path/to/iati-datastore/iati_datastore/iatilib/frontend/docs/dirhtml;
+                expires 1y;
+            }
+
             location / {
+                uwsgi_intercept_errors on;
                 include uwsgi_params;
                 uwsgi_pass unix:/var/www/socks/iati-datastore_uwsgi.sock;
+                uwsgi_buffering off;
             }
         }
 
