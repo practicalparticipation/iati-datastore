@@ -2,11 +2,13 @@
   <div>
     <b-navbar type="light" variant="light">
       <b-container>
-        <b-navbar-brand href="https://codeforiati.org">
-          <img
-            width="100px"
-            src="https://codeforiati.org/assets/img/logo.png"
-            title="A project of Code for IATI" />
+        <b-navbar-brand href="#">
+          <a href="https://codeforiati.org">
+            <img
+              width="100px"
+              src="https://codeforiati.org/assets/img/logo.png"
+              title="A project of Code for IATI" />
+          </a>
         </b-navbar-brand>
       </b-container>
     </b-navbar>
