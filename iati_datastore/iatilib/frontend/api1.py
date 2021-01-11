@@ -233,7 +233,10 @@ def dataset_error(dataset_id):
 @api.route('/error/dataset.log')
 def dataset_log():
     logs = db.session.query(Log.dataset).distinct()
-    return render_template('datasets.log', logs=logs)
+    response = make_response(
+        render_template('datasets.log', logs=logs))
+    response.mimetype = 'text/plain'
+    return response
 
 
 @api.route('/error/dataset.log/<dataset_id>/')
@@ -249,7 +252,10 @@ def dataset_log_error(dataset_id):
         'datestamp': log.created_at.isoformat(),
     } for log in error_logs]
 
-    return render_template('dataset.log', errors=errors)
+    response = make_response(
+        render_template('dataset.log', errors=errors))
+    response.mimetype = 'text/plain'
+    return response
 
 
 class Stream(object):
