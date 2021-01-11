@@ -238,17 +238,16 @@ def dataset_log():
 
 @api.route('/error/dataset.log/<dataset_id>/')
 def dataset_log_error(dataset_id):
-    error_logs = db.session.query(Log).order_by(sa.desc(Log.created_at)).\
-                        filter(Log.dataset == dataset_id)
-    errors = []
-    for log in error_logs.all():
-        error = {}
-        error['resource_url'] = log.resource
-        error['logger'] = log.logger
-        error['msg'] = log.msg
-        error['traceback'] = log.trace.split('\n') if log.trace else []
-        error['datestamp'] = log.created_at.isoformat()
-        errors.append(error)
+    error_logs = db.session.query(Log).\
+        filter(Log.dataset == dataset_id).\
+        order_by(Log.created_at.desc())
+    errors = [{
+        'resource_url': log.resource,
+        'logger': log.logger,
+        'msg': log.msg,
+        'traceback': log.trace.split('\n') if log.trace else [],
+        'datestamp': log.created_at.isoformat(),
+    } for log in error_logs]
 
     return render_template('dataset.log', errors=errors)
 
