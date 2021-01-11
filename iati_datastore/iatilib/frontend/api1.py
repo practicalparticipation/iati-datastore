@@ -233,24 +233,29 @@ def dataset_error(dataset_id):
 @api.route('/error/dataset.log')
 def dataset_log():
     logs = db.session.query(Log.dataset).distinct()
-    return render_template('datasets.log', logs=logs)
+    response = make_response(
+        render_template('datasets.log', logs=logs))
+    response.mimetype = 'text/plain'
+    return response
 
 
 @api.route('/error/dataset.log/<dataset_id>/')
 def dataset_log_error(dataset_id):
-    error_logs = db.session.query(Log).order_by(sa.desc(Log.created_at)).\
-                        filter(Log.dataset == dataset_id)
-    errors = []
-    for log in error_logs.all():
-        error = {}
-        error['resource_url'] = log.resource
-        error['logger'] = log.logger
-        error['msg'] = log.msg
-        error['traceback'] = log.trace.split('\n')
-        error['datestamp'] = log.created_at.isoformat()
-        errors.append(error)
+    error_logs = db.session.query(Log).\
+        filter(Log.dataset == dataset_id).\
+        order_by(Log.created_at.desc())
+    errors = [{
+        'resource_url': log.resource,
+        'logger': log.logger,
+        'msg': log.msg,
+        'traceback': log.trace.split('\n') if log.trace else [],
+        'datestamp': log.created_at.isoformat(),
+    } for log in error_logs]
 
-    return render_template('dataset.log', errors=errors)
+    response = make_response(
+        render_template('dataset.log', errors=errors))
+    response.mimetype = 'text/plain'
+    return response
 
 
 class Stream(object):

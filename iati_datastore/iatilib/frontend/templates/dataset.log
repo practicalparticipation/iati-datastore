@@ -3,4 +3,3 @@
 {%- for line in error.traceback %}
 [{{ error.datestamp }}][{{ error.logger }}]: "{{line}}" {% endfor %}
 {% endfor -%}
-
