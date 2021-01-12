@@ -193,26 +193,6 @@ def error():
     )
 
 
-@api.route('/error/resource/')
-def resource_error():
-    resource_url = request.args.get('url')
-    if not resource_url:
-        abort(404)
-    error_logs = db.session.query(Log).\
-        filter(Log.resource == resource_url).\
-        order_by(sa.desc(Log.created_at))
-    errors = [{
-                'resource_url': log.resource,
-                'dataset': log.dataset,
-                'logger': log.logger,
-                'msg': log.msg,
-                'traceback': log.trace,
-                'datestamp': log.created_at.isoformat(),
-            } for log in error_logs.all()
-    ]
-    return jsonify(errors=errors)
-
-
 @api.route('/error/dataset/<dataset_id>/')
 def dataset_error(dataset_id):
     error_logs = db.session.query(Log).\
