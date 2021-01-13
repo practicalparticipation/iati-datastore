@@ -95,8 +95,39 @@ def about():
 
 @api.route('/about/dataset/')
 def datasets():
-    datasets = db.session.query(Dataset.name)
-    return jsonify(datasets=[i.name for i in datasets.all()])
+    query = db.session.query(Dataset)\
+        .options(db.selectinload(Dataset.resources))
+    try:
+        valid_args = validators.about_dataset_args(MultiDict(request.args))
+    except (validators.MultipleInvalid, validators.Invalid) as e:
+        return make_response(
+            render_template('error/invalid_filter.html', errors=e), 400)
+    if not valid_args.get('detail', False):
+        return jsonify(datasets=[i.name for i in query.all()])
+
+    offset = valid_args.get("offset", 0)
+    limit = valid_args.get("limit", 50)
+    datasets = query.limit(limit).offset(offset)
+    items = [{
+        'url': d.resources[0].url if d.resources else None,
+        'last_fetch': d.resources[0].last_fetch.isoformat()
+        if d.resources and d.resources[0].last_fetch else None,
+        'last_status_code': d.resources[0].last_status_code
+        if d.resources else None,
+        'last_successful_fetch': d.resources[0].last_succ.isoformat()
+        if d.resources and d.resources[0].last_succ else None,
+        'last_parsed': d.resources[0].last_parsed.isoformat()
+        if d.resources and d.resources[0].last_parsed else None,
+    } for d in datasets]
+
+    return jsonify(OrderedDict((
+            ("ok", True),
+            ("total-count", query.count()),
+            ("start", offset),
+            ("limit", limit),
+            ("datasets", items),
+        )
+    ))
 
 
 @api.route('/about/dataset/<dataset>/')
@@ -121,33 +152,6 @@ def about_dataset(dataset):
             num_resources=len(dataset.resources),
             resources=resources,
     )
-
-
-@api.route('/about/datasets/fetch_status/')
-def fetch_status_about_dataset():
-    """Output a JSON formatted list of dataset dictionaries containing their resource details.
-
-    Warning:
-        This is an experimental API call and not intended for general use.
-
-    """
-    dataset_resources = db.session.query(Dataset).options(db.subqueryload(Dataset.resources))
-    datasets = dict()
-
-    for dataset in dataset_resources:
-        if len(dataset.resources) == 0:
-            continue
-        ds_r = dataset.resources[0]
-        resources = {
-            'url': ds_r.url,
-            'last_fetch': ds_r.last_fetch.isoformat() if ds_r.last_fetch else None,
-            'last_status_code': ds_r.last_status_code,
-            'last_successful_fetch': ds_r.last_succ.isoformat() if ds_r.last_succ else None,
-            'last_parsed': ds_r.last_parsed.isoformat() if ds_r.last_parsed else None,
-        }
-        datasets[dataset.name] = resources
-
-    return jsonify(datasets=[{dataset: datasets[dataset]} for dataset in datasets])
 
 
 @api.route('/about/deleted/')

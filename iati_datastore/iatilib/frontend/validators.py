@@ -82,3 +82,8 @@ activity_api_schema = {
     'registry-dataset': v.All(v.Coerce(str)),
 }
 activity_api_args = v.Schema({**pagination_schema, **activity_api_schema})
+
+about_dataset_schema = {
+    "detail": v.All(v.Coerce(bool)),
+}
+about_dataset_args = v.Schema({**pagination_schema, **about_dataset_schema})
