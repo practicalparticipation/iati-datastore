@@ -378,20 +378,15 @@ class BudgetsBySectorView(DataStoreCSVView):
     serializer = staticmethod(serialize.csv_budget_by_sector)
 
 
-# Must declare this, instead of creating it twice,
-# to avoid the anti-duplication errors of Flask 0.10
-activity_view = ActivityView.as_view('activity')
-
 api.add_url_rule(
     '/access/activity/',
     defaults={"format": "json"},
-    view_func=activity_view,
-    endpoint="activity-view"
+    view_func=ActivityView.as_view('activity-view'),
 )
 
 api.add_url_rule(
     '/access/activity.<format>',
-    view_func=activity_view
+    view_func=ActivityView.as_view('activity')
 )
 
 api.add_url_rule(
