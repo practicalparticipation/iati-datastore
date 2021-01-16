@@ -268,7 +268,10 @@ class Stream(object):
 
     def __init__(self, query):
         self.items = query
-        self.total = query.count()
+
+    @property
+    def total(self):
+        return self.items.count()
 
 
 class DataStoreView(MethodView):
