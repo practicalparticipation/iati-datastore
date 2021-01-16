@@ -334,9 +334,7 @@ class ActivityView(DataStoreView):
 
 
 class DataStoreCSVView(DataStoreView):
-    def get(self, format):
-        if format != "csv":
-            abort(404)
+    def get(self, format="csv"):
         return self.get_response(serializer=None, mimetype="text/csv")
 
     def paginate(self, query, offset, limit):
@@ -405,7 +403,6 @@ api.add_url_rule(
 
 api.add_url_rule(
     '/access/activity.csv',
-    defaults={"format": "csv"},
     view_func=ActivityCSVView.as_view('activity-csv-view'),
 )
 
@@ -415,33 +412,33 @@ api.add_url_rule(
 )
 
 api.add_url_rule(
-    '/access/activity/by_country.<format>',
+    '/access/activity/by_country.csv',
     view_func=ActivityByCountryView.as_view('activity_by_country'))
 
 api.add_url_rule(
-    '/access/activity/by_sector.<format>',
+    '/access/activity/by_sector.csv',
     view_func=ActivityBySectorView.as_view('activity_by_sector'))
 
 api.add_url_rule(
-    '/access/transaction.<format>',
+    '/access/transaction.csv',
     view_func=TransactionsView.as_view('transaction_list'))
 
 api.add_url_rule(
-    '/access/transaction/by_country.<format>',
+    '/access/transaction/by_country.csv',
     view_func=TransactionsByCountryView.as_view('transaction_by_country'))
 
 api.add_url_rule(
-    '/access/transaction/by_sector.<format>',
+    '/access/transaction/by_sector.csv',
     view_func=TransactionsBySectorView.as_view('transaction_by_sector'))
 
 api.add_url_rule(
-    '/access/budget.<format>',
+    '/access/budget.csv',
     view_func=BudgetsView.as_view('budget_list'))
 
 api.add_url_rule(
-    '/access/budget/by_country.<format>',
+    '/access/budget/by_country.csv',
     view_func=BudgetsByCountryView.as_view('budget_by_country'))
 
 api.add_url_rule(
-    '/access/budget/by_sector.<format>',
+    '/access/budget/by_sector.csv',
     view_func=BudgetsBySectorView.as_view('budget_by_sector'))
