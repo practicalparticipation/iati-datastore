@@ -336,6 +336,18 @@ class DataStoreCSVView(DataStoreView):
             abort(404)
         return self.get_response(serializer=None, mimetype="text/csv")
 
+    def paginate(self, query, offset, limit):
+        if offset < 0:
+            abort(404)
+        items = query\
+            .order_by('iati_identifier')\
+            .limit(limit)\
+            .offset(offset)\
+            .all()
+        if not items and offset != 0:
+            abort(404)
+        return namedtuple("Scrollination", "items")(items)
+
 
 class ActivityCSVView(DataStoreCSVView):
     filter = staticmethod(dsfilter.activities)
