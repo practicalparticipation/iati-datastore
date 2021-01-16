@@ -324,7 +324,6 @@ class ActivityView(DataStoreView):
             "xml": (serialize.xml, "application/xml"),
             "json": (serialize.json, "application/json"),  # rfc4627
             "db.json": (serialize.datastore_json, "application/json"),
-            "csv": (serialize.csv, "text/csv")  # rfc4180
         }
         if format not in forms:
             abort(404)
@@ -336,6 +335,11 @@ class DataStoreCSVView(DataStoreView):
         if format != "csv":
             abort(404)
         return self.get_response(serializer=None, mimetype="text/csv")
+
+
+class ActivityCSVView(DataStoreCSVView):
+    filter = staticmethod(dsfilter.activities)
+    serializer = staticmethod(serialize.csv)
 
 
 class ActivityByCountryView(DataStoreCSVView):
@@ -382,6 +386,12 @@ api.add_url_rule(
     '/access/activity/',
     defaults={"format": "json"},
     view_func=ActivityView.as_view('activity-view'),
+)
+
+api.add_url_rule(
+    '/access/activity.csv',
+    defaults={"format": "csv"},
+    view_func=ActivityCSVView.as_view('activity-csv-view'),
 )
 
 api.add_url_rule(
