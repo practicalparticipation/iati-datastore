@@ -292,7 +292,7 @@ class DataStoreView(MethodView):
             self._valid_args = validators.activity_api_args(MultiDict(request.args))
         return self._valid_args
 
-    def get_response(self, serializer=None, mimetype="text/csv"):
+    def get_response(self, serializer, mimetype):
         if serializer is None:
             serializer = self.serializer
 
@@ -335,7 +335,7 @@ class DataStoreCSVView(DataStoreView):
     def get(self, format):
         if format != "csv":
             abort(404)
-        return self.get_response()
+        return self.get_response(serializer=None, mimetype="text/csv")
 
 
 class ActivityByCountryView(DataStoreCSVView):
