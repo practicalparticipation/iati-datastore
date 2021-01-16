@@ -472,11 +472,12 @@ class Stats(db.Model):
 # pay attention to forign keys if you tell it to.
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
+from sqlite3 import Connection as SQLite3Connection
 
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
-    if db.engine.url.drivername == "sqlite":
+    if isinstance(dbapi_connection, SQLite3Connection):
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
