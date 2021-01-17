@@ -1,7 +1,6 @@
 from datetime import datetime
 import json
 from io import StringIO
-import mock
 from iatilib import codelists
 from iatilib.frontend.serialize import jsonserializer
 from iatilib.test import factories, AppTestCase
@@ -21,9 +20,7 @@ class FakePage(object):
 class TestJson(AppTestCase):
     maxDiff = None
 
-    @mock.patch('iatilib.frontend.serialize.jsonserializer.current_app')
-    def test_transaction_json(self, mock):
-        mock.debug = True
+    def test_transaction_json(self):
         activity = factories.ActivityFactory.create()
         factories.TransactionFactory.create(
             activity=activity,
@@ -38,7 +35,7 @@ class TestJson(AppTestCase):
         )
 
         json_output = jsonserializer.datastore_json(FakePage([activity]))
-        output = json.load(StringIO(json_output))
+        output = json.load(StringIO(''.join(json_output)))
 
         transactions = {
             "transaction-type": {"code": "C"},
@@ -55,11 +52,10 @@ class TestJson(AppTestCase):
         }
         self.assertCountEqual(transactions, output['iati-activities'][0]['transaction'][0])
 
-    @mock.patch('iatilib.frontend.serialize.jsonserializer.current_app')
-    def test_version(self, mock):
+    def test_version(self):
         activity = factories.ActivityFactory.create(version='x.yy')
-        json_datastore_output = json.loads(jsonserializer.datastore_json(FakePage([activity])))
-        json_output = json.loads(jsonserializer.json(FakePage([activity])))
+        json_datastore_output = json.loads(''.join(jsonserializer.datastore_json(FakePage([activity]))))
+        json_output = json.loads(''.join(jsonserializer.json(FakePage([activity]))))
         self.assertEquals('x.yy', json_datastore_output['iati-activities'][0]['version'])
         # This has the "iati-extra:" because it should match the XML output
         self.assertEquals('x.yy', json_output['iati-activities'][0]['iati-extra:version'])

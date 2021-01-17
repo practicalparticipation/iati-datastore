@@ -2,7 +2,6 @@ from collections import OrderedDict
 import datetime
 from decimal import Decimal
 
-from flask import current_app
 from flask import json as jsonlib
 
 import xmltodict
@@ -126,26 +125,38 @@ def json_rep(obj):
 
 
 def json(pagination):
-    return jsonlib.dumps(
+    output = jsonlib.dumps(
         OrderedDict((
             ("ok", True),
             ("total-count", pagination.total),
             ("start", pagination.offset),
             ("limit", pagination.limit),
-            ("iati-activities", pagination.items),
-        )),
-        indent=2 if current_app.debug else 0,
-        cls=JSONEncoder)
+        )))
+    yield output[:-1] + ',"iati-activities":['
+    first = True
+    for i in pagination.items:
+        if first:
+            first = False
+        else:
+            yield ','
+        yield jsonlib.dumps(i, cls=JSONEncoder)
+    yield ']}'
 
 
 def datastore_json(pagination):
-    return jsonlib.dumps(
+    output = jsonlib.dumps(
         OrderedDict((
             ("ok", True),
             ("total-count", pagination.total),
             ("start", pagination.offset),
             ("limit", pagination.limit),
-            ("iati-activities", pagination.items),
-        )),
-        indent=2 if current_app.debug else 0,
-        cls=DatastoreJSONEncoder)
+        )))
+    yield output[:-1] + ',"iati-activities":['
+    first = True
+    for i in pagination.items:
+        if first:
+            first = False
+        else:
+            yield ','
+        yield jsonlib.dumps(i, cls=DatastoreJSONEncoder)
+    yield ']}'
