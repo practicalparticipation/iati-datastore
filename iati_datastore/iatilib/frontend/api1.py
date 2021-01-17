@@ -295,7 +295,7 @@ class DataStoreView(MethodView):
             self._valid_args = validators.activity_api_args(MultiDict(request.args))
         return self._valid_args
 
-    def get_response(self, serializer, mimetype):
+    def get_response(self, mimetype, serializer=None):
         if serializer is None:
             serializer = self.serializer
 
@@ -324,9 +324,9 @@ class ActivityView(DataStoreView):
 
     def get(self, format):
         forms = {
-            "xml": (serialize.xml, "application/xml"),
-            "json": (serialize.json, "application/json"),  # rfc4627
-            "db.json": (serialize.datastore_json, "application/json"),
+            "xml": ("application/xml", serialize.xml),
+            "json": ("application/json", serialize.json),  # rfc4627
+            "db.json": ("application/json", serialize.datastore_json),
         }
         if format not in forms:
             abort(404)
@@ -335,7 +335,7 @@ class ActivityView(DataStoreView):
 
 class DataStoreCSVView(DataStoreView):
     def get(self, format="csv"):
-        return self.get_response(serializer=None, mimetype="text/csv")
+        return self.get_response("text/csv")
 
     def paginate(self, query, offset, limit):
         if offset < 0:
