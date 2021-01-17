@@ -124,39 +124,28 @@ def json_rep(obj):
     return {}
 
 
-def json(pagination):
-    output = jsonlib.dumps(
-        OrderedDict((
-            ("ok", True),
-            ("total-count", pagination.total),
-            ("start", pagination.offset),
-            ("limit", pagination.limit),
-        )))
-    yield output[:-1] + ',"iati-activities":['
-    first = True
-    for i in pagination.items:
-        if first:
-            first = False
-        else:
-            yield ','
-        yield jsonlib.dumps(i, cls=JSONEncoder)
-    yield ']}'
+class JSONSerializer:
+    def __init__(self, encoder):
+        self.encoder = encoder
+
+    def __call__(self, pagination):
+        output = jsonlib.dumps(
+            OrderedDict((
+                ("ok", True),
+                ("total-count", pagination.total),
+                ("start", pagination.offset),
+                ("limit", pagination.limit),
+            )))
+        yield output[:-1] + ',"iati-activities":['
+        first = True
+        for i in pagination.items:
+            if first:
+                first = False
+            else:
+                yield ','
+            yield jsonlib.dumps(i, cls=self.encoder)
+        yield ']}'
 
 
-def datastore_json(pagination):
-    output = jsonlib.dumps(
-        OrderedDict((
-            ("ok", True),
-            ("total-count", pagination.total),
-            ("start", pagination.offset),
-            ("limit", pagination.limit),
-        )))
-    yield output[:-1] + ',"iati-activities":['
-    first = True
-    for i in pagination.items:
-        if first:
-            first = False
-        else:
-            yield ','
-        yield jsonlib.dumps(i, cls=DatastoreJSONEncoder)
-    yield ']}'
+json = JSONSerializer(JSONEncoder)
+datastore_json = JSONSerializer(DatastoreJSONEncoder)
