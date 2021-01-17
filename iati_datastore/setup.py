@@ -24,11 +24,11 @@ Flask-Migrate==2.5.3
 
 tests_require = """
 fabric==2.5.0
-nose==1.3.7  # rq.filter: <2.0
-mock==4.0.2  # rq.filter: <2.0
-factory-boy==3.1.0  # rq.filter: <2.0
-coveralls==2.2.0  # rq.filter: <0.6
-coverage==5.3  # rq.filter: <4.0
+nose==1.3.7
+mock==4.0.2
+factory-boy==3.1.0
+coveralls==2.2.0
+coverage==5.3
 """
 
 
