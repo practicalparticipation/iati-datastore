@@ -159,10 +159,7 @@ def deleted_activities():
             render_template('error/invalid_filter.html', errors=e), 400)
     offset = valid_args.get("offset", 0)
     limit = valid_args.get("limit", 50)
-    query = db.session.query(
-        DeletedActivity)\
-        .order_by(DeletedActivity.deletion_date.desc())\
-        .limit(limit).offset(offset)
+    query = db.session.query(DeletedActivity)
 
     items = [
         {
@@ -170,6 +167,8 @@ def deleted_activities():
             'deletion_date': da.deletion_date.isoformat(),
         }
         for da in query
+        .order_by(DeletedActivity.deletion_date.desc())
+        .limit(limit).offset(offset)
     ]
 
     return jsonify(OrderedDict((
