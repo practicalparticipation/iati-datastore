@@ -3,7 +3,7 @@ from datetime import datetime
 import sqlalchemy as sa
 from flask import (current_app, request, Response, Blueprint,
                    jsonify, abort, render_template, make_response,
-                   url_for)
+                   url_for, stream_with_context)
 from flask.views import MethodView
 from werkzeug.datastructures import MultiDict
 
@@ -295,7 +295,7 @@ class DataStoreView(MethodView):
                 valid_args.get("limit", 50),
             )
         return Response(
-            serializer(pagination),
+            stream_with_context(serializer(pagination)),
             mimetype=mimetype)
 
 
