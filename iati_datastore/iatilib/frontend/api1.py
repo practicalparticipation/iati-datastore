@@ -264,10 +264,11 @@ class DataStoreView(MethodView):
     def paginate(self, query, offset, limit):
         if offset < 0:
             abort(404)
-        items = query.order_by('iati_identifier').limit(limit).offset(offset).all()
-        if not items and offset != 0:
+        items = query.order_by('iati_identifier').limit(limit).offset(offset)
+        total_count = query.count()
+        if offset != 0 and offset >= total_count:
             abort(404)
-        return Scrollination(query, offset, limit, query.count(), items)
+        return Scrollination(query, offset, limit, total_count, items)
 
     def validate_args(self):
         if not hasattr(self, "_valid_args"):
@@ -323,10 +324,7 @@ class DataStoreCSVView(DataStoreView):
         items = query\
             .order_by('iati_identifier')\
             .limit(limit)\
-            .offset(offset)\
-            .all()
-        if not items and offset != 0:
-            abort(404)
+            .offset(offset)
         return namedtuple("Scrollination", "items")(items)
 
 
