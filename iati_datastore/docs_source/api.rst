@@ -355,7 +355,7 @@ Results options
 Paging through results
 ~~~~~~~~~~~~~~~~~~~~~~
 
-By default, data is returned from the first result matching your API query.  Incrementing the offset parameter will return data beginning at the *nth* activity.
+By default, data is returned from the first result matching your API query.  Incrementing the ``offset`` parameter will return data beginning at the *nth* activity.
 
     `/api/1/access/activity.xml </api/1/access/activity.xml>`__
     *This will return all activities, beginning with the first result.*
@@ -370,7 +370,7 @@ The datastore will respond with an HTTP 404 when you have asked for the page bey
 Setting a number of maximum results
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The maximum number of results to be returned on a ‘page’ can be set using the limit parameter.
+The maximum number of results to be returned per ‘page’ can be set using the ``limit`` parameter.
 
 Parameters:
     @limit: Maximum number of activities to be returned
@@ -378,14 +378,14 @@ Parameters:
 Example API call:
     `/api/1/access/activity.xml?limit=100 </api/1/access/activity.xml?limit=100>`__
 
-The default behaviour is 50. Trying to fetch more than about 1000 activities with this this call is likely to result in an error.
+The default behaviour is 50; the maximum is 1000. Trying to fetch more than about 1000 activities with this call will result in an error. See the following section if you need to retrieve all results at once.
 
 
 
 Getting all the results at once
 -------------------------------
 
-The CSV and XML formats support returning all results at once in a ‘stream’. To request all available results, add ‘stream=True’ to your parameters.
+The CSV and XML formats support returning all results at once in a ‘stream’. To request all available results, add ``stream=True`` to your parameters.
 
 Example API calls:
     `/api/1/access/transaction.csv?reporting-org.ref=GB-1&stream=True </api/1/access/transaction.csv?reporting-org.ref=GB-1&stream=True>`__

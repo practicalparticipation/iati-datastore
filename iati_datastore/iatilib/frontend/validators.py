@@ -29,7 +29,7 @@ sector = partial(codelist_validator, codelists.Sector)
 policy_marker = partial(codelist_validator, codelists.PolicyMarker)
 
 pagination_schema = {
-    "limit": v.All(v.Coerce(int), v.Range(max=250000)),
+    "limit": v.All(v.Coerce(int), v.Range(max=1000)),
     "offset": v.All(v.Coerce(int), v.Range(min=0)),
 }
 pagination_args = v.Schema(pagination_schema)
