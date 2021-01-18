@@ -247,7 +247,10 @@ class Stream(object):
 
     def __init__(self, query):
         self.items = query
-        self.total = query.count()
+
+    @property
+    def total(self):
+        return self.items.count()
 
 
 class DataStoreView(MethodView):
@@ -271,7 +274,7 @@ class DataStoreView(MethodView):
             self._valid_args = validators.activity_api_args(MultiDict(request.args))
         return self._valid_args
 
-    def get_response(self, serializer=None, mimetype="text/csv"):
+    def get_response(self, mimetype, serializer=None):
         if serializer is None:
             serializer = self.serializer
 
@@ -300,10 +303,9 @@ class ActivityView(DataStoreView):
 
     def get(self, format):
         forms = {
-            "xml": (serialize.xml, "application/xml"),
-            "json": (serialize.json, "application/json"),  # rfc4627
-            "db.json": (serialize.datastore_json, "application/json"),
-            "csv": (serialize.csv, "text/csv")  # rfc4180
+            "xml": ("application/xml", serialize.xml),
+            "json": ("application/json", serialize.json),  # rfc4627
+            "db.json": ("application/json", serialize.datastore_json),
         }
         if format not in forms:
             abort(404)
@@ -311,10 +313,25 @@ class ActivityView(DataStoreView):
 
 
 class DataStoreCSVView(DataStoreView):
-    def get(self, format):
-        if format != "csv":
+    def get(self, format="csv"):
+        return self.get_response("text/csv")
+
+    def paginate(self, query, offset, limit):
+        if offset < 0:
             abort(404)
-        return self.get_response()
+        items = query\
+            .order_by('iati_identifier')\
+            .limit(limit)\
+            .offset(offset)\
+            .all()
+        if not items and offset != 0:
+            abort(404)
+        return namedtuple("Scrollination", "items")(items)
+
+
+class ActivityCSVView(DataStoreCSVView):
+    filter = staticmethod(dsfilter.activities)
+    serializer = staticmethod(serialize.csv)
 
 
 class ActivityByCountryView(DataStoreCSVView):
@@ -357,50 +374,50 @@ class BudgetsBySectorView(DataStoreCSVView):
     serializer = staticmethod(serialize.csv_budget_by_sector)
 
 
-# Must declare this, instead of creating it twice,
-# to avoid the anti-duplication errors of Flask 0.10
-activity_view = ActivityView.as_view('activity')
-
 api.add_url_rule(
     '/access/activity/',
     defaults={"format": "json"},
-    view_func=activity_view,
-    endpoint="activity-view"
+    view_func=ActivityView.as_view('activity-view'),
+)
+
+api.add_url_rule(
+    '/access/activity.csv',
+    view_func=ActivityCSVView.as_view('activity-csv-view'),
 )
 
 api.add_url_rule(
     '/access/activity.<format>',
-    view_func=activity_view
+    view_func=ActivityView.as_view('activity')
 )
 
 api.add_url_rule(
-    '/access/activity/by_country.<format>',
+    '/access/activity/by_country.csv',
     view_func=ActivityByCountryView.as_view('activity_by_country'))
 
 api.add_url_rule(
-    '/access/activity/by_sector.<format>',
+    '/access/activity/by_sector.csv',
     view_func=ActivityBySectorView.as_view('activity_by_sector'))
 
 api.add_url_rule(
-    '/access/transaction.<format>',
+    '/access/transaction.csv',
     view_func=TransactionsView.as_view('transaction_list'))
 
 api.add_url_rule(
-    '/access/transaction/by_country.<format>',
+    '/access/transaction/by_country.csv',
     view_func=TransactionsByCountryView.as_view('transaction_by_country'))
 
 api.add_url_rule(
-    '/access/transaction/by_sector.<format>',
+    '/access/transaction/by_sector.csv',
     view_func=TransactionsBySectorView.as_view('transaction_by_sector'))
 
 api.add_url_rule(
-    '/access/budget.<format>',
+    '/access/budget.csv',
     view_func=BudgetsView.as_view('budget_list'))
 
 api.add_url_rule(
-    '/access/budget/by_country.<format>',
+    '/access/budget/by_country.csv',
     view_func=BudgetsByCountryView.as_view('budget_by_country'))
 
 api.add_url_rule(
-    '/access/budget/by_sector.<format>',
+    '/access/budget/by_sector.csv',
     view_func=BudgetsBySectorView.as_view('budget_by_sector'))

@@ -282,8 +282,8 @@ class ApiViewMixin(object):
 
 class TestActivityView(ClientTestCase, ApiViewMixin):
     base_url = '/api/1/access/activity.csv'
-    filter = 'iatilib.frontend.api1.ActivityView.filter'
-    serializer = 'iatilib.frontend.api1.serialize.csv'
+    filter = 'iatilib.frontend.api1.ActivityCSVView.filter'
+    serializer = 'iatilib.frontend.api1.ActivityCSVView.serializer'
 
 
 class TestActivityBySectorView(ClientTestCase, ApiViewMixin):
