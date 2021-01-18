@@ -285,17 +285,18 @@ class DataStoreView(MethodView):
                 render_template('error/invalid_filter.html', errors=e), 400)
         query = self.filter(valid_args)
 
+        query = query.yield_per(100)
         if self.streaming:
-            query = query.yield_per(100)
-            body = serializer(Stream(query))
+            pagination = Stream(query)
         else:
             pagination = self.paginate(
                 query,
                 valid_args.get("offset", 0),
                 valid_args.get("limit", 50),
             )
-            body = u"".join(list(serializer(pagination)))
-        return Response(body, mimetype=mimetype)
+        return Response(
+            serializer(pagination),
+            mimetype=mimetype)
 
 
 class ActivityView(DataStoreView):
