@@ -30,14 +30,14 @@ def fetch_dataset_list():
     :return:
     '''
     existing_datasets = Dataset.query.all()
-    existing_ds_names = set((ds.publisher, ds.name) for ds in existing_datasets)
+    existing_ds_names = set(ds.name for ds in existing_datasets)
 
     package_list = [
-        tuple(x[:-5].rsplit('/', 2)[1:])
+        x[:-5].rsplit('/', 1)[-1]
         for x in glob.glob('__iatikitcache__/registry/metadata/*/*')]
     incoming_ds_names = set(package_list)
 
-    new_datasets = [Dataset(name=n, publisher=p) for p, n
+    new_datasets = [Dataset(name=n) for n
                     in incoming_ds_names - existing_ds_names]
     all_datasets = existing_datasets + new_datasets
     last_seen = iatikit.data().last_updated
@@ -49,7 +49,7 @@ def fetch_dataset_list():
 
     deleted_ds_names = existing_ds_names - incoming_ds_names
     if deleted_ds_names:
-        delete_datasets([d[1] for d in deleted_ds_names])
+        delete_datasets(deleted_ds_names)
 
     all_datasets = Dataset.query
     return all_datasets
@@ -75,7 +75,13 @@ def delete_datasets(datasets):
 
 
 def fetch_dataset_metadata(dataset):
-    fname = '__iatikitcache__/registry/metadata/{0}/{1}.json'.format(
+    path_tmpl = '__iatikitcache__/registry/metadata/{0}/{1}.json'
+    dataset.publisher = dict(
+        x[:-5].rsplit('/', 2)[:0:-1]
+        for x in glob.glob(
+            path_tmpl.format('*', '*'))
+        )[dataset.name]
+    fname = path_tmpl.format(
         dataset.publisher, dataset.name)
     with open(fname) as f:
         ds_entity = json.load(f)
