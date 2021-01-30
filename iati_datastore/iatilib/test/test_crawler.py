@@ -56,17 +56,26 @@ class TestCrawler(AppTestCase):
         datasets = crawler.fetch_dataset_list()
         self.assertEquals(1, datasets.count())
 
-    def test_fetch_dataset(self):
+    @mock.patch('glob.glob')
+    def test_fetch_dataset(self, glob_mock):
+        glob_mock.return_value = [
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
+        ]
         read_data = json.dumps({
             "resources": [{"url": "http://foo"}],
         })
         mock_open = mock.mock_open(read_data=read_data)
         with mock.patch('builtins.open', mock_open):
-            dataset = crawler.fetch_dataset_metadata(Dataset())
+            dataset = crawler.fetch_dataset_metadata(
+                Dataset(name="tst-a"))
         self.assertEquals(1, len(dataset.resources))
         self.assertEquals("http://foo", dataset.resources[0].url)
 
-    def test_fetch_dataset_with_many_resources(self):
+    @mock.patch('glob.glob')
+    def test_fetch_dataset_with_many_resources(self, glob_mock):
+        glob_mock.return_value = [
+            "__iatikitcache__/registry/metadata/tst/tst-a.json",
+        ]
         read_data = json.dumps({
             "resources": [
                 {"url": "http://foo"}, {"url": "http://bar"},
@@ -75,10 +84,15 @@ class TestCrawler(AppTestCase):
         })
         mock_open = mock.mock_open(read_data=read_data)
         with mock.patch('builtins.open', mock_open):
-            dataset = crawler.fetch_dataset_metadata(Dataset())
+            dataset = crawler.fetch_dataset_metadata(
+                Dataset(name="tst-a"))
         self.assertEquals(3, len(dataset.resources))
 
-    def test_fetch_dataset_count_commited_resources(self):
+    @mock.patch('glob.glob')
+    def test_fetch_dataset_count_commited_resources(self, glob_mock):
+        glob_mock.return_value = [
+            "__iatikitcache__/registry/metadata/tst/tstds.json",
+        ]
         read_data = json.dumps({
             "resources": [
                 {"url": "http://foo"},
@@ -92,8 +106,9 @@ class TestCrawler(AppTestCase):
         db.session.commit()
         self.assertEquals(3, Resource.query.count())
 
-    def test_update_dataset_same_url(self):
-        dataset_old = fac.DatasetFactory.create(
+    @mock.patch('glob.glob')
+    def test_update_dataset_same_url(self, glob_mock):
+        fac.DatasetFactory.create(
             name='tst-old',
             resources=[fac.ResourceFactory.create(
                 url="http://foo",
@@ -108,6 +123,10 @@ class TestCrawler(AppTestCase):
                 {"url": "http://foo"},
             ]
         })
+        glob_mock.return_value = [
+            "__iatikitcache__/registry/metadata/tst/tst-old.json",
+            "__iatikitcache__/registry/metadata/tst/tst-new.json",
+        ]
         mock_open = mock.mock_open(read_data=dataset_new_metadata)
         with mock.patch('builtins.open', mock_open):
             crawler.update_dataset('tst-new')
