@@ -3,9 +3,8 @@ import json
 from datetime import datetime
 from xml.etree import ElementTree as ET
 import csv
-from io import StringIO, BytesIO
+from io import StringIO
 
-from unittest import skip
 import mock
 
 from . import ClientTestCase
@@ -35,9 +34,8 @@ class TestAbout(ClientTestCase):
 
 
 class TestAboutDatasets(ClientTestCase):
-    def test_about_datasets_fetch_status(self):
-        """Check that the `about/datasets/fetch_status` page has a 200 response and contains expected data."""
-        resp = self.client.get('/api/1/about/datasets/fetch_status/')
+    def test_about_details(self):
+        resp = self.client.get('/api/1/about/dataset/?detail=true')
         data = json.loads(resp.data)
         self.assertEquals(200, resp.status_code)
         self.assertIn("datasets", data)
