@@ -106,9 +106,11 @@ def fetch_dataset_metadata(dataset):
     return dataset
 
 
-def fetch_resource(dataset):
+def fetch_resource(dataset, ignore_hashes):
     '''
     Gets the resource and sets the times of last successful update based on the status code.
+    If `ignore_hashes` is set to True, `last_parsed` will be set to None and an
+    update will be triggered.
     :param resource:
     :return:
     '''
@@ -125,8 +127,9 @@ def fetch_resource(dataset):
 
         resource.last_status_code = 200
         resource.last_succ = last_updated
-        if not resource.document or \
-                hash(resource.document) != hash(content):
+        if (not resource.document) or \
+                (hash(resource.document) != hash(content)) or \
+                ignore_hashes:
             resource.document = content
             resource.last_parsed = None
             resource.last_parse_error = None
@@ -268,11 +271,14 @@ def update_activities(dataset_name):
         db.session.commit()
 
 
-def update_dataset(dataset_name):
+def update_dataset(dataset_name, ignore_hashes):
     '''
     Takes the dataset name and determines whether or not an update is needed based on whether or not the last
     successful update detail exits, and whether or not it last updated since the contained data was updated.
+    If ignore_hashes is set to true, an update will be triggered, regardless of whether there appears
+    to be any change in the dataset hash compared with that stored in the database.
     :param dataset_name:
+    :param ignore_hashes:
     :return:
     '''
     # clear up previous job queue log errors
@@ -304,7 +310,7 @@ def update_dataset(dataset_name):
         db.session.commit()
         return
 
-    resource = fetch_resource(dataset)
+    resource = fetch_resource(dataset, ignore_hashes)
     db.session.commit()
 
     if resource.last_status_code == 200 and not resource.last_parsed:
@@ -410,9 +416,9 @@ def download_cmd():
     iatikit.download.data()
 
 
-def download_and_update():
+def download_and_update(ignore_hashes):
     iatikit.download.data()
-    update_registry()
+    update_registry(ignore_hashes)
 
 
 @manager.cli.command('fetch-dataset-list')
@@ -423,8 +429,12 @@ def fetch_dataset_list_cmd():
     fetch_dataset_list()
 
 
+@click.option('--ignore-hashes', is_flag=True,
+              help="Ignore hashes in the database, which determine whether \
+              activities should be updated or not, and update all data. \
+              This will lead to a full refresh of data.")
 @manager.cli.command('download-and-update')
-def download_and_update_cmd():
+def download_and_update_cmd(ignore_hashes):
     """
     Enqueue a download of all IATI data from
     IATI Data Dump, and then start an update.
@@ -433,21 +443,30 @@ def download_and_update_cmd():
     print("Enqueuing a download from IATI Data Dump")
     queue.enqueue(
         download_and_update,
-        result_ttl=0, job_timeout=100000)
+        args=(ignore_hashes,),
+        result_ttl=0,
+        job_timeout=100000)
 
 
-def update_registry():
+def update_registry(ignore_hashes):
+    """
+    Get all dataset metadata and update dataset data.
+    """
     queue = rq.get_queue()
     datasets = fetch_dataset_list()
     print("Enqueuing %d datasets for update" % datasets.count())
     for dataset in datasets:
-        queue.enqueue(update_dataset, args=(dataset.name,), result_ttl=0)
+        queue.enqueue(update_dataset, args=(dataset.name, ignore_hashes), result_ttl=0)
 
 
 @click.option('--dataset', 'dataset', type=str,
               help="update a single dataset")
+@click.option('--ignore-hashes', is_flag=True,
+              help="Ignore hashes in the database, which determine whether \
+              activities should be updated or not, and update all data. \
+              This will lead to a full refresh of data.")
 @manager.cli.command('update')
-def update_cmd(dataset=None):
+def update_cmd(ignore_hashes, dataset=None):
     """
     Step through downloaded datasets, adding them to the dataset table, and then adding an update command to
     the Flask job queue. See update_registry, then update_dataset for next actions.
@@ -456,7 +475,7 @@ def update_cmd(dataset=None):
 
     if dataset is not None:
         print("Enqueuing {0} for update".format(dataset))
-        queue.enqueue(update_dataset, args=(dataset,), result_ttl=0)
+        queue.enqueue(update_dataset, args=(dataset, ignore_hashes), result_ttl=0)
     else:
         print("Enqueuing a full registry update")
-        queue.enqueue(update_registry, result_ttl=0)
+        queue.enqueue(update_registry, args=(ignore_hashes,), result_ttl=0)
