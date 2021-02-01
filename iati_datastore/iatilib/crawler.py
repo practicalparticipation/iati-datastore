@@ -127,8 +127,8 @@ def fetch_resource(dataset, ignore_hashes):
 
         resource.last_status_code = 200
         resource.last_succ = last_updated
-        if not resource.document or \
-                hash(resource.document) != hash(content) or \
+        if (not resource.document) or \
+                (hash(resource.document) != hash(content)) or \
                 ignore_hashes:
             resource.document = content
             resource.last_parsed = None
