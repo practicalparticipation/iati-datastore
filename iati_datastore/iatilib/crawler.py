@@ -106,9 +106,11 @@ def fetch_dataset_metadata(dataset):
     return dataset
 
 
-def fetch_resource(dataset):
+def fetch_resource(dataset, ignore_hashes):
     '''
     Gets the resource and sets the times of last successful update based on the status code.
+    If `ignore_hashes` is set to True, `last_parsed` will be set to None and an
+    update will be triggered.
     :param resource:
     :return:
     '''
@@ -126,7 +128,8 @@ def fetch_resource(dataset):
         resource.last_status_code = 200
         resource.last_succ = last_updated
         if not resource.document or \
-                hash(resource.document) != hash(content):
+                hash(resource.document) != hash(content) or \
+                ignore_hashes:
             resource.document = content
             resource.last_parsed = None
             resource.last_parse_error = None
