@@ -129,7 +129,7 @@ class TestCrawler(AppTestCase):
         ]
         mock_open = mock.mock_open(read_data=dataset_new_metadata)
         with mock.patch('builtins.open', mock_open):
-            crawler.update_dataset('tst-new')
+            crawler.update_dataset(dataset_name='tst-new', ignore_hashes=False)
             # resource was not added
             self.assertEquals(0, len(dataset_new.resources))
             log = Log.query.filter_by(dataset="tst-new").first()
@@ -149,7 +149,7 @@ class TestCrawler(AppTestCase):
         read_data = b"test"
         mock_open = mock.mock_open(read_data=read_data)
         with mock.patch('builtins.open', mock_open):
-            resource = crawler.fetch_resource(dataset)
+            resource = crawler.fetch_resource(dataset=dataset, ignore_hashes=False)
         self.assertEquals(b"test", resource.document)
         self.assertEquals(None, resource.last_parsed)
         self.assertEquals(None, resource.last_parse_error)
@@ -171,7 +171,7 @@ class TestCrawler(AppTestCase):
         read_data = b"test"
         mock_open = mock.mock_open(read_data=read_data)
         with mock.patch('builtins.open', mock_open):
-            resource = crawler.fetch_resource(dataset)
+            resource = crawler.fetch_resource(dataset=dataset, ignore_hashes=False)
         self.assertNotEquals(None, resource.last_parsed)
 
     def test_parse_resource_succ(self):
