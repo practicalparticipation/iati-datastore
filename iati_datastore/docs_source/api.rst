@@ -383,7 +383,7 @@ The default behaviour is 50; the maximum is 1000. Trying to fetch more than abou
 
 
 Getting all the results at once
--------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The CSV and XML formats support returning all results at once in a ‘stream’. To request all available results, add ``stream=True`` to your parameters.
 
