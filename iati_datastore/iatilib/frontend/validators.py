@@ -37,6 +37,7 @@ pagination_args = v.Schema(pagination_schema)
 activity_api_schema = {
     "date": apidate,
     "stream": v.All(v.Coerce(bool)),
+    "unwrap": v.All(v.Coerce(bool)),
     'iati-identifier': v.All(v.Coerce(str)),
     'title': v.All(v.Coerce(str)),
     'description': v.All(v.Coerce(str)),

@@ -396,7 +396,7 @@ class CSVSerializer(object):
             major_version: FieldDict(fields, adapter=adapter)
             for major_version, FieldDict in fielddict_by_major_version.items()}
 
-    def __call__(self, data):
+    def __call__(self, data, wrapped=True):
         """
         Return a generator of lines of csv
         """

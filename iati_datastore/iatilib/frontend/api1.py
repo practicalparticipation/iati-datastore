@@ -265,6 +265,10 @@ class DataStoreView(MethodView):
     def streaming(self):
         return self.validate_args().get("stream", False)
 
+    @property
+    def wrapped(self):
+        return not self.validate_args().get("unwrap", False)
+
     def paginate(self, query, offset, limit):
         if offset < 0:
             abort(404)
@@ -300,7 +304,7 @@ class DataStoreView(MethodView):
                 valid_args.get("limit", 50),
             )
         return Response(
-            stream_with_context(serializer(pagination)),
+            stream_with_context(serializer(pagination, self.wrapped)),
             mimetype=mimetype)
 
 
