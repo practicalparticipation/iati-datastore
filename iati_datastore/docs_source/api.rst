@@ -396,6 +396,13 @@ Example API calls:
 
 
 
+“Unwrapping” the query information
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, XML and JSON responses include status and query data. To exclude this information from the response add ``unwrap=True`` to your parameters. This will return something closer to valid IATI data.
+
+
+
 Checking the Data
 -----------------
 
