@@ -14,9 +14,9 @@ class TestDocs(ClientTestCase):
     def test_docs(self):
         resp = self.client.get('/docs/')
         self.assertEquals(200, resp.status_code)
-        self.assertRegex(
-            resp.data.decode(),
-            r"What is IATI Datastore\?")
+        self.assertIn(
+            "What is IATI Datastore?",
+            resp.data.decode())
 
 
 class TestDocsRedirects(ClientTestCase):
