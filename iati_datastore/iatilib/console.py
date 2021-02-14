@@ -11,6 +11,7 @@ import requests
 from sqlalchemy import not_
 
 from iatilib import parse, codelists, db
+from iatilib.model import Log
 from iatilib.frontend.app import create_app
 
 
@@ -39,7 +40,6 @@ def download_codelists():
 @cli.command()
 @with_appcontext
 def cleanup():
-    from iatilib.model import Log
     db.session.query(Log).filter(
             Log.created_at < dt.datetime.utcnow() - dt.timedelta(days=5)
     ).filter(not_(Log.logger.in_(
