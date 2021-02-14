@@ -66,14 +66,10 @@ def build_query_builder(deploy_url=None):
     cwd = join(current_path, 'query_builder_source')
     subprocess.run(['npm', 'i'], cwd=cwd)
 
+    env = {**os.environ}
     if deploy_url is not None:
-        env = {
-            **os.environ,
-            "IATI_DATASTORE_DEPLOY_URL": deploy_url,
-        }
-        subprocess.run(['npm', 'run', 'generate'], cwd=cwd, env=env)
-    else:
-        subprocess.run(['npm', 'run', 'generate'], cwd=cwd)
+        env["IATI_DATASTORE_DEPLOY_URL"] = deploy_url
+    subprocess.run(['npm', 'run', 'generate'], cwd=cwd, env=env)
 
 
 @click.option(
