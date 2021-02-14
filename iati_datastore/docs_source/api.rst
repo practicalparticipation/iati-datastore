@@ -205,7 +205,7 @@ Parameters:
     @transaction_provider-org: `Organisation identifier string <http://iatistandard.org/201/organisation-identifiers/>`__ for the organisation issuing who provided transaction funds
 
 Example API call:
-    `/api/1/access/activity.xml?transaction_provider-org=GB-1 </api/1/access/activity.xml?transaction_provider-org=GB-1>`__
+    `/api/1/access/activity.xml?transaction_provider-org=GB-GOV-1 </api/1/access/activity.xml?transaction_provider-org=GB-GOV-1>`__
 
 
 transaction_provider-org.provider-activity-id
@@ -322,7 +322,7 @@ Parameters:
     @registry-dataset: string name of the specified registry dataset
 
 Example API call:
-    `/api/1/access/activity.xml?registry-dataset=dfid-af </api/1/access/activity.xml?registry-dataset=dfid-af>`__
+    `/api/1/access/activity.xml?registry-dataset=fcdo-af </api/1/access/activity.xml?registry-dataset=fcdo-af>`__
 
 
 
@@ -333,8 +333,8 @@ Combining filters
 All of the above filters can be combined using the & character.  The resulting query will return activities which match all of the specified criteria.
 
 Example API call:
-    `/api/1/access/activity.xml?reporting-org=GB-1&recipient-country=CD </api/1/access/activity.xml?reporting-org=GB-1&recipient-country=CD>`__
-    *This would respond with all the DFID (GB-1) data for the Democratic Republic of Congo (CD).*
+    `/api/1/access/activity.xml?reporting-org=GB-GOV-1&recipient-country=CD </api/1/access/activity.xml?reporting-org=GB-GOV-1&recipient-country=CD>`__
+    *This would respond with all the FCDO (GB-GOV-1) data for the Democratic Republic of Congo (CD).*
 
 
 
@@ -344,8 +344,8 @@ Complex Filtering
 Each individual filter can be filtered for alternate values using the | character.
 
 Example API call:
-    `/api/1/access/activity.xml?reporting-org=GB-1&recipient-country=CD|UG </api/1/access/activity.xml?reporting-org=GB-1&recipient-country=CD%7CUG>`__
-    This would return activities for DFID (GB-1) where the recipient-country is either Democratic Republic of Congo (CD) OR Uganda (UG)
+    `/api/1/access/activity.xml?reporting-org=GB-GOV-1&recipient-country=CD|UG </api/1/access/activity.xml?reporting-org=GB-GOV-1&recipient-country=CD%7CUG>`__
+    This would return activities for FCDO (GB-GOV-1) where the recipient-country is either Democratic Republic of Congo (CD) OR Uganda (UG)
 
 
 
@@ -388,11 +388,11 @@ Getting all the results at once
 The CSV and XML formats support returning all results at once in a ‘stream’. To request all available results, add ``stream=True`` to your parameters.
 
 Example API calls:
-    `/api/1/access/transaction.csv?reporting-org.ref=GB-1&stream=True </api/1/access/transaction.csv?reporting-org.ref=GB-1&stream=True>`__
-    *This will return all the DFID transactions data as CSV.*
+    `/api/1/access/transaction.csv?reporting-org.ref=GB-GOV-1&stream=True </api/1/access/transaction.csv?reporting-org.ref=GB-GOV-1&stream=True>`__
+    *This will return all the FCDO transactions data as CSV.*
 
-    `/api/1/access/activity.xml?reporting-org.ref=GB-1&stream=True </api/1/access/activity.xml?reporting-org.ref=GB-1&stream=True>`__
-    *This will return all the DFID transactions data as XML.*
+    `/api/1/access/activity.xml?reporting-org.ref=GB-GOV-1&stream=True </api/1/access/activity.xml?reporting-org.ref=GB-GOV-1&stream=True>`__
+    *This will return all the FCDO activity data as XML.*
 
 
 
