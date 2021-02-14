@@ -40,6 +40,7 @@ def download_codelists():
 @cli.command()
 @with_appcontext
 def cleanup():
+    """Delete old log messages."""
     db.session.query(Log).filter(
             Log.created_at < dt.datetime.utcnow() - dt.timedelta(days=5)
     ).filter(not_(Log.logger.in_(
