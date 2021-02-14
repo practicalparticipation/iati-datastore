@@ -1,5 +1,3 @@
 [run]
 omit =
     */test/*
-    docs_source/*
-    migrations/*
