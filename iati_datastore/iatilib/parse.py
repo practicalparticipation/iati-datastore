@@ -57,7 +57,7 @@ def xval(ele, xpath, default=NODEFAULT):
         val = ele.xpath(xpath)[0]
         if isinstance(val, str):
             return val
-        raise TypeError("val is not a sting")
+        raise TypeError("val is not a string")
     except IndexError:
         if default is NODEFAULT:
             raise MissingValue("Missing %r from %s" % (xpath, ele.tag))
