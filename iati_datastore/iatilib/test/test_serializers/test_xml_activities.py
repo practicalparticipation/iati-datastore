@@ -8,9 +8,10 @@ from iatilib.frontend import serialize
 
 
 class TestXMLSerializer(TestCase):
-    def process(self, items):
+    def process(self, items, wrapped=True):
         pagination = TestWrapper(items, 0, 0, 0)
-        return ET.fromstring(u"".join(serialize.xml(pagination)).encode("utf-8"))
+        return ET.fromstring(u"".join(
+            serialize.xml(pagination, wrapped)).encode("utf-8"))
 
     def test_raw(self):
         # the xml that's output is the stuff in raw_xml
@@ -45,3 +46,19 @@ class TestXMLSerializer(TestCase):
             fac.ActivityFactory.build(raw_xml=u"<iati-activity></iati-activity>", version='x.yy')
         ])
         self.assertEquals('x.yy', data.find('.//iati-activity').attrib['{https://datastore.codeforiati.org/ns}version'])
+
+    def test_wrapped(self):
+        data = self.process([
+            fac.ActivityFactory.build()
+        ])
+        self.assertEquals(data.tag, 'result')
+        self.assertIsNotNone(data.find('.//iati-activities'))
+        self.assertIsNotNone(data.find('.//query'))
+
+    def test_unwrapped(self):
+        data = self.process([
+            fac.ActivityFactory.build()
+        ], wrapped=False)
+        self.assertEquals(data.tag, 'iati-activities')
+        self.assertIsNone(data.find('.//result'))
+        self.assertIsNone(data.find('.//query'))
