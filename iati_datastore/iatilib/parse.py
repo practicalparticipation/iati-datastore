@@ -1,4 +1,3 @@
-import os
 import logging
 from decimal import Decimal, InvalidOperation
 from functools import partial
@@ -6,7 +5,6 @@ from collections import namedtuple
 from io import BytesIO
 from lxml import etree as ET
 from dateutil.parser import parse as parse_date
-from requests.packages import chardet
 
 from . import db
 from iatilib.model import (
