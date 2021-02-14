@@ -15,6 +15,14 @@ class TestLatestApiRedirect(ClientTestCase):
 
     def test_builder_activity_xml(self):
         url_from = '/build/api/1/access/activity.xml'
+        url_to = '/'
         resp = self.client.get(url_from)
         self.assertEquals(302, resp.status_code)
-        self.assertRegex(resp.headers['Location'], r'/$')
+        self.assertTrue(resp.headers['Location'].endswith(url_to))
+
+    def test_builder_transaction_json(self):
+        url_from = '/build/api/1/access/transaction.csv'
+        url_to = '/?breakdown=transaction&format=csv'
+        resp = self.client.get(url_from)
+        self.assertEquals(302, resp.status_code)
+        self.assertTrue(resp.headers['Location'].endswith(url_to))
