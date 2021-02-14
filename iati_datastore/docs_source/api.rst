@@ -401,6 +401,13 @@ Example API calls:
 
 By default, XML and JSON responses include status and query data. To exclude this information from the response add ``unwrap=True`` to your parameters. This will return something closer to valid IATI data.
 
+Example API calls:
+    `/api/1/access/activity/?unwrap=True </api/1/access/activity/?unwrap=True>`__
+    *This will return all activites as JSON, unwrapped.*
+
+    `/api/1/access/activity.xml?unwrap=True </api/1/access/activity.xml?unwrap=True>`__
+    *This will return all activites as XML, unwrapped.*
+
 
 
 Checking the Data
