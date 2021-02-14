@@ -10,7 +10,7 @@ from flask.cli import FlaskGroup, with_appcontext
 import requests
 from sqlalchemy import not_
 
-from iatilib import parse, codelists, db, model
+from iatilib import parse, codelists, db
 from iatilib.frontend.app import create_app
 
 
@@ -73,52 +73,6 @@ def build_query_builder(deploy_url=None):
         subprocess.run(['npm', 'run', 'generate'], cwd=cwd, env=env)
     else:
         subprocess.run(['npm', 'run', 'generate'], cwd=cwd)
-
-
-@cli.command()
-def reset_stats():
-    """Reset the stats table with the latest figures."""
-    dirty = False
-
-    act_stat = model.Stats.query.get('activities')
-    trans_stat = model.Stats.query.get('transactions')
-    budget_stat = model.Stats.query.get('budgets')
-
-    act_count = model.Activity.query.count()
-    trans_count = model.Transaction.query.count()
-    budget_count = model.Budget.query.count()
-
-    if act_stat.count != act_count:
-        click.echo('Activity count updated\n' +
-                   '(was {}, now {})\n'.format(
-                       act_stat.count,
-                       act_count,
-                   ))
-        act_stat.count = act_count
-        db.session.add(act_stat)
-        dirty = True
-    if trans_stat.count != trans_count:
-        click.echo('Transaction count updated\n' +
-                   '(was {}, now {})\n'.format(
-                       trans_stat.count,
-                       trans_count,
-                   ))
-        trans_stat.count = trans_count
-        db.session.add(trans_stat)
-        dirty = True
-    if budget_stat.count != budget_count:
-        click.echo('Budget count updated\n' +
-                   '(was {}, now {})\n'.format(
-                       budget_stat.count,
-                       budget_count,
-                   ))
-        budget_stat.count = budget_count
-        db.session.add(budget_stat)
-        dirty = True
-    if dirty:
-        db.session.commit()
-    else:
-        click.echo('Nothing to do!')
 
 
 @click.option(
