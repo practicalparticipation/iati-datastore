@@ -10,7 +10,8 @@ from flask.cli import FlaskGroup, with_appcontext
 import requests
 from sqlalchemy import not_
 
-from iatilib import parse, codelists, db, model
+from iatilib import parse, codelists, db
+from iatilib.model import Log
 from iatilib.frontend.app import create_app
 
 
@@ -39,7 +40,7 @@ def download_codelists():
 @cli.command()
 @with_appcontext
 def cleanup():
-    from iatilib.model import Log
+    """Delete old log messages."""
     db.session.query(Log).filter(
             Log.created_at < dt.datetime.utcnow() - dt.timedelta(days=5)
     ).filter(not_(Log.logger.in_(
@@ -65,60 +66,10 @@ def build_query_builder(deploy_url=None):
     cwd = join(current_path, 'query_builder_source')
     subprocess.run(['npm', 'i'], cwd=cwd)
 
+    env = {**os.environ}
     if deploy_url is not None:
-        env = {
-            **os.environ,
-            "IATI_DATASTORE_DEPLOY_URL": deploy_url,
-        }
-        subprocess.run(['npm', 'run', 'generate'], cwd=cwd, env=env)
-    else:
-        subprocess.run(['npm', 'run', 'generate'], cwd=cwd)
-
-
-@cli.command()
-def reset_stats():
-    """Reset the stats table with the latest figures."""
-    dirty = False
-
-    act_stat = model.Stats.query.get('activities')
-    trans_stat = model.Stats.query.get('transactions')
-    budget_stat = model.Stats.query.get('budgets')
-
-    act_count = model.Activity.query.count()
-    trans_count = model.Transaction.query.count()
-    budget_count = model.Budget.query.count()
-
-    if act_stat.count != act_count:
-        click.echo('Activity count updated\n' +
-                   '(was {}, now {})\n'.format(
-                       act_stat.count,
-                       act_count,
-                   ))
-        act_stat.count = act_count
-        db.session.add(act_stat)
-        dirty = True
-    if trans_stat.count != trans_count:
-        click.echo('Transaction count updated\n' +
-                   '(was {}, now {})\n'.format(
-                       trans_stat.count,
-                       trans_count,
-                   ))
-        trans_stat.count = trans_count
-        db.session.add(trans_stat)
-        dirty = True
-    if budget_stat.count != budget_count:
-        click.echo('Budget count updated\n' +
-                   '(was {}, now {})\n'.format(
-                       budget_stat.count,
-                       budget_count,
-                   ))
-        budget_stat.count = budget_count
-        db.session.add(budget_stat)
-        dirty = True
-    if dirty:
-        db.session.commit()
-    else:
-        click.echo('Nothing to do!')
+        env["IATI_DATASTORE_DEPLOY_URL"] = deploy_url
+    subprocess.run(['npm', 'run', 'generate'], cwd=cwd, env=env)
 
 
 @click.option(

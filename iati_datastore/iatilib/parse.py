@@ -1,4 +1,3 @@
-import os
 import logging
 from decimal import Decimal, InvalidOperation
 from functools import partial
@@ -6,7 +5,6 @@ from collections import namedtuple
 from io import BytesIO
 from lxml import etree as ET
 from dateutil.parser import parse as parse_date
-from requests.packages import chardet
 
 from . import db
 from iatilib.model import (
@@ -59,7 +57,7 @@ def xval(ele, xpath, default=NODEFAULT):
         val = ele.xpath(xpath)[0]
         if isinstance(val, str):
             return val
-        raise TypeError("val is not a sting")
+        raise TypeError("val is not a string")
     except IndexError:
         if default is NODEFAULT:
             raise MissingValue("Missing %r from %s" % (xpath, ele.tag))
