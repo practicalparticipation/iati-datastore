@@ -52,6 +52,15 @@ class TestJson(AppTestCase):
         }
         self.assertCountEqual(transactions, output['iati-activities'][0]['transaction'][0])
 
+    def test_multiline(self):
+        act_one = factories.ActivityFactory.create(
+            iati_identifier='AAA')
+        act_two = factories.ActivityFactory.create(
+            iati_identifier='ZZZ')
+        json_output = json.loads(''.join(jsonserializer.json(
+            FakePage([act_one, act_two]))))
+        self.assertEquals(2, len(json_output['iati-activities']))
+
     def test_version(self):
         activity = factories.ActivityFactory.create(version='x.yy')
         json_datastore_output = json.loads(''.join(jsonserializer.datastore_json(FakePage([activity]))))
