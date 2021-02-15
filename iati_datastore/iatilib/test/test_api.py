@@ -89,6 +89,45 @@ class TestAboutDatasets(ClientTestCase):
             resp.data.decode())
 
 
+class TestErrorDatasets(ClientTestCase):
+    def test_errors(self):
+        fac.LogFactory.create()
+        resp = self.client.get('/api/1/error/dataset/')
+        data = json.loads(resp.data)
+        self.assertEquals(200, resp.status_code)
+        self.assertIn("errored_datasets", data)
+        self.assertEquals(
+            'bad-dataset',
+            data['errored_datasets'][0]['dataset'])
+
+    def test_errors_log(self):
+        fac.LogFactory.create()
+        resp = self.client.get('/api/1/error/dataset.log')
+        self.assertEquals(200, resp.status_code)
+        self.assertEquals(
+            "text/plain; charset=utf-8", resp.content_type)
+
+    def test_error_log(self):
+        fac.LogFactory.create()
+        resp = self.client.get('/api/1/error/dataset.log/bad-dataset/')
+        self.assertEquals(200, resp.status_code)
+        self.assertEquals(
+            "text/plain; charset=utf-8", resp.content_type)
+
+    def test_error(self):
+        fac.LogFactory.create()
+        resp = self.client.get('/api/1/error/dataset/bad-dataset/')
+        data = json.loads(resp.data)
+        self.assertEquals(200, resp.status_code)
+        self.assertIn("errors", data)
+        self.assertEquals(
+            'bad-dataset',
+            data['errors'][0]['dataset'])
+        self.assertEquals(
+            'Dataset is broken',
+            data['errors'][0]['msg'])
+
+
 class TestDeletedActivitiesView(ClientTestCase):
     def test_deleted_activities(self):
         db.session.add(model.DeletedActivity(

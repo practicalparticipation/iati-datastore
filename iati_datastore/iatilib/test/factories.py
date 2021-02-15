@@ -124,3 +124,5 @@ class LogFactory(TestFactory):
     class Meta:
         model = Log
     created_at = datetime.datetime(1970, 1, 1, 12, 0, 0)
+    dataset = 'bad-dataset'
+    msg = 'Dataset is broken'
