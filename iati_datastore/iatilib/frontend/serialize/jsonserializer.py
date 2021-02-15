@@ -128,14 +128,17 @@ class JSONSerializer:
     def __init__(self, encoder):
         self.encoder = encoder
 
-    def __call__(self, pagination):
-        yield jsonlib.dumps(
-            OrderedDict((
-                ("ok", True),
-                ("total-count", pagination.total),
-                ("start", pagination.offset),
-                ("limit", pagination.limit),
-            )))[:-1] + ', "iati-activities": ['
+    def __call__(self, pagination, wrapped=True):
+        yield '{'
+        if wrapped:
+            yield jsonlib.dumps(
+                OrderedDict((
+                    ("ok", True),
+                    ("total-count", pagination.total),
+                    ("start", pagination.offset),
+                    ("limit", pagination.limit),
+                )))[1:-1] + ', '
+        yield '"iati-activities": ['
         first = True
         for i in pagination.items:
             if first:

@@ -68,3 +68,31 @@ class TestJson(AppTestCase):
         self.assertEquals('x.yy', json_datastore_output['iati-activities'][0]['version'])
         # This has the "iati-extra:" because it should match the XML output
         self.assertEquals('x.yy', json_output['iati-activities'][0]['iati-extra:version'])
+
+    def test_wrapped(self):
+        activity = factories.ActivityFactory.create()
+        json_datastore_output = jsonserializer.datastore_json(
+                FakePage([activity]))
+        json_output = jsonserializer.json(
+                FakePage([activity]))
+        for output in [json_datastore_output, json_output]:
+            output_dict = json.loads(''.join(output))
+            self.assertIn('ok', output_dict)
+            self.assertIn('total-count', output_dict)
+            self.assertIn('start', output_dict)
+            self.assertIn('limit', output_dict)
+            self.assertIn('iati-activities', output_dict)
+
+    def test_unwrapped(self):
+        activity = factories.ActivityFactory.create()
+        json_datastore_output = jsonserializer.datastore_json(
+                FakePage([activity]), wrapped=False)
+        json_output = jsonserializer.json(
+                FakePage([activity]), wrapped=False)
+        for output in [json_datastore_output, json_output]:
+            output_dict = json.loads(''.join(output))
+            self.assertNotIn('ok', output_dict)
+            self.assertNotIn('total-count', output_dict)
+            self.assertNotIn('start', output_dict)
+            self.assertNotIn('limit', output_dict)
+            self.assertIn('iati-activities', output_dict)

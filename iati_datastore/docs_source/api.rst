@@ -383,7 +383,7 @@ The default behaviour is 50; the maximum is 1000. Trying to fetch more than abou
 
 
 Getting all the results at once
--------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The CSV and XML formats support returning all results at once in a ‘stream’. To request all available results, add ``stream=True`` to your parameters.
 
@@ -393,6 +393,20 @@ Example API calls:
 
     `/api/1/access/activity.xml?reporting-org.ref=GB-GOV-1&stream=True </api/1/access/activity.xml?reporting-org.ref=GB-GOV-1&stream=True>`__
     *This will return all the FCDO activity data as XML.*
+
+
+
+“Unwrapping” the query information
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, XML and JSON responses include status and query data. To exclude this information from the response add ``unwrap=True`` to your parameters. This will return something closer to valid IATI data.
+
+Example API calls:
+    `/api/1/access/activity/?unwrap=True </api/1/access/activity/?unwrap=True>`__
+    *This will return all activites as JSON, unwrapped.*
+
+    `/api/1/access/activity.xml?unwrap=True </api/1/access/activity.xml?unwrap=True>`__
+    *This will return all activites as XML, unwrapped.*
 
 
 
