@@ -48,3 +48,9 @@ class ConsoleTestCase(AppTestCase):
         result = self.runner.invoke(crawler.download_cmd)
         self.assertEquals(0, result.exit_code)
         self.assertEquals(1, iatikit_mock.data.call_count)
+
+    @mock.patch('iatilib.crawler.fetch_dataset_list')
+    def test_fetch_dataset_list_cmd(self, fetch_dataset_list_mock):
+        result = self.runner.invoke(crawler.fetch_dataset_list_cmd)
+        self.assertEquals(0, result.exit_code)
+        self.assertEquals(1, fetch_dataset_list_mock.call_count)

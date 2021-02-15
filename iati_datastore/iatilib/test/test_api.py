@@ -102,6 +102,21 @@ class TestDeletedActivitiesView(ClientTestCase):
         self.assertEquals("test", deleted_activities[0]['iati_identifier'])
         self.assertEquals("2000-01-01", deleted_activities[0]['deletion_date'])
 
+    def test_deleted_invalid_filter(self):
+        resp = self.client.get('/api/1/about/deleted/?invalid=true')
+        self.assertEquals(400, resp.status_code)
+        self.assertIn(
+            "Invalid arguments passed as filter",
+            resp.data.decode())
+
+
+class TestMetaFilters(ClientTestCase):
+    def test_http(self):
+        resp = self.client.get('/api/1/meta/filters/')
+        self.assertEquals(200, resp.status_code)
+        self.assertEquals("application/json", resp.content_type)
+        self.assertIn("filters", json.loads(resp.data))
+
 
 class TestEmptyDb_JSON(ClientTestCase):
     url = '/api/1/access/activity/'
