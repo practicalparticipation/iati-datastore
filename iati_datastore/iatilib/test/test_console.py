@@ -17,6 +17,18 @@ class ConsoleTestCase(AppTestCase):
         self.assertEquals(1, mock.call_count)
         self.assertEquals(mock.call_args.args[0], command.split(' '))
 
+    @mock.patch('subprocess.run')
+    def test_build_query_builder(self, mock):
+        install_command = 'npm i'
+        build_command = 'npm run generate'
+        result = self.runner.invoke(console.build_query_builder)
+        self.assertEquals(0, result.exit_code)
+        self.assertEquals(2, mock.call_count)
+        args = [' '.join(arg_list.args[0])
+                for arg_list in mock.call_args_list]
+        self.assertIn(install_command, args)
+        self.assertIn(build_command, args)
+
     @mock.patch('click.confirm')
     @mock.patch('iatilib.db.drop_all')
     def test_drop_db(self, prompt_mock, drop_all_mock):
