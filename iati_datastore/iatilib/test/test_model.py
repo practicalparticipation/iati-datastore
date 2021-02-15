@@ -1,7 +1,7 @@
 from . import AppTestCase
 from . import factories as fac
 
-from iatilib.model import Activity, Resource, Stats, Transaction
+from iatilib.model import Activity, Resource
 from iatilib import db
 
 
@@ -62,3 +62,21 @@ class TestResource(AppTestCase):
             Activity.query.filter_by(resource_url=res.url).count()
         )
         db.engine.echo = False
+
+
+class TestOrganisation(AppTestCase):
+    def test_organisation_repr(self):
+        org = fac.OrganisationFactory.build(ref='org ref')
+        self.assertEquals(str(org), "Organisation(ref='org ref')")
+
+
+class TestTransaction(AppTestCase):
+    def test_transaction_repr(self):
+        org = fac.TransactionFactory.build(id='test-trans-0')
+        self.assertEquals(str(org), "Transaction(id='test-trans-0')")
+
+
+class TestLog(AppTestCase):
+    def test_log_repr(self):
+        org = fac.LogFactory.build(msg='hello')
+        self.assertEquals(str(org), "<Log: 1970-01-01 12:00:00 - hello>")
