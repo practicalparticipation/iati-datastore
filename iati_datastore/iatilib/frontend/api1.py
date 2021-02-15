@@ -135,16 +135,14 @@ def about_dataset(dataset):
     dataset = db.session.query(Dataset).get(dataset)
     if dataset is None:
         abort(404)
-    resources = []
-    for r in dataset.resources:
-        resources.append({
-            'url': r.url,
-            'last_fetch': r.last_fetch.isoformat() if r.last_fetch else None,
-            'last_status_code': r.last_status_code,
-            'last_successful_fetch': r.last_succ.isoformat() if r.last_succ else None,
-            'last_parsed': r.last_parsed.isoformat() if r.last_parsed else None,
-            'num_of_activities': r.activities.count(),
-        })
+    resources = [{
+        'url': r.url,
+        'last_fetch': r.last_fetch.isoformat() if r.last_fetch else None,
+        'last_status_code': r.last_status_code,
+        'last_successful_fetch': r.last_succ.isoformat() if r.last_succ else None,
+        'last_parsed': r.last_parsed.isoformat() if r.last_parsed else None,
+        'num_of_activities': r.activities.count(),
+    } for r in dataset.resources]
 
     return jsonify(
             dataset=dataset.name,
