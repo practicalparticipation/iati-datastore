@@ -1,7 +1,8 @@
 import mock
 
 from iatilib import console, crawler
-from . import AppTestCase
+from iatilib.model import Log
+from . import AppTestCase, factories as fac
 
 
 class ConsoleTestCase(AppTestCase):
@@ -28,6 +29,14 @@ class ConsoleTestCase(AppTestCase):
                 for arg_list in mock.call_args_list]
         self.assertIn(install_command, args)
         self.assertIn(build_command, args)
+
+    def test_cleanup(self):
+        fac.LogFactory.create(logger='crawler')
+        fac.LogFactory.create(logger='failed_activity')
+        self.assertEquals(2, len(Log.query.all()))
+        result = self.runner.invoke(console.cleanup)
+        self.assertEquals(0, result.exit_code)
+        self.assertEquals(1, len(Log.query.all()))
 
     @mock.patch('click.confirm')
     @mock.patch('iatilib.db.drop_all')
