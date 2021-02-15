@@ -266,8 +266,6 @@ class DataStoreView(MethodView):
         return self.validate_args().get("stream", False)
 
     def paginate(self, query, offset, limit):
-        if offset < 0:
-            abort(404)
         items = query.order_by('iati_identifier').limit(limit).offset(offset)
         total_count = query.count()
         if offset != 0 and offset >= total_count:
@@ -323,8 +321,6 @@ class DataStoreCSVView(DataStoreView):
         return self.get_response("text/csv")
 
     def paginate(self, query, offset, limit):
-        if offset < 0:
-            abort(404)
         items = query\
             .order_by('iati_identifier')\
             .limit(limit)\
