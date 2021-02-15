@@ -201,9 +201,6 @@ class Organisation(db.Model, UniqueMixin):
     def __repr__(self):
         return "Organisation(ref=%r)" % self.ref
 
-    def __unicode__(self):
-        return u"Organisation ref='%s'" % self.ref
-
 
 class ActivityWebsite(db.Model):
     __tablename__ = "website"
@@ -335,12 +332,6 @@ class Transaction(db.Model):
     recipient_region_percentages = act_relationship("RegionPercentage")
     sector_percentages = act_relationship("SectorPercentage")
 
-    def __unicode__(self):
-        return u"%s: %s/%s" % (
-            self.activity.iati_identifier,
-            self.type.description,
-            self.value_amount)
-
     def __repr__(self):
         return u"Transaction(id=%r)" % self.id
 
@@ -443,9 +434,6 @@ class Log(db.Model):
     created_at = sa.Column(
             sa.DateTime,
             default=sa.func.now())  # the current timestamp
-
-    def __unicode__(self):
-        return self.__repr__()
 
     def __repr__(self):
         return "<Log: %s - %s>" % (
