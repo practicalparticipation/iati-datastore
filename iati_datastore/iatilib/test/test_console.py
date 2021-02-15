@@ -9,11 +9,6 @@ class ConsoleTestCase(AppTestCase):
         super().setUp()
         self.runner = self.app.test_cli_runner()
 
-    def test_cli(self):
-        result = self.runner.invoke(console.cli)
-        self.assertEquals(0, result.exit_code)
-        self.assertIn('Usage: ', result.output)
-
     @mock.patch('subprocess.run')
     def test_build_docs(self, mock):
         command = 'make dirhtml'
