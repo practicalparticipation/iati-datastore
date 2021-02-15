@@ -7,7 +7,7 @@ from iatilib import db
 from iatilib.model import (
     Activity, Transaction, Organisation, SectorPercentage, CountryPercentage,
     Participation, Budget, Resource, RegionPercentage, PolicyMarker,
-    RelatedActivity, Dataset
+    RelatedActivity, Dataset, Log
 )
 
 from factory.alchemy import SQLAlchemyModelFactory as Factory
@@ -118,3 +118,9 @@ class DatasetFactory(TestFactory):
     name = 'test_dataset'
     resources = factory.SubFactory(ResourceFactory)
     is_open = True
+
+
+class LogFactory(TestFactory):
+    class Meta:
+        model = Log
+    created_at = datetime.datetime(1970, 1, 1, 12, 0, 0)
