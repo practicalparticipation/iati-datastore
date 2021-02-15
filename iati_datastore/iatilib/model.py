@@ -437,7 +437,7 @@ class Log(db.Model):
 
     def __repr__(self):
         return "<Log: %s - %s>" % (
-            self.created_at.strftime('%m/%d/%Y-%H:%M:%S'),
+            self.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             self.msg[:50]
         )
 
