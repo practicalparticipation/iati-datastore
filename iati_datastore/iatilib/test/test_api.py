@@ -63,6 +63,24 @@ class TestAboutDatasets(ClientTestCase):
         self.assertIn("ok", data)
         self.assertIn("total-count", data)
 
+    def test_about_dataset(self):
+        fac.DatasetFactory.create(
+            name='tst-old',
+            resources=[fac.ResourceFactory.create(
+                url="http://foo",
+            )]
+        )
+        resp = self.client.get('/api/1/about/dataset/tst-old/')
+        data = json.loads(resp.data)
+        self.assertEquals(200, resp.status_code)
+        self.assertEquals('tst-old', data["dataset"])
+        self.assertEquals(1, data["num_resources"])
+        self.assertEquals('http://foo', data["resources"][0]['url'])
+
+    def test_about_not_a_dataset(self):
+        resp = self.client.get('/api/1/about/dataset/bad-dataset-id/')
+        self.assertEquals(404, resp.status_code)
+
     def test_about_invalid_filter(self):
         resp = self.client.get('/api/1/about/dataset/?invalid=true')
         self.assertEquals(400, resp.status_code)
