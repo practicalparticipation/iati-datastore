@@ -7,6 +7,7 @@ from io import StringIO
 
 import mock
 
+from . import factories as fac
 from . import ClientTestCase
 from iatilib import parse, db, model
 
@@ -34,11 +35,40 @@ class TestAbout(ClientTestCase):
 
 
 class TestAboutDatasets(ClientTestCase):
+    def test_about(self):
+        fac.DatasetFactory.create(
+            name='tst-old',
+            resources=[fac.ResourceFactory.create(
+                url="http://foo",
+            )]
+        )
+        resp = self.client.get('/api/1/about/dataset/')
+        data = json.loads(resp.data)
+        self.assertEquals(200, resp.status_code)
+        self.assertIn("datasets", data)
+        self.assertEquals("tst-old", data["datasets"][0])
+
     def test_about_details(self):
+        fac.DatasetFactory.create(
+            name='tst-old',
+            resources=[fac.ResourceFactory.create(
+                url="http://foo",
+            )]
+        )
         resp = self.client.get('/api/1/about/dataset/?detail=true')
         data = json.loads(resp.data)
         self.assertEquals(200, resp.status_code)
         self.assertIn("datasets", data)
+        self.assertEquals('http://foo', data["datasets"][0]['url'])
+        self.assertIn("ok", data)
+        self.assertIn("total-count", data)
+
+    def test_about_invalid_filter(self):
+        resp = self.client.get('/api/1/about/dataset/?invalid=true')
+        self.assertEquals(400, resp.status_code)
+        self.assertIn(
+            "Invalid arguments passed as filter",
+            resp.data.decode())
 
 
 class TestDeletedActivitiesView(ClientTestCase):
