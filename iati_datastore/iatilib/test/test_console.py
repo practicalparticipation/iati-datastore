@@ -1,6 +1,6 @@
 import mock
 
-from iatilib import console
+from iatilib import console, crawler
 from . import AppTestCase
 
 
@@ -22,3 +22,13 @@ class ConsoleTestCase(AppTestCase):
         self.runner.invoke(console.drop_database)
         self.assertEquals(1, prompt_mock.call_count)
         self.assertEquals(1, drop_all_mock.call_count)
+
+    @mock.patch('iatilib.rq.get_queue')
+    def test_status_cmd(self, rq_mock):
+        self.runner.invoke(crawler.status_cmd)
+        self.assertEquals(1, rq_mock.call_count)
+
+    @mock.patch('iatikit.download')
+    def test_download_cmd(self, iatikit_mock):
+        self.runner.invoke(crawler.download_cmd)
+        self.assertEquals(1, iatikit_mock.data.call_count)
