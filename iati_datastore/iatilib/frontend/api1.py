@@ -15,7 +15,6 @@ from . import dsfilter, validators, serialize
 
 
 api = Blueprint('api1', __name__)
-Scrollination = namedtuple('Scrollination', 'query offset limit total items')
 
 
 @api.route('/')
@@ -239,17 +238,22 @@ def dataset_log_error(dataset_id):
     return response
 
 
-class Stream(object):
+class Scrollination:
+    def __init__(self, items, query=None, offset=None, limit=None):
+        self.items = items
+        self.query = query
+        self.offset = offset
+        self.limit = limit
+
+    @property
+    def total(self):
+        return self.query.count()
+
+
+class Stream(Scrollination):
     """
     Wrapper to make a query object quack like a pagination object
     """
-
-    limit = ''
-    offset = ''
-
-    def __init__(self, query):
-        self.items = query
-
     @property
     def total(self):
         return self.items.count()
@@ -269,10 +273,7 @@ class DataStoreView(MethodView):
 
     def paginate(self, query, offset, limit):
         items = query.order_by('iati_identifier').limit(limit).offset(offset)
-        total_count = query.count()
-        if offset != 0 and offset >= total_count:
-            abort(404)
-        return Scrollination(query, offset, limit, total_count, items)
+        return Scrollination(items, query, offset, limit)
 
     def validate_args(self):
         if not hasattr(self, "_valid_args"):
@@ -327,7 +328,7 @@ class DataStoreCSVView(DataStoreView):
             .order_by('iati_identifier')\
             .limit(limit)\
             .offset(offset)
-        return namedtuple("Scrollination", "items")(items)
+        return Scrollination(items)
 
 
 class ActivityCSVView(DataStoreCSVView):
