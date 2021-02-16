@@ -1,10 +1,7 @@
-import json
-import glob
 import datetime
 import hashlib
 import logging
 import traceback
-import os
 
 import iatikit
 import sqlalchemy as sa
@@ -32,9 +29,7 @@ def fetch_dataset_list():
     existing_datasets = Dataset.query.all()
     existing_ds_names = set(ds.name for ds in existing_datasets)
 
-    package_list = [
-        x[:-5].rsplit('/', 1)[-1]
-        for x in glob.glob('__iatikitcache__/registry/metadata/*/*')]
+    package_list = [d.name for d in iatikit.data().datasets]
     incoming_ds_names = set(package_list)
 
     new_datasets = [Dataset(name=n) for n
@@ -75,33 +70,25 @@ def delete_datasets(datasets):
 
 
 def fetch_dataset_metadata(dataset):
-    path_tmpl = '__iatikitcache__/registry/metadata/{0}/{1}.json'
-    dataset.publisher = dict(
-        x[:-5].rsplit('/', 2)[:0:-1]
-        for x in glob.glob(
-            path_tmpl.format('*', '*'))
-        )[dataset.name]
-    fname = path_tmpl.format(
-        dataset.publisher, dataset.name)
-    with open(fname) as f:
-        ds_entity = json.load(f)
+    d = iatikit.data().datasets.get(dataset.name)
+    dataset.publisher = d.metadata['organization']['name']
 
     dataset.last_modified = date_parser(
-        ds_entity.get(
+        d.metadata.get(
             'metadata_modified',
             datetime.datetime.now().date().isoformat()))
     new_urls = [resource['url'] for resource
-                in ds_entity.get('resources', [])
+                in d.metadata.get('resources', [])
                 if resource['url'] not in dataset.resource_urls]
     dataset.resource_urls.extend(new_urls)
 
     urls = [resource['url'] for resource
-            in ds_entity.get('resources', [])]
+            in d.metadata.get('resources', [])]
     for deleted in set(dataset.resource_urls) - set(urls):
         dataset.resource_urls.remove(deleted)
 
-    dataset.license = ds_entity.get('license_id')
-    dataset.is_open = ds_entity.get('isopen', False)
+    dataset.license = d.metadata.get('license_id')
+    dataset.is_open = d.metadata.get('isopen', False)
     db.session.add(dataset)
     return dataset
 
@@ -114,17 +101,13 @@ def fetch_resource(dataset, ignore_hashes):
     :param resource:
     :return:
     '''
-    fname = '__iatikitcache__/registry/data/{0}/{1}.xml'.format(
-        dataset.publisher, dataset.name)
-
+    d = iatikit.data().datasets.get(dataset.name)
     last_updated = iatikit.data().last_updated
     resource = dataset.resources[0]
     resource.last_fetch = last_updated
 
-    if os.path.exists(fname):
-        with open(fname, 'rb') as f:
-            content = f.read()
-
+    try:
+        content = d.xml
         resource.last_status_code = 200
         resource.last_succ = last_updated
         if (not resource.document) or \
@@ -133,7 +116,7 @@ def fetch_resource(dataset, ignore_hashes):
             resource.document = content
             resource.last_parsed = None
             resource.last_parse_error = None
-    else:
+    except IOError:
         # TODO: this isn't true
         resource.last_status_code = 404
 
