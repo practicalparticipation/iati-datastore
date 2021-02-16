@@ -133,7 +133,7 @@ class TestCrawler(AppTestCase):
     def test_fetch_resource_succ(self, iatikit_mock):
         data_mock = iatikit_mock.return_value
         data_mock.last_updated = datetime.datetime.utcnow()
-        ds = namedtuple('Dataset', ['name', 'xml'])
+        ds = namedtuple('Dataset', ['name', 'raw_xml'])
         data_mock.datasets = {'tst-a': ds('tst-a', b'test')}
         dataset = fac.DatasetFactory.create(
             name='tst-a',
@@ -158,7 +158,7 @@ class TestCrawler(AppTestCase):
                 document=b"test",
             )]
         )
-        ds = namedtuple('Dataset', ['name', 'xml'])
+        ds = namedtuple('Dataset', ['name', 'raw_xml'])
         data_mock.datasets = {'tst-a': ds('tst-a', b'test')}
         resource = crawler.fetch_resource(dataset=dataset, ignore_hashes=False)
         self.assertNotEquals(None, resource.last_parsed)
@@ -179,7 +179,7 @@ class TestCrawler(AppTestCase):
                 document=b"test",
             )]
         )
-        ds = namedtuple('Dataset', ['name', 'xml'])
+        ds = namedtuple('Dataset', ['name', 'raw_xml'])
         data_mock.datasets = {'tst-a': ds('tst-a', b'test')}
         resource = crawler.fetch_resource(dataset=dataset, ignore_hashes=True)
         self.assertEquals(None, resource.last_parsed)

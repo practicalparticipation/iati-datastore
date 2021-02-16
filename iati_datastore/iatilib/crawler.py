@@ -107,7 +107,7 @@ def fetch_resource(dataset, ignore_hashes):
     resource.last_fetch = last_updated
 
     try:
-        content = d.xml
+        content = d.raw_xml
         resource.last_status_code = 200
         resource.last_succ = last_updated
         if (not resource.document) or \
