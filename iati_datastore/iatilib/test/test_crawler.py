@@ -1,3 +1,4 @@
+from os.path import dirname, join
 from collections import namedtuple
 import datetime
 
@@ -9,6 +10,10 @@ from . import factories as fac
 
 from iatilib import crawler, db, parse
 from iatilib.model import Dataset, Log, Resource, Activity, DeletedActivity
+
+
+registry = iatikit.data(
+    join(dirname(__file__), 'fixtures', 'registry'))
 
 
 class TestCrawler(AppTestCase):
@@ -50,117 +55,77 @@ class TestCrawler(AppTestCase):
         datasets = crawler.fetch_dataset_list()
         self.assertEquals(1, datasets.count())
 
-    @mock.patch('os.path')
     @mock.patch('iatikit.data')
-    def test_fetch_dataset(self, iatikit_mock, path_mock):
-        data_mock = iatikit_mock.return_value
-        data_mock.last_updated = datetime.datetime.utcnow()
-        ds = namedtuple('Dataset', ['name', 'metadata'])
-        data_mock.datasets = {'tst-a': ds('tst-a', {
-            "organization": {"name": "tst"},
-            "resources": [{"url": "http://foo"}],
-        })}
+    def test_fetch_dataset(self, iatikit_mock):
+        iatikit_mock.return_value = registry
         dataset = crawler.fetch_dataset_metadata(
-            Dataset(name="tst-a"))
+            Dataset(name="old-org-acts"))
         self.assertEquals(1, len(dataset.resources))
-        self.assertEquals("http://foo", dataset.resources[0].url)
-        self.assertEquals("tst", dataset.publisher)
+        self.assertEquals("https://old-org.nl/sites/default/files/IATI/activities.xml", dataset.resources[0].url)
+        self.assertEquals("old-org", dataset.publisher)
 
-    @mock.patch('os.path')
     @mock.patch('iatikit.data')
-    def test_fetch_dataset_with_many_resources(self, iatikit_mock, path_mock):
-        data_mock = iatikit_mock.return_value
-        data_mock.last_updated = datetime.datetime.utcnow()
-        ds = namedtuple('Dataset', ['name', 'metadata'])
-        data_mock.datasets = {'tst-a': ds('tst-a', {
-            "organization": {"name": "tst"},
-            "resources": [
-                {"url": "http://foo"}, {"url": "http://bar"},
-                {"url": "http://baz"},
-            ]
-        })}
-        dataset = crawler.fetch_dataset_metadata(
-            Dataset(name="tst-a"))
-        self.assertEquals(3, len(dataset.resources))
-
-    @mock.patch('os.path')
-    @mock.patch('iatikit.data')
-    def test_fetch_dataset_count_commited_resources(self, iatikit_mock, path_mock):
-        data_mock = iatikit_mock.return_value
-        data_mock.last_updated = datetime.datetime.utcnow()
-        ds = namedtuple('Dataset', ['name', 'metadata'])
-        data_mock.datasets = {'tstds': ds('tstds', {
-            "organization": {"name": "tst"},
-            "resources": [
-                {"url": "http://foo"},
-                {"url": "http://bar"},
-                {"url": "http://baz"},
-            ]
-        })}
+    def test_fetch_dataset_count_commited_resources(self, iatikit_mock):
+        iatikit_mock.return_value = registry
         crawler.fetch_dataset_metadata(
-            Dataset(name="tstds"))
+            Dataset(name="old-org-acts"))
         db.session.commit()
-        self.assertEquals(3, Resource.query.count())
+        self.assertEquals(1, Resource.query.count())
 
     @mock.patch('iatikit.data')
     def test_update_dataset_same_url(self, iatikit_mock):
         fac.DatasetFactory.create(
             name='tst-old',
             resources=[fac.ResourceFactory.create(
-                url="http://foo",
+                url="https://old-org.nl/sites/default/files/" +
+                    "IATI/activities.xml",
             )]
         )
         dataset_new = fac.DatasetFactory.create(
-            name='tst-new',
+            name='old-org-acts',
             resources=[]
         )
-        data_mock = iatikit_mock.return_value
-        data_mock.last_updated = datetime.datetime.utcnow()
-        ds = namedtuple('Dataset', ['name', 'metadata'])
-        data_mock.datasets = {'tst-new': ds('tst-new', {
-            "organization": {"name": "tst"},
-            "resources": [
-                {"url": "http://foo"},
-            ]
-        })}
-        crawler.update_dataset(dataset_name='tst-new', ignore_hashes=False)
+        iatikit_mock.return_value = registry
+        crawler.update_dataset(
+            dataset_name='old-org-acts', ignore_hashes=False)
         # resource was not added
         self.assertEquals(0, len(dataset_new.resources))
-        log = Log.query.filter_by(dataset="tst-new").first()
-        self.assertIn('Failed to update dataset tst-new', log.msg)
+        log = Log.query.filter_by(dataset="old-org-acts").first()
+        self.assertIn('Failed to update dataset old-org-acts', log.msg)
 
     @mock.patch('iatikit.data')
     def test_fetch_resource_succ(self, iatikit_mock):
-        data_mock = iatikit_mock.return_value
-        data_mock.last_updated = datetime.datetime.utcnow()
-        ds = namedtuple('Dataset', ['name', 'raw_xml'])
-        data_mock.datasets = {'tst-a': ds('tst-a', b'test')}
+        iatikit_mock.return_value = registry
         dataset = fac.DatasetFactory.create(
-            name='tst-a',
+            name='old-org-acts',
             resources=[fac.ResourceFactory.create(
                 url="http://foo",
             )]
         )
         resource = crawler.fetch_resource(dataset=dataset, ignore_hashes=False)
-        self.assertEquals(b"test", resource.document)
+        self.assertEquals(b"<?xml", resource.document[:5])
         self.assertEquals(None, resource.last_parsed)
         self.assertEquals(None, resource.last_parse_error)
 
     @mock.patch('iatikit.data')
     def test_ignore_unchanged_resource(self, iatikit_mock):
-        data_mock = iatikit_mock.return_value
-        data_mock.last_updated = datetime.datetime.utcnow()
+        iatikit_mock.return_value = registry
+        with open(join(
+                dirname(__file__),
+                'fixtures', 'registry', 'data', 'old-org',
+                'old-org-acts.xml'), 'rb') as f:
+            document = f.read()
         dataset = fac.DatasetFactory.create(
-            name='tst-a',
+            name='old-org-acts',
             resources=[fac.ResourceFactory.create(
-                url="http://foo",
+                url="https://old-org.nl/sites/default/files/" +
+                    "IATI/activities.xml",
                 last_parsed=datetime.datetime(2000, 1, 1),
-                document=b"test",
+                document=document,
             )]
         )
-        ds = namedtuple('Dataset', ['name', 'raw_xml'])
-        data_mock.datasets = {'tst-a': ds('tst-a', b'test')}
-        resource = crawler.fetch_resource(dataset=dataset, ignore_hashes=False)
+        resource = crawler.fetch_resource(
+            dataset=dataset, ignore_hashes=False)
         self.assertNotEquals(None, resource.last_parsed)
 
     @mock.patch('iatikit.data')
@@ -169,19 +134,23 @@ class TestCrawler(AppTestCase):
         If ignore_hashes is set to True, then update should be triggered,
         even though the document is identical.
         """
-        data_mock = iatikit_mock.return_value
-        data_mock.last_updated = datetime.datetime.utcnow()
+        iatikit_mock.return_value = registry
+        with open(join(
+                dirname(__file__),
+                'fixtures', 'registry', 'data', 'old-org',
+                'old-org-acts.xml'), 'rb') as f:
+            document = f.read()
         dataset = fac.DatasetFactory.create(
-            name='tst-a',
+            name='old-org-acts',
             resources=[fac.ResourceFactory.create(
-                url="http://foo",
+                url="https://old-org.nl/sites/default/files/" +
+                    "IATI/activities.xml",
                 last_parsed=datetime.datetime(2000, 1, 1),
-                document=b"test",
+                document=document,
             )]
         )
-        ds = namedtuple('Dataset', ['name', 'raw_xml'])
-        data_mock.datasets = {'tst-a': ds('tst-a', b'test')}
-        resource = crawler.fetch_resource(dataset=dataset, ignore_hashes=True)
+        resource = crawler.fetch_resource(
+            dataset=dataset, ignore_hashes=True)
         self.assertEquals(None, resource.last_parsed)
 
     def test_parse_resource_succ(self):
@@ -292,11 +261,7 @@ class TestCrawler(AppTestCase):
             )]
         )
         self.assertIn("deleteme", [ds.name for ds in Dataset.query.all()])
-        data_mock = iatikit_mock.return_value
-        data_mock.last_updated = datetime.datetime.utcnow()
-        data_mock.datasets = [
-            iatikit.Dataset("tst-a.xml"),
-            iatikit.Dataset("tst-b.xml")]
+        iatikit_mock.return_value = registry
         datasets = crawler.fetch_dataset_list()
         self.assertNotIn("deleteme", [ds.name for ds in datasets])
         self.assertIn(
