@@ -25,6 +25,7 @@ _app = None
 
 class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    RQ_CONNECTION_CLASS = "fakeredis.FakeStrictRedis"
 
 
 class AppTestCase(unittest.TestCase):

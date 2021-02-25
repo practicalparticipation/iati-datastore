@@ -24,6 +24,7 @@ Flask-Migrate==2.5.3
 
 tests_require = """
 fabric==2.5.0
+fakeredis==1.4.5
 nose==1.3.7
 mock==4.0.2
 factory-boy==3.1.0
