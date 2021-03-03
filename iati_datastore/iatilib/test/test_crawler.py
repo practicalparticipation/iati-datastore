@@ -1,7 +1,9 @@
-import json
+from os.path import dirname, join
+from collections import namedtuple
 import datetime
 
 import mock
+import iatikit
 
 from . import AppTestCase, fixture_filename
 from . import factories as fac
@@ -10,192 +12,145 @@ from iatilib import crawler, db, parse
 from iatilib.model import Dataset, Log, Resource, Activity, DeletedActivity
 
 
+registry = iatikit.data(
+    join(dirname(__file__), 'fixtures', 'registry'))
+
+
 class TestCrawler(AppTestCase):
     @mock.patch('iatikit.data')
-    @mock.patch('glob.glob')
-    def test_fetch_package_list(self, glob_mock, iatikit_mock):
-        glob_mock.return_value = [
-            "__iatikitcache__/registry/metadata/tst/tst-a.json",
-            "__iatikitcache__/registry/metadata/tst/tst-b.json",
-        ]
+    def test_fetch_package_list(self, iatikit_mock):
         data_mock = iatikit_mock.return_value
         data_mock.last_updated = datetime.datetime.utcnow()
+        data_mock.datasets = [
+            iatikit.Dataset("tst-a.xml"),
+            iatikit.Dataset("tst-b.xml")]
         datasets = crawler.fetch_dataset_list()
         self.assertIn("tst-a", [ds.name for ds in datasets])
         self.assertIn("tst-b", [ds.name for ds in datasets])
 
     @mock.patch('iatikit.data')
-    @mock.patch('glob.glob')
-    def test_update_adds_datasets(self, glob_mock, iatikit_mock):
-        glob_mock.return_value = [
-            "__iatikitcache__/registry/metadata/tst/tst-a.json",
-        ]
+    def test_update_adds_datasets(self, iatikit_mock):
         data_mock = iatikit_mock.return_value
         data_mock.last_updated = datetime.datetime.utcnow()
+        data_mock.datasets = [iatikit.Dataset('tst-a')]
         datasets = crawler.fetch_dataset_list()
-        glob_mock.return_value = [
-            "__iatikitcache__/registry/metadata/tst/tst-a.json",
-            "__iatikitcache__/registry/metadata/tst/tst-b.json",
-        ]
+        self.assertEquals(1, datasets.count())
+        data_mock.datasets = [
+            iatikit.Dataset('tst-a.xml'),
+            iatikit.Dataset('tst-b.xml')]
         datasets = crawler.fetch_dataset_list()
         self.assertEquals(2, datasets.count())
 
     @mock.patch('iatikit.data')
-    @mock.patch('glob.glob')
-    def test_update_deletes_datasets(self, glob_mock, iatikit_mock):
-        glob_mock.return_value = [
-            "__iatikitcache__/registry/metadata/tst/tst-a.json",
-            "__iatikitcache__/registry/metadata/tst/tst-b.json",
-        ]
+    def test_update_deletes_datasets(self, iatikit_mock):
         data_mock = iatikit_mock.return_value
         data_mock.last_updated = datetime.datetime.utcnow()
+        data_mock.datasets = [
+            iatikit.Dataset("tst-a.xml"),
+            iatikit.Dataset("tst-b.xml")]
         datasets = crawler.fetch_dataset_list()
-        glob_mock.return_value = [
-            "__iatikitcache__/registry/metadata/tst/tst-a.json",
-        ]
+        self.assertEquals(2, datasets.count())
+        data_mock.datasets = [
+            iatikit.Dataset("tst-a.xml")]
         datasets = crawler.fetch_dataset_list()
         self.assertEquals(1, datasets.count())
 
-    @mock.patch('glob.glob')
-    def test_fetch_dataset(self, glob_mock):
-        glob_mock.return_value = [
-            "__iatikitcache__/registry/metadata/tst/tst-a.json",
-        ]
-        read_data = json.dumps({
-            "resources": [{"url": "http://foo"}],
-        })
-        mock_open = mock.mock_open(read_data=read_data)
-        with mock.patch('builtins.open', mock_open):
-            dataset = crawler.fetch_dataset_metadata(
-                Dataset(name="tst-a"))
+    @mock.patch('iatikit.data')
+    def test_fetch_dataset(self, iatikit_mock):
+        iatikit_mock.return_value = registry
+        dataset = crawler.fetch_dataset_metadata(
+            Dataset(name="old-org-acts"))
         self.assertEquals(1, len(dataset.resources))
-        self.assertEquals("http://foo", dataset.resources[0].url)
+        self.assertEquals("https://old-org.nl/sites/default/files/IATI/activities.xml", dataset.resources[0].url)
+        self.assertEquals("old-org", dataset.publisher)
 
-    @mock.patch('glob.glob')
-    def test_fetch_dataset_with_many_resources(self, glob_mock):
-        glob_mock.return_value = [
-            "__iatikitcache__/registry/metadata/tst/tst-a.json",
-        ]
-        read_data = json.dumps({
-            "resources": [
-                {"url": "http://foo"}, {"url": "http://bar"},
-                {"url": "http://baz"},
-            ]
-        })
-        mock_open = mock.mock_open(read_data=read_data)
-        with mock.patch('builtins.open', mock_open):
-            dataset = crawler.fetch_dataset_metadata(
-                Dataset(name="tst-a"))
-        self.assertEquals(3, len(dataset.resources))
-
-    @mock.patch('glob.glob')
-    def test_fetch_dataset_count_commited_resources(self, glob_mock):
-        glob_mock.return_value = [
-            "__iatikitcache__/registry/metadata/tst/tstds.json",
-        ]
-        read_data = json.dumps({
-            "resources": [
-                {"url": "http://foo"},
-                {"url": "http://bar"},
-                {"url": "http://baz"},
-            ]
-        })
-        mock_open = mock.mock_open(read_data=read_data)
-        with mock.patch('builtins.open', mock_open):
-            crawler.fetch_dataset_metadata(Dataset(name="tstds"))
+    @mock.patch('iatikit.data')
+    def test_fetch_dataset_count_commited_resources(self, iatikit_mock):
+        iatikit_mock.return_value = registry
+        crawler.fetch_dataset_metadata(
+            Dataset(name="old-org-acts"))
         db.session.commit()
-        self.assertEquals(3, Resource.query.count())
+        self.assertEquals(1, Resource.query.count())
 
-    @mock.patch('glob.glob')
-    def test_update_dataset_same_url(self, glob_mock):
+    @mock.patch('iatikit.data')
+    def test_update_dataset_same_url(self, iatikit_mock):
         fac.DatasetFactory.create(
             name='tst-old',
             resources=[fac.ResourceFactory.create(
-                url="http://foo",
+                url="https://old-org.nl/sites/default/files/" +
+                    "IATI/activities.xml",
             )]
         )
         dataset_new = fac.DatasetFactory.create(
-            name='tst-new',
+            name='old-org-acts',
             resources=[]
         )
-        dataset_new_metadata = json.dumps({
-            "resources": [
-                {"url": "http://foo"},
-            ]
-        })
-        glob_mock.return_value = [
-            "__iatikitcache__/registry/metadata/tst/tst-old.json",
-            "__iatikitcache__/registry/metadata/tst/tst-new.json",
-        ]
-        mock_open = mock.mock_open(read_data=dataset_new_metadata)
-        with mock.patch('builtins.open', mock_open):
-            crawler.update_dataset(dataset_name='tst-new', ignore_hashes=False)
-            # resource was not added
-            self.assertEquals(0, len(dataset_new.resources))
-            log = Log.query.filter_by(dataset="tst-new").first()
-            self.assertIn('Failed to update dataset tst-new', log.msg)
+        iatikit_mock.return_value = registry
+        crawler.update_dataset(
+            dataset_name='old-org-acts', ignore_hashes=False)
+        # resource was not added
+        self.assertEquals(0, len(dataset_new.resources))
+        log = Log.query.filter_by(dataset="old-org-acts").first()
+        self.assertIn('Failed to update dataset old-org-acts', log.msg)
 
-    @mock.patch('os.path.exists', return_value=True)
     @mock.patch('iatikit.data')
-    def test_fetch_resource_succ(self, iatikit_mock, exists_mock):
-        data_mock = iatikit_mock.return_value
-        data_mock.last_updated = datetime.datetime.utcnow()
+    def test_fetch_resource_succ(self, iatikit_mock):
+        iatikit_mock.return_value = registry
         dataset = fac.DatasetFactory.create(
-            name='tst-a',
+            name='old-org-acts',
             resources=[fac.ResourceFactory.create(
                 url="http://foo",
             )]
         )
-        read_data = b"test"
-        mock_open = mock.mock_open(read_data=read_data)
-        with mock.patch('builtins.open', mock_open):
-            resource = crawler.fetch_resource(dataset=dataset, ignore_hashes=False)
-        self.assertEquals(b"test", resource.document)
+        resource = crawler.fetch_resource(dataset=dataset, ignore_hashes=False)
+        self.assertEquals(b"<?xml", resource.document[:5])
         self.assertEquals(None, resource.last_parsed)
         self.assertEquals(None, resource.last_parse_error)
 
-    @mock.patch('os.path.exists', return_value=True)
     @mock.patch('iatikit.data')
-    def test_ignore_unchanged_resource(self, iatikit_mock, exists_mock):
-        data_mock = iatikit_mock.return_value
-        data_mock.last_updated = datetime.datetime.utcnow()
+    def test_ignore_unchanged_resource(self, iatikit_mock):
+        iatikit_mock.return_value = registry
+        with open(join(
+                dirname(__file__),
+                'fixtures', 'registry', 'data', 'old-org',
+                'old-org-acts.xml'), 'rb') as f:
+            document = f.read()
         dataset = fac.DatasetFactory.create(
-            name='tst-a',
-
+            name='old-org-acts',
             resources=[fac.ResourceFactory.create(
-                url="http://foo",
+                url="https://old-org.nl/sites/default/files/" +
+                    "IATI/activities.xml",
                 last_parsed=datetime.datetime(2000, 1, 1),
-                document=b"test",
+                document=document,
             )]
         )
-        read_data = b"test"
-        mock_open = mock.mock_open(read_data=read_data)
-        with mock.patch('builtins.open', mock_open):
-            resource = crawler.fetch_resource(dataset=dataset, ignore_hashes=False)
+        resource = crawler.fetch_resource(
+            dataset=dataset, ignore_hashes=False)
         self.assertNotEquals(None, resource.last_parsed)
 
-    @mock.patch('os.path.exists', return_value=True)
     @mock.patch('iatikit.data')
-    def test_dont_ignore_unchanged_resource(self, iatikit_mock, exists_mock):
+    def test_dont_ignore_unchanged_resource(self, iatikit_mock):
         """
         If ignore_hashes is set to True, then update should be triggered,
         even though the document is identical.
         """
-        data_mock = iatikit_mock.return_value
-        data_mock.last_updated = datetime.datetime.utcnow()
+        iatikit_mock.return_value = registry
+        with open(join(
+                dirname(__file__),
+                'fixtures', 'registry', 'data', 'old-org',
+                'old-org-acts.xml'), 'rb') as f:
+            document = f.read()
         dataset = fac.DatasetFactory.create(
-            name='tst-a',
-
+            name='old-org-acts',
             resources=[fac.ResourceFactory.create(
-                url="http://foo",
+                url="https://old-org.nl/sites/default/files/" +
+                    "IATI/activities.xml",
                 last_parsed=datetime.datetime(2000, 1, 1),
-                document=b"test",
+                document=document,
             )]
         )
-        read_data = b"test"
-        mock_open = mock.mock_open(read_data=read_data)
-        with mock.patch('builtins.open', mock_open):
-            resource = crawler.fetch_resource(dataset=dataset, ignore_hashes=True)
+        resource = crawler.fetch_resource(
+            dataset=dataset, ignore_hashes=True)
         self.assertEquals(None, resource.last_parsed)
 
     def test_parse_resource_succ(self):
@@ -292,8 +247,7 @@ class TestCrawler(AppTestCase):
             self.assertEquals(None, resource.last_parsed)
 
     @mock.patch('iatikit.data')
-    @mock.patch('glob.glob')
-    def test_deleted_activities(self, glob_mock, iatikit_mock):
+    def test_deleted_activities(self, iatikit_mock):
         fac.DatasetFactory.create(
             name='deleteme',
             resources=[fac.ResourceFactory.create(
@@ -307,12 +261,7 @@ class TestCrawler(AppTestCase):
             )]
         )
         self.assertIn("deleteme", [ds.name for ds in Dataset.query.all()])
-        data_mock = iatikit_mock.return_value
-        data_mock.last_updated = datetime.datetime.utcnow()
-        glob_mock.return_value = [
-            "__iatikitcache__/registry/metadata/tst/tst-a.json",
-            "__iatikitcache__/registry/metadata/tst/tst-b.json",
-        ]
+        iatikit_mock.return_value = registry
         datasets = crawler.fetch_dataset_list()
         self.assertNotIn("deleteme", [ds.name for ds in datasets])
         self.assertIn(

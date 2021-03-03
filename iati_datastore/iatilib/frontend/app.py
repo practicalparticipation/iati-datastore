@@ -10,7 +10,7 @@ from iatilib.crawler import manager as crawler_manager
 from iatilib.queue import manager as queue_manager
 
 
-def create_app(config_object='iatilib.config'):
+def create_app(config_object='iatilib.config.Config'):
     app = Flask(__name__.split('.')[0])
     app.config.from_object(config_object)
     register_extensions(app)

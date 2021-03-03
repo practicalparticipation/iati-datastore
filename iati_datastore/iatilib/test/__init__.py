@@ -8,6 +8,7 @@ from xml.etree import ElementTree as xml_etree
 
 from iatilib.frontend.app import create_app
 from iatilib import db
+from iatilib.config import Config
 from iatilib.model import Stats
 
 
@@ -22,6 +23,11 @@ def create_db():
 _app = None
 
 
+class TestConfig(Config):
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    RQ_CONNECTION_CLASS = "fakeredis.FakeStrictRedis"
+
+
 class AppTestCase(unittest.TestCase):
     def __init__(self, methodName='runTest'):
         super().__init__(methodName)
@@ -31,8 +37,7 @@ class AppTestCase(unittest.TestCase):
     def setUp(self):
         global _app
         if _app is None:
-            _app = create_app()
-            _app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///:memory:"
+            _app = create_app(TestConfig)
             _app.app_context().push()
 
         self.app = _app

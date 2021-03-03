@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 requirements = """
 Flask==1.1.2
 Flask-SQLAlchemy==2.4.4
-iatikit==2.3.0
+iatikit==3.0.3
 lxml==4.6.2
 python-dateutil==2.8.1
 six==1.15.0
@@ -24,6 +24,7 @@ Flask-Migrate==2.5.3
 
 tests_require = """
 fabric==2.5.0
+fakeredis==1.4.5
 nose==1.3.7
 mock==4.0.2
 factory-boy==3.1.0
