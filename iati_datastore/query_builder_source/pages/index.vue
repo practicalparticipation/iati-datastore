@@ -27,7 +27,18 @@
                 <b-col class="bg-danger p-2" v-else md="6">
                     Datastore has some problems
                 </b-col>
-                <b-col class="bg-secondary p-2" md="6">
+                <b-col class="bg-secondary p-2" md="6" v-if="healthData.items_on_queue>0">
+                  <b-spinner small type="grow" label="Parsing..." class="mr-2" style="vertical-align: middle;"></b-spinner>
+                  <span :title="`${this.healthData.items_on_queue} items remaining on the queue, out of ${this.healthData.num_datasets} total datasets`">
+                    Currently parsing, {{ parsing_complete }}% complete.
+                    <b-btn
+                      :variant="refreshLinkVariant"
+                      @click.prevent="refreshHealthData"
+                      class="refresh-link"
+                      size="sm">{{ refreshLinkText }}</b-btn>
+                  </span>
+                </b-col>
+                <b-col class="bg-secondary p-2" md="6" v-else>
                   Last updated: {{ healthData.status_data.last_parsed }}
                 </b-col>
               </b-row>
@@ -351,13 +362,19 @@
     </b-container>
   </div>
 </template>
+<style>
+.refresh-link {
+  font-size: 0.7rem;
+}
+</style>
 <script>
-
 import axios from 'axios'
 export default {
   data() {
     return {
       busy: true,
+      refreshLinkVariant: "warning",
+      refreshLinkText: "Refresh",
       healthData: {
         "indexed_activities": 0,
         "indexed_transactions": 0,
@@ -367,7 +384,9 @@ export default {
           "last_fetch": null,
           "last_parsed": null,
           "last_successful_fetch": null
-        }
+        },
+        num_datasets: null,
+        items_on_queue: null
       },
       filters: {
         'iati-identifier': null,
@@ -513,9 +532,22 @@ export default {
       }).join("&")
       const params = _params.length > 0 ? `?${_params}` : ''
       return `${this.apiURL}${this.breakdown}${this.grouping}.${this.format}${params}`
+    },
+    parsing_complete() {
+      return Math.round(((this.healthData.num_datasets-this.healthData.items_on_queue) / this.healthData.num_datasets)*100)
     }
   },
   methods: {
+    refreshHealthData() {
+      this.isBusy = true
+      this.loadHealthData()
+      this.refreshLinkVariant = "success"
+      this.refreshLinkText = "Live"
+      setTimeout(() => {
+        this.refreshLinkVariant = "warning"
+        this.refreshLinkText = "Refresh"
+      }, 5000)
+    },
     copyLink() {
       navigator.clipboard.writeText(this.queryLink)
       this.$root.$emit('bv::show::tooltip', 'query-link-copy-tooltip')
