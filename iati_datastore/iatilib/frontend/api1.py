@@ -7,7 +7,7 @@ from flask import (current_app, request, Response, Blueprint,
 from flask.views import MethodView
 from werkzeug.datastructures import MultiDict
 
-from iatilib import db
+from iatilib import db, rq
 from iatilib.model import (Resource, Dataset,
                            Log, DeletedActivity, Stats)
 
@@ -57,6 +57,8 @@ def about():
         Stats.count
     ).filter_by(label='budgets').scalar()
 
+    count_datasets = Dataset.query.count()
+
     # Check last updated times
 
     updated = db.session.query(
@@ -78,6 +80,10 @@ def about():
         )
     else:
         healthy = False
+
+    # Number of items on the queue
+    items_on_queue = rq.get_queue().count
+
     return jsonify(
         ok=healthy,
         status={True: 'healthy', False: 'unhealthy'}[healthy],
@@ -89,6 +95,8 @@ def about():
         indexed_activities=count_activities,
         indexed_transactions=count_transactions,
         indexed_budgets=count_budgets,
+        num_datasets=count_datasets,
+        items_on_queue=items_on_queue
     )
 
 
