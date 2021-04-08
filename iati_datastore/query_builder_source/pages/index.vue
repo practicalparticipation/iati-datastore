@@ -29,8 +29,10 @@
                 </b-col>
                 <b-col class="bg-secondary p-2" md="6" v-if="healthData.items_on_queue>0">
                   <b-spinner small type="grow" label="Parsing..." class="mr-2" style="vertical-align: middle;"></b-spinner>
-                  <span :title="`${this.healthData.items_on_queue} items remaining on the queue, out of ${this.healthData.num_datasets} total datasets`">
-                    Currently parsing, {{ parsing_complete }}% complete.
+                  <span
+                    v-b-tooltip.hover
+                    :title="`${this.healthData.items_on_queue} datasets are queued for update, out of ${this.healthData.num_datasets} total datasets. Go ahead and use the data, or wait a little while for today's updates to become available.`">
+                    Daily update {{ parsing_complete }}% complete.
                     <b-btn
                       :variant="refreshLinkVariant"
                       @click.prevent="refreshHealthData"
@@ -39,7 +41,15 @@
                   </span>
                 </b-col>
                 <b-col class="bg-secondary p-2" md="6" v-else>
-                  Last updated: {{ healthData.status_data.last_parsed }}
+                  <span v-if="this.healthData.status_data.last_parsed=='unknown'">
+                    Last updated: unknown
+                  </span>
+                  <span
+                    v-else
+                    v-b-tooltip.hover
+                    :title="this.healthData.status_data.last_parsed">
+                    Last updated {{ last_updated_ago }}
+                  </span>
                 </b-col>
               </b-row>
             </h5>
@@ -479,6 +489,16 @@ export default {
   components: {
   },
   computed: {
+    last_updated_ago() {
+      const now = new Date();
+      const change = now - new Date(this.healthData.status_data.last_parsed)
+      const seconds = parseInt(change / 1000)
+      const minutes = parseInt(seconds / 60)
+      const hours = parseInt(minutes / 60)
+      if (hours > 0) { return `${hours} hours ago`}
+      if (minutes > 0) { return `${minutes} minutes ago`}
+      return `${seconds} seconds ago`
+    },
     baseURL() {
       return this.$axios.defaults.baseURL
     },
