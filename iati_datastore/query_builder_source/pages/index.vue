@@ -31,7 +31,7 @@
                   <b-spinner small type="grow" label="Parsing..." class="mr-2" style="vertical-align: middle;"></b-spinner>
                   <span
                     v-b-tooltip.hover
-                    :title="`${this.healthData.items_on_queue} datasets remaining to be updated, out of ${this.healthData.num_datasets} total datasets`">
+                    :title="`${this.healthData.items_on_queue} datasets are queued for update, out of ${this.healthData.num_datasets} total datasets. Go ahead and use the data, or wait a little while for today's updates to become available.`">
                     Daily update {{ parsing_complete }}% complete.
                     <b-btn
                       :variant="refreshLinkVariant"
