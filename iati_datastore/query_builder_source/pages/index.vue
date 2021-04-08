@@ -495,9 +495,9 @@ export default {
       const seconds = parseInt(change / 1000)
       const minutes = parseInt(seconds / 60)
       const hours = parseInt(minutes / 60)
-      if (hours > 0) { return `${hours} hours ago`}
-      if (minutes > 0) { return `${minutes} minutes ago`}
-      return `${seconds} seconds ago`
+      if (hours > 0) { return `${hours} hour${hours>1 ? 's': ''} ago`}
+      if (minutes > 0) { return `${minutes} minute${minutes>1 ? 's': ''} ago`}
+      return `${seconds} second${seconds>1 ? 's': ''} ago`
     },
     baseURL() {
       return this.$axios.defaults.baseURL
