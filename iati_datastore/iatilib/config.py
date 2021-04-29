@@ -6,7 +6,9 @@ class Config:
         'IATI_DATASTORE_DATABASE_URL', 'postgres:///iati-datastore')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JSON_SORT_KEYS = False
-
+    # Handle database disconnect error
+    # https://stackoverflow.com/questions/55457069/how-to-fix-operationalerror-psycopg2-operationalerror-server-closed-the-conn
+    SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
 
 # Due to a nasty OSX bug, we have to prevent checking system for proxies...
 # https://wefearchange.org/2018/11/forkmacos.rst.html
