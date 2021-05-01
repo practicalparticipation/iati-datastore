@@ -1,6 +1,5 @@
 # If you update these, also update iati_datastore/setup.py
 -r requirements.txt
-fabric==2.5.0
 fakeredis==1.4.5
 nose==1.3.7
 mock==4.0.2

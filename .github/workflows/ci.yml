@@ -7,7 +7,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: 3.8
     - uses: actions/cache@v2
@@ -27,8 +27,20 @@ jobs:
       run: coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  deploy:
+    name: Deploy
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install fabric
+      run: pip install fabric==2.5.0
     - name: Install SSH key
-      if: github.ref == 'refs/heads/main'
       uses: shimataro/ssh-key-action@v2
       with:
         key: ${{ secrets.SSH_KEY }}
@@ -40,6 +52,4 @@ jobs:
             User ${{ secrets.SSH_USER }}
             IdentityFile ~/.ssh/id_rsa
     - name: Deploy
-      if: github.ref == 'refs/heads/main'
-      run: |
-        fab deploy -H datastore
+      run: fab deploy -H datastore
