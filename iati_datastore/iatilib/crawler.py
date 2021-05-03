@@ -51,11 +51,20 @@ def fetch_dataset_list():
 
 
 def delete_datasets(datasets):
-    deleted_datasets = db.session.query(Dataset).filter(Dataset.name.in_(datasets))
+    deleted = sum([
+        delete_dataset(dataset)
+        for dataset in datasets])
+    log.info("Deleted {0} datasets".format(deleted))
+    return deleted
+
+
+def delete_dataset(dataset):
+    deleted_dataset = db.session.query(Dataset). \
+        filter(Dataset.name == dataset)
 
     activities_to_delete = db.session.query(Activity). \
         filter(Activity.resource_url == Resource.url). \
-        filter(Resource.dataset_id.in_(datasets))
+        filter(Resource.dataset_id == dataset)
 
     now = datetime.datetime.now()
     for a in activities_to_delete:
@@ -64,9 +73,7 @@ def delete_datasets(datasets):
             deletion_date=now
         ))
     db.session.commit()
-    deleted = deleted_datasets.delete(synchronize_session='fetch')
-    log.info("Deleted {0} datasets".format(deleted))
-    return deleted
+    return deleted_dataset.delete(synchronize_session='fetch')
 
 
 def fetch_dataset_metadata(dataset):
