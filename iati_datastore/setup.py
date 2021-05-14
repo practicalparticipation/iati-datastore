@@ -20,6 +20,7 @@ Sphinx==3.3.1
 sphinx-rtd-theme==0.5.0
 Flask-Cors==3.0.9
 Flask-Migrate==2.5.3
+Click==7.1.2
 """
 
 tests_require = """
