@@ -47,11 +47,13 @@ def example():
             period_start=datetime.datetime(2012, 1, 1),
             period_end=datetime.datetime(2012, 12, 31),
             value_amount=100000,
+            type=cl.BudgetType.original,
         ),
         fac.BudgetFactory.build(
             period_start=datetime.datetime(2012, 1, 1),
             period_end=datetime.datetime(2012, 12, 31),
             value_amount=200000,
+            type=cl.BudgetType.revised,
         )
 
     ]
@@ -80,6 +82,12 @@ class TestCSVBudgetExample(TestCase, CSVTstMixin):
             fac.BudgetFactory.build(value_amount=100000)
         ])
         self.assertField({"budget-value": "100000"}, data[0])
+
+    def test_type(self):
+        data = self.process([
+            fac.BudgetFactory.build(type=cl.BudgetType.original)
+        ])
+        self.assertField({"budget-type": "original"}, data[0])
 
     def test_iati_identifier(self):
         data = self.process([
@@ -220,6 +228,14 @@ class TestBudgetByCountry(TestCase, CSVTstMixin):
             {"budget-period-start-date": "2012-01-01"},
             data[0])
 
+    def test_type_0(self):
+        data = self.process(self.example())
+        self.assertField({"budget-type": "original"}, data[0])
+
+    def test_type_1(self):
+        data = self.process(self.example())
+        self.assertField({"budget-type": "revised"}, data[2])
+
     def test_identifier(self):
         data = self.process(self.example())
         self.assertField({"iati-identifier": "GB-1-123"}, data[2])
@@ -251,6 +267,14 @@ class TestBudgetBySector(TestCase, CSVTstMixin):
         self.assertField(
             {"budget-period-start-date": "2012-01-01"},
             data[0])
+
+    def test_type_0(self):
+        data = self.process(self.example())
+        self.assertField({"budget-type": "original"}, data[0])
+
+    def test_type_1(self):
+        data = self.process(self.example())
+        self.assertField({"budget-type": "revised"}, data[2])
 
     def test_identifier(self):
         data = self.process(self.example())
