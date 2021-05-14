@@ -236,6 +236,10 @@ def budget_value(budget):
     return budget.value_amount
 
 
+def budget_type(budget):
+    return budget.type.name
+
+
 def value_currency(transaction):
     if transaction.value_currency:
         return transaction.value_currency.value
@@ -827,6 +831,7 @@ budget_csv = CSVSerializer((
     (u'budget-period-start-date', period_start_date),
     (u'budget-period-end-date', period_end_date),
     (u"budget-value", budget_value),
+    (u"budget-type", budget_type),
     u"iati-identifier",
     u"title",
     u"description",
@@ -846,6 +851,7 @@ csv_budget_by_country = CSVSerializer((
     (u'budget-period-start-date', trans(period_start_date)),
     (u'budget-period-end-date', trans(period_end_date)),
     (u"budget-value", trans(budget_value)),
+    (u"budget-type", trans(budget_type)),
     u"iati-identifier",
     u"title",
     u"description",
@@ -862,6 +868,7 @@ csv_budget_by_sector = CSVSerializer((
     (u'budget-period-start-date', trans(period_start_date)),
     (u'budget-period-end-date', trans(period_end_date)),
     (u"budget-value", trans(budget_value)),
+    (u"budget-type", trans(budget_type)),
     u"iati-identifier",
     u"title",
     u"description",
