@@ -54,7 +54,14 @@ def example():
             period_end=datetime.datetime(2012, 12, 31),
             value_amount=200000,
             type=cl.BudgetType.revised,
+        ),
+        fac.BudgetFactory.build(
+            period_start=datetime.datetime(2012, 1, 1),
+            period_end=datetime.datetime(2012, 12, 31),
+            value_amount=500000,
+            type=None,
         )
+
 
     ]
     for budget in budgets:
@@ -236,6 +243,10 @@ class TestBudgetByCountry(TestCase, CSVTstMixin):
         data = self.process(self.example())
         self.assertField({"budget-type": "revised"}, data[2])
 
+    def test_type_none(self):
+        data = self.process(self.example())
+        self.assertField({"budget-type": ""}, data[5])
+
     def test_identifier(self):
         data = self.process(self.example())
         self.assertField({"iati-identifier": "GB-1-123"}, data[2])
@@ -275,6 +286,10 @@ class TestBudgetBySector(TestCase, CSVTstMixin):
     def test_type_1(self):
         data = self.process(self.example())
         self.assertField({"budget-type": "revised"}, data[2])
+
+    def test_type_none(self):
+        data = self.process(self.example())
+        self.assertField({"budget-type": ""}, data[4])
 
     def test_identifier(self):
         data = self.process(self.example())
