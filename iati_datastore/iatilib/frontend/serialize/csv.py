@@ -237,7 +237,10 @@ def budget_value(budget):
 
 
 def budget_type(budget):
-    return budget.type.name if budget.type else None
+    try:
+        return budget.type.name
+    except AttributeError:
+        return ""
 
 
 def value_currency(transaction):
