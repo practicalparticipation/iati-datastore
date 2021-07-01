@@ -123,6 +123,21 @@
                 </b-form-group>
               </b-col>
             </b-row>
+            <b-row>
+              <b-col>
+                <b-form-group
+                  label="Activity Status"
+                  description="Search for activities with only the specified activity status.">
+                  <v-select
+                    v-model="filters['activity-status']"
+                    :options="codelists['ActivityStatus']"
+                    placeholder="All types of activity status"
+                    :reduce="item => item.code"
+                    multiple>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+            </b-row>
           </b-card>
         </b-col>
       </b-row>
@@ -402,6 +417,7 @@ export default {
         'iati-identifier': null,
         'title': null,
         'description': null,
+        'activity-status': null,
         'reporting-org': [],
         'reporting-org.type': [],
         'recipient-country': [],
@@ -417,7 +433,8 @@ export default {
         'Region': [],
         'Sector': [],
         'OrganisationType': [],
-        'ReportingOrg': []
+        'ReportingOrg': [],
+        'ActivityStatus': []
       },
       format: 'xml',
       formatOptions: [
@@ -483,7 +500,7 @@ export default {
           'description': "Get all results that match your search criteria."
         }
       ],
-      codelistURLs: ['Country', 'Region', 'Sector', 'OrganisationType']
+      codelistURLs: ['Country', 'Region', 'Sector', 'OrganisationType', 'ActivityStatus']
     }
   },
   components: {
