@@ -16,6 +16,15 @@ class TestActivityFilter(AppTestCase):
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
 
+    def test_by_activity_status(self):
+        act_in = fac.ActivityFactory.create(activity_status='2')
+        act_not = fac.ActivityFactory.create(activity_status='BOO')
+        activities = dsfilter.activities({
+            "activity-status": u"2"
+        })
+        self.assertIn(act_in, activities.all())
+        self.assertNotIn(act_not, activities.all())
+
     def test_by_title(self):
         act_in = fac.ActivityFactory.create(title='Technical Assistance to Support Improved Aid Effectiveness in Bangladesh')
         act_not = fac.ActivityFactory.create(title='Accelerating Improved Nutrition for Extreme Poor in Bangladesh')
