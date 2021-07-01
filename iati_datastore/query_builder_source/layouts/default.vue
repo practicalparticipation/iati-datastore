@@ -10,6 +10,19 @@
               title="A project of Code for IATI" />
           </a>
         </b-navbar-brand>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-text>
+            <button
+              data-c4i-toggle="sidebar"
+              type="button"
+              aria-controls="c4i-sidebar"
+              aria-expanded="false"
+              aria-label="Toggle Code for IATI sidebar"
+              class="navbar-toggler">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          </b-nav-text>
+        </b-navbar-nav>
       </b-container>
     </b-navbar>
     <nuxt />
@@ -32,4 +45,19 @@
 body {
   background-color: #ececec;
 }
+.navbar-expand .navbar-toggler {
+  display: inherit;
+}
 </style>
+<script>
+export default {
+  head: {
+    script: [
+      {
+        src: 'https://codeforiati.org/sidebar/sidebar.min.js'
+      }
+    ]
+  },
+
+};
+</script>
