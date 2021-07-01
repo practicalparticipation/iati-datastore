@@ -75,6 +75,17 @@ Parameters:
 Example API call:
     `/api/1/access/activity.xml?description=evidence base </api/1/access/activity.xml?description=evidence%20base>`__
 
+activity-status
+```````````````
+
+Returns activities matching the specified `activity-status <http://iatistandard.org/201/codelists/ActivityStatus/>`__ element.
+
+Parameters:
+    @activity-status: String containing the requested status.
+
+Example API call:
+    `/api/1/access/activity.xml?activity-status=2 </api/1/access/activity.xml?activity-status=2>`__
+
 
 recipient-country
 `````````````````
