@@ -25,6 +25,15 @@
         </b-navbar-nav>
       </b-container>
     </b-navbar>
+    <b-alert show dismissible fade class="mb-0 text-md-center">
+      <b-nav-text>
+        Are you using Datastore Classic, including during
+        <a href="https://iatistandard.org/en/news/technical-notice-2-iatis-datastore-to-be-integrated-in-new-unified-single-platform/">
+        downtime of the official IATI Datastore</a>? We'd
+        love to hear from you, so we can better understand our users and their needs.<br />Get in touch with
+        us at <a href="mailto:hello@codeforiati.org">hello@codeforiati.org</a>
+      </b-nav-text>
+    </b-alert>
     <nuxt />
     <footer class="bg-light p-4">
       <b-container>
