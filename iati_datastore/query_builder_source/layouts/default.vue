@@ -2,27 +2,21 @@
   <div>
     <b-navbar type="light" variant="light">
       <b-container>
-        <b-navbar-brand href="#">
-          <a href="https://codeforiati.org">
-            <img
-              width="100px"
-              src="https://codeforiati.org/assets/img/logo.png"
-              title="A project of Code for IATI" />
-          </a>
+        <b-navbar-brand href="https://codeforiati.org">
+          <img
+            width="100px"
+            src="https://codeforiati.org/assets/img/logo.png"
+            title="A project of Code for IATI" />
         </b-navbar-brand>
-        <b-navbar-nav class="ml-auto">
-          <b-nav-text>
-            <button
-              data-c4i-toggle="sidebar"
-              type="button"
-              aria-controls="c4i-sidebar"
-              aria-expanded="false"
-              aria-label="Toggle Code for IATI sidebar"
-              class="navbar-toggler">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-          </b-nav-text>
-        </b-navbar-nav>
+        <b-navbar-toggle
+          data-c4i-toggle="sidebar"
+          type="button"
+          aria-controls="c4i-sidebar"
+          aria-expanded="false"
+          aria-label="Toggle Code for IATI sidebar"
+          class="navbar-toggler">
+          <span class="navbar-toggler-icon"></span>
+        </b-navbar-toggle>
       </b-container>
     </b-navbar>
     <b-alert show dismissible fade class="mb-0 text-md-center">
