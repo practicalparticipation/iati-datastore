@@ -39,6 +39,7 @@ activity_api_schema = {
     "stream": v.All(v.Coerce(bool)),
     "unwrap": v.All(v.Coerce(bool)),
     'iati-identifier': v.All(v.Coerce(str)),
+    'activity-status': v.All(v.Coerce(str)),
     'title': v.All(v.Coerce(str)),
     'description': v.All(v.Coerce(str)),
     'recipient-country': v.All(v.Coerce(str), recipient_country),

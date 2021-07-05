@@ -208,6 +208,7 @@ def _filter(query, args):
 
     filter_conditions = {
             'iati-identifier': partial(eq, Activity.iati_identifier),
+            'activity-status': partial(eq, Activity.activity_status),
             'title': title,
             'description': description,
             'recipient-country': recipient_country,
