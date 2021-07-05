@@ -487,15 +487,20 @@ export default {
           'description': "Each Activity, Transaction or Budget row is repeated for each separate Country reported. The corresponding percentage for the sector split is reported in a separate column. This allows you to easily add arithmetic to your spreadsheet to calculate values proportionately."
         }
       ],
-      stream: false,
+      stream: '50',
       streamOptions: [
         {
-          'value': false,
+          'value': '1',
+          'text': '1 row',
+          'description': "Preview your selection by viewing only the first row of data."
+        },
+        {
+          'value': '50',
           'text': '50 rows',
           'description': "Preview your selection by viewing only the first 50 rows of data."
         },
         {
-          'value': true,
+          'value': 'stream',
           'text': 'Entire selection',
           'description': "Get all results that match your search criteria."
         }
@@ -527,8 +532,11 @@ export default {
       if ((this.grouping) && (this.grouping != '')) {
         _query.grouping = this.grouping
       }
-      if ((this.stream) && (this.stream == true)) {
+      if ((this.stream) && (this.stream == 'stream')) {
         _query.stream = this.stream
+      }
+      if ((this.stream) && (this.stream == '1')) {
+        _query.limit = '1'
       }
       if ((this.breakdown) && (this.breakdown != 'activity')) {
         _query.breakdown = this.breakdown
@@ -561,8 +569,11 @@ export default {
     },
     queryLink() {
       var _urlQueryFilters = Object.entries(this.urlQueryFilters)
-      if (this.stream === true) {
+      if (this.stream === 'stream') {
         _urlQueryFilters.push(['stream', 'True'])
+      }
+      if (this.stream === '1') {
+        _urlQueryFilters.push(['limit', '1'])
       }
       const _params = _urlQueryFilters.map(item => {
         return `${item[0]}=${item[1]}`
@@ -648,8 +659,10 @@ export default {
         } else {
           if (item == 'grouping') {
             this.grouping = this.$route.query[item]
+          } else if (item == 'limit') {
+            this.stream = this.$route.query[item]
           } else if (item == 'stream') {
-            this.stream = true
+            this.stream = 'stream'
           } else if (item=='breakdown') {
             this.breakdown = this.$route.query[item]
           } else if (item=='format') {
