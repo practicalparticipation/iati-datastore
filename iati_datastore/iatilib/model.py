@@ -258,6 +258,7 @@ class PolicyMarker(db.Model):
             nullable=False,
             index=True)
     code = sa.Column(codelists.PolicyMarker.db_type(), nullable=True, index=True)
+    significance = sa.Column(codelists.PolicySignificance.db_type(), nullable=True, index=True)
     text = sa.Column(sa.Unicode(), nullable=True)
     activity = sa.orm.relationship("Activity")
 
