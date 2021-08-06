@@ -512,6 +512,22 @@ class TestActivityFilter(AppTestCase):
         self.assertIn(act_in, activities.all())
         self.assertNotIn(act_not, activities.all())
 
+    def test_policy_markers_significance(self):
+        act_in = fac.ActivityFactory.create(
+                policy_markers=[fac.PolicyMarkerFactory.build()],
+        )
+        act_not = fac.ActivityFactory.create(
+                policy_markers=[fac.PolicyMarkerFactory.build(
+                    code=cl.PolicyMarker.trade_development,
+                    significance=cl.PolicySignificance.not_targeted)
+                ],
+        )
+        activities = dsfilter.activities({
+            "policy-marker.significance": cl.PolicySignificance.from_string(u"4")
+        })
+        self.assertIn(act_in, activities.all())
+        self.assertNotIn(act_not, activities.all())
+
     def test_related_activities(self):
         act_in = fac.ActivityFactory.create(
                 related_activities=[fac.RelatedActivityFactory.build(ref="ra-1")])
