@@ -9,6 +9,7 @@ import click
 from flask.cli import FlaskGroup, with_appcontext
 import requests
 from sqlalchemy import not_
+import sentry_sdk
 
 from iatilib import parse, codelists, db
 from iatilib.model import Log
@@ -18,7 +19,13 @@ from iatilib.frontend.app import create_app
 @click.group(cls=FlaskGroup, create_app=create_app)
 def cli():
     """Management script for the IATI application."""
-    pass
+    sentry_dsn = os.getenv("SENTRY_DSN")
+    if sentry_dsn:
+        sentry_sdk.init(
+            dsn=sentry_dsn,
+            traces_sample_rate=float(os.getenv("SENTRY_TRACES_SAMPLE_RATE", "0"))
+        )
+
 
 
 @cli.command()
