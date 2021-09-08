@@ -27,6 +27,7 @@ recipient_region = partial(codelist_validator, codelists.Region)
 reporting_org_type = partial(codelist_validator, codelists.OrganisationType)
 sector = partial(codelist_validator, codelists.Sector)
 policy_marker = partial(codelist_validator, codelists.PolicyMarker)
+policy_significance = partial(codelist_validator, codelists.PolicySignificance)
 
 pagination_schema = {
     "limit": v.All(v.Coerce(int), v.Range(max=1000)),
@@ -57,6 +58,7 @@ activity_api_schema = {
     'sector.text': v.All(v.Coerce(str)),
     'policy-marker': v.All(v.Coerce(str)),
     'policy-marker.code': v.All(v.Coerce(str), policy_marker),
+    'policy-marker.significance': v.All(v.Coerce(str), policy_significance),
     'participating-org': v.All(v.Coerce(str)),
     'participating-org.ref': v.All(v.Coerce(str)),
     'participating-org.text': v.All(v.Coerce(str)),

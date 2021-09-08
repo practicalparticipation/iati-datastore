@@ -59,6 +59,6 @@ def downgrade():
 
         DROP TRIGGER IF EXISTS budgets_count ON budget;
 
-        DROP FUNCTION adjust_count;
+        DROP FUNCTION adjust_count();
         """
         ))

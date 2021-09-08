@@ -184,6 +184,11 @@ def _filter(query, args):
             PolicyMarker.code == policy_marker
         )
 
+    def policy_significance(policy_significance):
+        return Activity.policy_markers.any(
+            PolicyMarker.significance == policy_significance
+        )
+
     def related_activity(ref):
         return Activity.related_activities.any(
             RelatedActivity.ref == ref
@@ -226,6 +231,7 @@ def _filter(query, args):
             'sector.text': sector_text,
             'policy-marker': policy_marker,
             'policy-marker.code': policy_marker,
+            'policy-marker.significance': policy_significance,
             'participating-org': participating_org,
             'participating-org.ref': participating_org,
             'participating-org.text': participating_org_text,

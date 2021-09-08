@@ -199,6 +199,41 @@
             </b-alert>
           </b-card>
           <b-card
+            header="Policy Marker"
+            header-tag="h4"
+            class="mb-3">
+            <b-card-text>
+              A policy or theme addressed by the activity, according to
+              OECD DAC CRS policy markers.
+            </b-card-text>
+            <b-row>
+              <b-col>
+                <b-form-group
+                label="Policy Marker">
+                  <v-select
+                    v-model="filters['policy-marker.code']"
+                    :options="codelists['PolicyMarker']"
+                    placeholder="All policy markers"
+                    :reduce="item => item.code"
+                    multiple>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group
+                label="Policy Significance">
+                  <v-select
+                    v-model="filters['policy-marker.significance']"
+                    :options="codelists['PolicySignificance']"
+                    placeholder="All policy signifiance"
+                    :reduce="item => item.code"
+                    multiple>
+                  </v-select>
+                </b-form-group>
+              </b-col>
+            </b-row>
+          </b-card>
+          <b-card
             header="Recipient location"
             header-tag="h4"
             class="mb-3">
@@ -423,6 +458,8 @@ export default {
         'recipient-country': [],
         'recipient-region': [],
         'sector': [],
+        'policy-marker.code': [],
+        'policy-marker.significance': [],
         'start-date__lt': null,
         'start-date__gt': null,
         'end-date__lt': null,
@@ -434,7 +471,9 @@ export default {
         'Sector': [],
         'OrganisationType': [],
         'ReportingOrg': [],
-        'ActivityStatus': []
+        'ActivityStatus': [],
+        'PolicyMarker': [],
+        'PolicySignificance': []
       },
       format: 'xml',
       formatOptions: [
@@ -505,7 +544,7 @@ export default {
           'description': "Get all results that match your search criteria."
         }
       ],
-      codelistURLs: ['Country', 'Region', 'Sector', 'OrganisationType', 'ActivityStatus']
+      codelistURLs: ['Country', 'Region', 'Sector', 'OrganisationType', 'ActivityStatus', 'PolicyMarker', 'PolicySignificance']
     }
   },
   components: {

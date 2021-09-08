@@ -357,6 +357,7 @@ def policy_markers(xml, resource=no_resource, major_version='1'):
     element = xml.xpath("./policy-marker")
     return [PolicyMarker(
                 code=from_codelist(codelists.by_major_version[major_version].PolicyMarker, "@code", ele, resource),
+                significance=from_codelist(codelists.by_major_version[major_version].PolicySignificance, "@significance", ele, resource),
                 text=xval(ele, TEXT_ELEMENT[major_version], None),
              ) for ele in element]
 

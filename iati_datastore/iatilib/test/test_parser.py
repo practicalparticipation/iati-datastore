@@ -266,6 +266,11 @@ class TestParse2xxActivity(AppTestCase):
         self.assertEquals(cl2.PolicyMarker.aid_to_environment, self.act.policy_markers[0].code)
         self.assertEquals(cl2.PolicyMarker.gender_equality, self.act.policy_markers[1].code)
 
+    def test_policy_markers_significance(self):
+        self.assertEquals(2, len(self.act.policy_markers))
+        self.assertEquals(cl2.PolicySignificance.principal_objective_and_in_support_of_an_action_programme, self.act.policy_markers[0].significance)
+        self.assertEquals(cl2.PolicySignificance.explicit_primary_objective, self.act.policy_markers[1].significance)
+
     def test_related_activity(self):
         self.assertEquals(1, len(self.act.related_activities))
         self.assertEquals("AA-AAA-123456789-6789", self.act.related_activities[0].ref)
@@ -465,6 +470,17 @@ class TestParseActivity(AppTestCase):
             cl.PolicyMarker.participatory_developmentgood_governance,
             activities[1].policy_markers[2].code)
         self.assertEquals(cl.PolicyMarker.trade_development, activities[1].policy_markers[3].code)
+
+    def test_policy_markers_significance(self):
+        activities = [a for a in parse.document_from_file(fixture_filename("CD.xml"))]
+
+        self.assertEquals(8, len(activities[1].policy_markers))
+        self.assertEquals(cl.PolicySignificance.significant_objective, activities[1].policy_markers[0].significance)
+        self.assertEquals(cl.PolicySignificance.not_targeted, activities[1].policy_markers[1].significance)
+        self.assertEquals(
+            cl.PolicySignificance.significant_objective,
+            activities[1].policy_markers[2].significance)
+        self.assertEquals(cl.PolicySignificance.not_targeted, activities[1].policy_markers[3].significance)
 
     def test_related_activity(self):
         activities = [a for a in parse.document_from_file(fixture_filename("CD.xml"))]

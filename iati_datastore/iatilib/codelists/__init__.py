@@ -48,6 +48,7 @@ urls['1'] = {
     "TiedStatus": iati_url("TiedStatus"),
     "DisbursementChannel": iati_url("DisbursementChannel"),
     "PolicyMarker": iati_url("PolicyMarker"),
+    "PolicySignificance": iati_url("PolicySignificance"),
     "ActivityStatus": iati_url("ActivityStatus"),
     "CollaborationType": iati_url("CollaborationType"),
     "RelatedActivityType": iati_url("RelatedActivityType"),

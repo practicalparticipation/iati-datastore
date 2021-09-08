@@ -159,6 +159,18 @@ Example API call:
     `/api/1/access/activity.xml?policy-marker=1 </api/1/access/activity.xml?policy-marker=1>`__
 
 
+policy-marker.significance
+``````````````````````````
+
+Returns activities containing a `policy-marker <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/policy-marker/>`__ element which matches a your specified policy-significance value.
+
+Parameters:
+    @policy-marker.significance: 1-digit value which appears on the `policy significance codelist <http://iatistandard.org/201/codelists/PolicySignificance/>`__
+
+Example API call:
+    `/api/1/access/activity.xml?policy-marker.significance=1 </api/1/access/activity.xml?policy-marker.significance=1>`__
+
+
 participating-org
 ``````````````````
 

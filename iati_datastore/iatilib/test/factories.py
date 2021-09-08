@@ -77,6 +77,7 @@ class PolicyMarkerFactory(TestFactory):
     class Meta:
         model = PolicyMarker
     code = codelists.PolicyMarker.gender_equality
+    significance = codelists.PolicySignificance.explicit_primary_objective
 
 
 class RelatedActivityFactory(TestFactory):
