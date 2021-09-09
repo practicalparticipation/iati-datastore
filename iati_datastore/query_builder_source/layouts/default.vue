@@ -29,7 +29,8 @@
             <p><a href="https://github.com/codeforIATI/iati-datastore">IATI Datastore Classic on GitHub</a>, free software licensed under the GNU Affero General Public License v3.</p>
           </b-col>
           <b-col class="text-md-right" md="6">
-            IATI Datastore Classic is a project of <a href="https://codeforiati.org">Code for IATI</a>
+            IATI Datastore Classic is a project of <a href="https://codeforiati.org">Code for IATI</a><br />
+            <a href="https://codeforiati.org/privacy-policy/">Privacy Policy</a>
           </b-col>
         </b-row>
       </b-container>
