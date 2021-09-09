@@ -62,6 +62,9 @@ iati db upgrade
 sudo -u postgres psql -c "CREATE USER [SYSTEM USER]"
 sudo -u postgres psql -c "GRANT ALL ON DATABASE iati_datastore TO [SYSTEM USER]"
 
+# Create the front page
+iati build-query-builder --deploy-url=http://127.0.0.1:5000
+
 # Start the process of grabbing the source data
 iati crawler download-and-update
 
@@ -76,6 +79,38 @@ iati crawler status
 
 # A local API is available at: http://127.0.0.1:5000
 ```
+
+Development with vagrant
+------------------------
+
+A Vagrant box is also provided. `vagrant up` as normal, then `vagrant ssh`.
+
+
+```
+# Run the tests  (these tests use an in-memory sqlite db)
+nosetests iati_datastore
+
+# Create the db tables
+iati db upgrade
+
+# Create the front page
+iati build-query-builder --deploy-url=http://127.0.0.1:5000
+
+# Start the process of grabbing the source data
+iati crawler download-and-update
+
+# Start a development server – this should be run in a seperate terminal window
+iati run --host 0.0.0.0
+
+# Run a worker. This will download and index the datafiles
+iati queue background
+
+# The progess of the worker can be checked using:
+iati crawler status
+
+# A local API is available at: http://127.0.0.1:5000
+```
+
 
 Deploying with nginx
 --------------------
