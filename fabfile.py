@@ -5,9 +5,10 @@ from fabric import task
 
 @contextmanager
 def virtualenv(conn):
-    with conn.cd('~/iati-datastore'):
-        with conn.prefix('source pyenv/bin/activate'):
-            yield
+    with conn.cd('~/iatidatastoreclassic'):
+        with conn.prefix('source .ve/bin/activate'):
+            with conn.prefix('source env.sh'):
+                yield
 
 
 @task
@@ -23,9 +24,7 @@ def deploy(conn):
         conn.run('iati build-docs')
         # build the query builder
         conn.run('iati build-query-builder --deploy-url https://datastore.codeforiati.org')
-        # stop everything
-        conn.run('sudo systemctl stop iati-datastore')
-        conn.run('sudo systemctl stop iati-datastore-queue')
-        # start everything again
-        conn.run('sudo systemctl start iati-datastore')
-        conn.run('sudo systemctl start iati-datastore-queue')
+        # webserver
+        conn.run('sudo /etc/init.d/uwsgi reload')
+        # worker
+        conn.run('sudo /bin/systemctl restart iatidatastoreclassic-iatidatastoreclassic')

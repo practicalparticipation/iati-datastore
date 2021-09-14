@@ -27,3 +27,29 @@ jobs:
       run: coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  deploy:
+    name: Deploy
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install fabric
+      run: pip install fabric==2.5.0
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_KEY }}
+        name: id_rsa
+        known_hosts: ${{ secrets.SSH_HOSTNAME }}
+        config: |
+          Host datastore
+            HostName ${{ secrets.SSH_HOSTNAME }}
+            User ${{ secrets.SSH_USER }}
+            IdentityFile ~/.ssh/id_rsa
+    - name: Deploy
+      run: fab deploy -H datastore
