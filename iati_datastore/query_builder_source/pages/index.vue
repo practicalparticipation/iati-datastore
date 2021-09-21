@@ -614,6 +614,7 @@ export default {
       if (this.stream === '1') {
         _urlQueryFilters.push(['limit', '1'])
       }
+      _urlQueryFilters.push(['ref', 'qb'])
       const _params = _urlQueryFilters.map(item => {
         return `${item[0]}=${item[1]}`
       }).join("&")
