@@ -285,7 +285,9 @@ class DataStoreView(MethodView):
 
     def validate_args(self):
         if not hasattr(self, "_valid_args"):
-            self._valid_args = validators.activity_api_args(MultiDict(request.args))
+            args = MultiDict(request.args)
+            args.pop("ref", None)
+            self._valid_args = validators.activity_api_args(args)
         return self._valid_args
 
     def get_response(self, mimetype, serializer=None):
