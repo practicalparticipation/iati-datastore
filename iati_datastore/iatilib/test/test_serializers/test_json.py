@@ -52,6 +52,19 @@ class TestJson(AppTestCase):
         }
         self.assertCountEqual(transactions, output['iati-activities'][0]['transaction'][0])
 
+    def test_whitespace_in_identifier(self):
+        raw_xml = u"""
+<iati-activity>
+    <iati-identifier>
+        AAA
+    </iati-identifier>
+</iati-activity>
+"""
+        activity = factories.ActivityFactory.create(raw_xml=raw_xml)
+        json_output = jsonserializer.json(FakePage([activity]))
+        output = json.load(StringIO(''.join(json_output)))
+        self.assertEquals('\n        AAA\n    ', output['iati-activities'][0]['iati-activity']['iati-identifier'])
+
     def test_multiline(self):
         act_one = factories.ActivityFactory.create(
             iati_identifier='AAA')
