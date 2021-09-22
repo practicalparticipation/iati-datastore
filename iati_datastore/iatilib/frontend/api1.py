@@ -340,7 +340,7 @@ class DataStoreCSVView(DataStoreView):
 
 
 class ActivityCSVView(DataStoreCSVView):
-    filter = staticmethod(dsfilter.activities)
+    filter = staticmethod(dsfilter.activities_for_csv)
     serializer = staticmethod(serialize.csv)
 
 
