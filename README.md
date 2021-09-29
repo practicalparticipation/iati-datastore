@@ -45,8 +45,8 @@ git clone https://github.com/codeforIATI/iati-datastore.git
 # Install development dependencies
 pip install -r requirements_dev.txt
 
-# Run the tests  (these tests use an in-memory sqlite db)
-nosetests iati_datastore
+# Run the tests  (You need to create a postgres database for these to use and set the connection string)
+TEST_SQLALCHEMY_DATABASE_URI=... nosetests iati_datastore
 
 # Create a new PostgreSQL database
 sudo -u postgres psql -c "CREATE DATABASE iati_datastore"
@@ -87,7 +87,7 @@ A Vagrant box is also provided. `vagrant up` as normal, then `vagrant ssh`.
 
 
 ```
-# Run the tests  (these tests use an in-memory sqlite db)
+# Run the tests
 nosetests iati_datastore
 
 # Create the db tables
