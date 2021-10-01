@@ -1,6 +1,6 @@
 from functools import partial
 import six
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, orm
 from sqlalchemy.sql.operators import eq, gt, lt
 from iatilib import db
 from iatilib.model import (
@@ -284,6 +284,18 @@ def _filter(query, args):
 
 def activities(args):
     return _filter(Activity.query, args)
+
+
+def activities_for_csv(args):
+    # For performance reasons, eager lead some extra data we will use later for CSV's.
+    return _filter(
+        db.session.query(Activity).options(
+            orm.selectinload(Activity.recipient_country_percentages),
+            orm.selectinload(Activity.recipient_region_percentages),
+            orm.selectinload(Activity.sector_percentages),
+        ),
+        args
+    )
 
 
 def activities_by_country(args):
