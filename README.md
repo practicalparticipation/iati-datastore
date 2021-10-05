@@ -250,10 +250,8 @@ Deploying with apache
 Updating activities after changing import code
 ----------------------------------------------
 
-* Run this SQL query on the database - `UPDATE resource SET last_succ=NULL;`
 * Restart background process
-* Run `iati crawler download-and-update` (or wait for cron to run it for you)
-
+* Run `iati crawler download-and-update --ignore-hashes` This will force a full refresh
 
 Generation of Documentation
 ---------------------------
