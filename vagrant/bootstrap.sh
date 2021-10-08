@@ -8,7 +8,9 @@ locale-gen
 
 # Ubuntu Packages
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-virtualenv python3-pip postgresql-12 libpq-dev redis-server gcc make libxml2-dev libxslt1-dev libevent-dev python3-dev
+# ca-certificates included because we need to update to latest version or lets-encrypt certs not recognised
+DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-virtualenv python3-pip postgresql-12 libpq-dev \
+  redis-server gcc make libxml2-dev libxslt1-dev libevent-dev python3-dev ca-certificates
 
 # NPM
 curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
