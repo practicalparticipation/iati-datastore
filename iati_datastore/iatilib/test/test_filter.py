@@ -329,7 +329,7 @@ class TestActivityFilter(AppTestCase):
         act_not = fac.ActivityFactory.create(
             sector_percentages=[
                 fac.SectorPercentageFactory.build(
-                    sector=cl.Sector.secondary_education
+                    sector=cl.Sector.lower_secondary_education
                 ),
             ])
         activities = dsfilter.activities({
@@ -353,7 +353,7 @@ class TestActivityFilter(AppTestCase):
             ref="12345",
             sector_percentages=[
                 fac.SectorPercentageFactory.build(
-                    sector=cl.Sector.secondary_education),
+                    sector=cl.Sector.lower_secondary_education),
             ])
         activities = dsfilter.activities({
             "sector": cl.Sector.from_string(u"11220")
@@ -372,7 +372,7 @@ class TestActivityFilter(AppTestCase):
             sector_percentages=[
                 fac.SectorPercentageFactory.build(
                     text="Secondary",
-                    sector=cl.Sector.secondary_education
+                    sector=cl.Sector.lower_secondary_education
                 ),
             ])
         activities = dsfilter.activities({
@@ -398,7 +398,7 @@ class TestActivityFilter(AppTestCase):
             sector_percentages=[
                 fac.SectorPercentageFactory.build(
                     text="Secondary",
-                    sector=cl.Sector.secondary_education),
+                    sector=cl.Sector.lower_secondary_education),
             ])
         activities = dsfilter.activities({
             "sector.text": u"Primary"
