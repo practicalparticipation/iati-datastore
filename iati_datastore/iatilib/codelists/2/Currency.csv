@@ -113,7 +113,7 @@ GYD,Guyana Dollar,,active
 HKD,Hong Kong Dollar,,active
 HNL,Lempira,,active
 HRD,Croatian Dinar,,withdrawn
-HRK,Croatian Kuna,,withdrawn
+HRK,Kuna,,withdrawn
 HTG,Gourde,,active
 HUF,Forint,,active
 IDR,Rupiah,,withdrawn
@@ -170,7 +170,7 @@ MTP,Maltese Pound,,withdrawn
 MUR,Mauritius Rupee,,active
 MVQ,Maldive Rupee,,withdrawn
 MVR,Rufiyaa,,active
-MWK,Kwacha,,withdrawn
+MWK,Malawi Kwacha,,withdrawn
 MXN,Mexican Peso,,active
 MXP,Mexican Peso,,withdrawn
 MXV,Mexican Unidad de Inversion (UDI),,active
@@ -190,7 +190,7 @@ OMR,Rial Omani,,active
 PAB,Balboa,,active
 PEH,Sol,,withdrawn
 PEI,Inti,,withdrawn
-PEN,Nuevo Sol,,withdrawn
+PEN,Sol,,withdrawn
 PES,Sol,,withdrawn
 PGK,Kina,,active
 PHP,Philippine Peso,,active
@@ -203,7 +203,7 @@ QAR,Qatari Rial,,active
 RHD,Rhodesian Dollar,,withdrawn
 ROK,Leu A/52,,withdrawn
 ROL,Old Leu,,withdrawn
-RON,New Romanian Leu,,withdrawn
+RON,Romanian Leu,,withdrawn
 RSD,Serbian Dinar,,active
 RUB,Russian Ruble,,active
 RUR,Russian Ruble,,withdrawn
@@ -236,10 +236,10 @@ TJS,Somoni,,active
 TMM,Turkmenistan Manat,,withdrawn
 TMT,Turkmenistan New Manat,,active
 TND,Tunisian Dinar,,active
-TOP,Pa'anga,,active
+TOP,Pa’anga,,active
 TPE,Timor Escudo,,withdrawn
 TRL,Old Turkish Lira,,withdrawn
-TRY,New Turkish Lira,,withdrawn
+TRY,Turkish Lira,,withdrawn
 TTD,Trinidad and Tobago Dollar,,active
 TWD,New Taiwan Dollar,,active
 TZS,Tanzanian Shilling,,active
@@ -258,6 +258,7 @@ UYU,Peso Uruguayo,,active
 UYW,Unidad Previsional,,active
 UZS,Uzbekistan Sum,,active
 VEB,Bolivar,,withdrawn
+VED,Bolívar Soberano,,active
 VEF,Bolívar,,withdrawn
 VES,Bolívar Soberano,,active
 VNC,Old Dong,,withdrawn
