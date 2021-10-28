@@ -663,7 +663,7 @@ export default {
     },
     async loadData() {
       this.codelistURLs.forEach(codelist => {
-        axios.get(`https://codelists.codeforiati.org/api/json/en/${codelist}.json`)
+        axios.get(`https://codelists.codeforiati.org/api/json/${this.$i18n.locale}/${codelist}.json`)
         .then(response => {
           this.codelists[codelist] = response.data.data.map(item => {
             return {
@@ -673,7 +673,7 @@ export default {
           })
         })
       })
-      axios.get(`https://codelists.codeforiati.org/api/json/en/ReportingOrganisation.json`)
+      axios.get(`https://codelists.codeforiati.org/api/json/${this.$i18n.locale}/ReportingOrganisation.json`)
       .then(response => {
         this.codelists['ReportingOrg'] = response.data.data.map(publisher => {
           return {
