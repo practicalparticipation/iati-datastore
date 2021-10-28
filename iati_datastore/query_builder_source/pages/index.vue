@@ -3,7 +3,7 @@
     <b-container class="bg-dark ml-0 mr-0" fluid>
       <b-jumbotron
         header="IATI Datastore Classic"
-        lead="The classic version of the IATI Datastore, reloaded."
+        :lead="$t('datastoreClassicStrapline')"
         class="mb-0 mt-0 text-center"
         bg-variant="dark"
         text-variant="light"
@@ -12,20 +12,20 @@
           <template v-if="busy">
             <b-spinner label="Checking health..." variant="secondary"></b-spinner>
             <br />
-            <p class="text-center">Checking Datastore status...</p>
+            <p class="text-center">{{ $t('checkingDatastoreStatus') }}...</p>
           </template>
           <template v-else>
             <p class="lead">
-              Access <code>{{ formatNumber(healthData.indexed_activities) }}</code> activities and <code>{{ formatNumber(healthData.indexed_transactions) }}</code> transactions.
+              {{ $t('access') }} <code>{{ formatNumber(healthData.indexed_activities) }}</code> {{ $t('activitiesAnd') }} <code>{{ formatNumber(healthData.indexed_transactions) }}</code> {{$t('transactions')}}.
             </p>
             <hr />
             <h5>
               <b-row>
                 <b-col class="bg-success p-2" v-if="healthData.ok == true" md="6">
-                  Datastore fully operational
+                  {{ $t('datastoreOperational') }}
                 </b-col>
                 <b-col class="bg-danger p-2" v-else md="6">
-                    Datastore has some problems
+                  {{ $t('datastoreProblems') }}
                 </b-col>
                 <b-col class="bg-secondary p-2" md="6" v-if="healthData.items_on_queue>0">
                   <b-spinner small type="grow" label="Parsing..." class="mr-2" style="vertical-align: middle;"></b-spinner>
@@ -42,13 +42,13 @@
                 </b-col>
                 <b-col class="bg-secondary p-2" md="6" v-else>
                   <span v-if="this.healthData.status_data.last_parsed=='unknown'">
-                    Last updated: unknown
+                    {{ $t('lastUpdated') }}: {{ $t('unknown') }}
                   </span>
                   <span
                     v-else
                     v-b-tooltip.hover
                     :title="this.healthData.status_data.last_parsed">
-                    Last updated {{ last_updated_ago }}
+                    {{ $t('lastUpdated') }} {{ last_updated_ago }}
                   </span>
                 </b-col>
               </b-row>
@@ -57,8 +57,8 @@
           <hr />
           <b-row>
             <b-col>
-              <b-btn :href="`${baseURL}/docs/`" variant="primary">View documentation</b-btn>
-              <b-btn :href="`${baseURL}/api/`" variant="warning">View API</b-btn>
+              <b-btn :href="`${baseURL}/docs/`" variant="primary">{{ $t('viewDocumentation') }}</b-btn>
+              <b-btn :href="`${baseURL}/api/`" variant="warning">{{ $t('viewAPI') }}</b-btn>
             </b-col>
           </b-row>
         </b-container>
@@ -68,7 +68,7 @@
       <b-row>
         <b-col>
           <h1>
-            <a id="get-the-data" href="#get-the-data">Get the data</a>
+            <a id="get-the-data" href="#get-the-data">{{ $t('getTheData') }}</a>
           </h1>
           <p>You can obtain data from IATI Datastore Classic in various formats.</p>
           <p>You can choose to filter based on which organisation is reporting the information, where the activity is happening, and the activity's sector. You can choose to output individual activities, transactions or budgets.</p>
@@ -104,21 +104,21 @@
             <b-row>
               <b-col>
                 <b-form-group
-                  label="Title"
-                  description="Search for activities with titles containing the specified text.">
+                  :label="$t('fields.title.label')"
+                  :description="$t('fields.title.description')">
                   <b-input
                     v-model="filters.title"
-                    placeholder="All titles">
+                    :placeholder="$t('fields.title.placeholder')">
                   </b-input>
                 </b-form-group>
               </b-col>
               <b-col>
                 <b-form-group
-                  label="Description"
-                  description="Search for activities with descriptions containing the specified text.">
+                  :label="$t('fields.description.label')"
+                  :description="$t('fields.description.description')">
                   <b-input
                     v-model="filters.description"
-                    placeholder="All descriptions">
+                    :placeholder="$t('fields.description.placeholder')">
                   </b-input>
                 </b-form-group>
               </b-col>
@@ -126,12 +126,12 @@
             <b-row>
               <b-col>
                 <b-form-group
-                  label="Activity Status"
-                  description="Search for activities with only the specified activity status.">
+                  :label="$t('fields.activityStatus.label')"
+                  :description="$t('fields.activityStatus.description')">
                   <v-select
                     v-model="filters['activity-status']"
                     :options="codelists['ActivityStatus']"
-                    placeholder="All types of activity status"
+                    :placeholder="$t('fields.activityStatus.placeholder')"
                     :reduce="item => item.code"
                     multiple>
                   </v-select>
@@ -144,21 +144,21 @@
       <b-row>
         <b-col>
           <b-card
-            header="Reporting Organisation"
+            :header="$t('fields.reportingOrganisation.label')"
             header-tag="h4"
             class="mb-3">
             <b-card-text>
-              The reporting organisation is the publisher of the IATI data.
+              {{ $t('fields.reportingOrganisation.description') }}
             </b-card-text>
             <b-row>
               <b-col>
                 <b-form-group
-                  label="Reporting Organisation Type"
-                  description="All types of publishers (e.g. Governments).">
+                  :label="$t('fields.reportingOrganisation.type.label')"
+                  :description="$t('fields.reportingOrganisation.type.description')">
                   <v-select
                     v-model="filters['reporting-org.type']"
                     :options="codelists['OrganisationType']"
-                    placeholder="All types of reporting organisation"
+                    :placeholder="$t('fields.reportingOrganisation.type.placeholder')"
                     :reduce="item => item.code"
                     multiple>
                   </v-select>
@@ -166,31 +166,30 @@
               </b-col>
               <b-col>
                 <b-form-group
-                  label="Reporting Organisation"
-                  description="Select only a particular publisher's data (e.g. DFID).">
+                  :label="$t('fields.reportingOrganisation.ref.label')"
+                  :description="$t('fields.reportingOrganisation.ref.description')">
                   <v-select
                     v-model="filters['reporting-org']"
                     :options="filteredReportingOrganisations"
-                    placeholder="All reporting organisations"
+                    :placeholder="$t('fields.reportingOrganisation.ref.placeholder')"
                     :reduce="item => item.code"
                     multiple>
-
                   </v-select>
                 </b-form-group>
               </b-col>
             </b-row>
           </b-card>
           <b-card
-            header="Sector"
+            :header="$t('fields.sector.label')"
             header-tag="h4"
             class="mb-3">
             <b-form-group
-              label="Sector"
-              description="Choose the sector or sectors you are looking for.">
+              :label="$t('fields.sector.label')"
+              :description="$t('fields.sector.description')">
               <v-select
                 v-model="filters['sector']"
                 :options="codelists['Sector']"
-                placeholder="All sectors"
+                :placeholder="$t('fields.sector.placeholder')"
                 :reduce="item => item.code"
                 multiple></v-select>
             </b-form-group>
