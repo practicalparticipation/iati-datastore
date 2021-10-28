@@ -5,6 +5,7 @@ from collections import namedtuple
 from io import BytesIO
 from lxml import etree as ET
 from dateutil.parser import parse as parse_date
+import xmltodict
 
 from . import db
 from iatilib.model import (
@@ -502,6 +503,11 @@ def activity(xml, resource=no_resource, major_version='1', version=None):
                   logger='activity_importer', dataset=resource.dataset_id, resource=resource.url),
                 exc_info=exe
             )
+
+    dict_for_raw_json = xmltodict.parse(data['raw_xml'], attr_prefix='', cdata_key='text', strip_whitespace=False)
+    dict_for_raw_json['iati-extra:version'] = data.get('version')
+    data["raw_json"] = dict_for_raw_json
+
     return Activity(**data)
 
 

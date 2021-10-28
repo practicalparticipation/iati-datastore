@@ -27,9 +27,12 @@ class JSONEncoder(jsonlib.JSONEncoder):
         if isinstance(o, Decimal):
             return str(o.quantize(self.TWOPLACES))
         if isinstance(o, Activity):
-            d = xmltodict.parse(o.raw_xml, attr_prefix='', cdata_key='text', strip_whitespace=False)
-            d['iati-extra:version'] = o.version
-            return d
+            if o.raw_json:
+                return o.raw_json
+            else:
+                d = xmltodict.parse(o.raw_xml, attr_prefix='', cdata_key='text', strip_whitespace=False)
+                d['iati-extra:version'] = o.version
+                return d
         return super().default(o)
 
 

@@ -4,6 +4,19 @@ jobs:
   test:
     name: Run tests
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        # 12 is chosen because that matches the version on the live server
+        image: postgres:12
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432/tcp
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
@@ -23,6 +36,8 @@ jobs:
         pip install -r requirements_dev.txt
     - name: Run tests
       run: nosetests iati_datastore --with-coverage --cover-package iati_datastore/iatilib
+      env:
+        TEST_SQLALCHEMY_DATABASE_URI: postgresql://postgres:postgres@localhost:5432/postgres
     - name: Coveralls
       run: coveralls
       env:

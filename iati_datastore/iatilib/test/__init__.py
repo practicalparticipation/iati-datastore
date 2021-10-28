@@ -24,7 +24,7 @@ _app = None
 
 
 class TestConfig(Config):
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    SQLALCHEMY_DATABASE_URI = os.getenv("TEST_SQLALCHEMY_DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres")
     RQ_CONNECTION_CLASS = "fakeredis.FakeStrictRedis"
 
 

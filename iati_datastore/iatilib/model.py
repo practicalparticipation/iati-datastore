@@ -6,6 +6,7 @@ import sqlalchemy as sa
 from sqlalchemy import event
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.dialects.postgresql import JSONB
 
 from . import codelists, db
 
@@ -120,6 +121,11 @@ class Activity(db.Model):
     raw_xml = sa.Column(
             sa.UnicodeText,
             nullable=False)
+    # This should be nullable=False, but we have historical data from before this column was added to think about
+    # Don't load by default - we only want it in one place, so we will explicitly undefer it there.
+    raw_json = sa.orm.deferred(sa.Column(
+            JSONB,
+            nullable=True))
     version = sa.Column(
             sa.Unicode,
             nullable=True)

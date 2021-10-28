@@ -319,12 +319,18 @@ class ActivityView(DataStoreView):
     def get(self, format):
         forms = {
             "xml": ("application/xml", serialize.xml),
-            "json": ("application/json", serialize.json),  # rfc4627
             "db.json": ("application/json", serialize.datastore_json),
         }
         if format not in forms:
             abort(404)
         return self.get_response(*forms[format])
+
+
+class ActivityJSONView(DataStoreView):
+    filter = staticmethod(dsfilter.activities_for_json)
+
+    def get(self, format="json"):
+        return self.get_response("application/json", serialize.json)  # rfc4627
 
 
 class DataStoreCSVView(DataStoreView):
@@ -387,12 +393,17 @@ class BudgetsBySectorView(DataStoreCSVView):
 api.add_url_rule(
     '/access/activity/',
     defaults={"format": "json"},
-    view_func=ActivityView.as_view('activity-view'),
+    view_func=ActivityJSONView.as_view('activity-view'),
 )
 
 api.add_url_rule(
     '/access/activity.csv',
     view_func=ActivityCSVView.as_view('activity-csv-view'),
+)
+
+api.add_url_rule(
+    '/access/activity.json',
+    view_func=ActivityJSONView.as_view('activity-json-view'),
 )
 
 api.add_url_rule(

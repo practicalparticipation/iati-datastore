@@ -286,6 +286,14 @@ def activities(args):
     return _filter(Activity.query, args)
 
 
+def activities_for_json(args):
+    return _filter(
+        db.session.query(Activity).options(
+            orm.undefer(Activity.raw_json)
+        ),
+        args
+    )
+
 def activities_for_csv(args):
     # For performance reasons, eager lead some extra data we will use later for CSV's.
     return _filter(
