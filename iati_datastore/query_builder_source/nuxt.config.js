@@ -60,7 +60,23 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     'nuxt-vue-select',
+    '@nuxtjs/i18n',
   ],
+  i18n: {
+    locales: [
+      {
+          'code': 'en',
+          'file': 'en.js'
+      },
+      {
+          'code': 'fr',
+          'file': 'fr.js'
+      }
+    ],
+    lazy: true,
+    langDir: 'lang/',
+    defaultLocale: 'en'
+  },
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
