@@ -7,9 +7,13 @@
             <img
               width="100px"
               src="https://codeforiati.org/assets/img/logo.png"
-              title="A project of Code for IATI" />
+              :title="$t('codeForIATIProject')" />
           </a>
         </b-navbar-brand>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item :to="switchLocalePath('en')">EN</b-nav-item>
+          <b-nav-item :to="switchLocalePath('fr')">FR</b-nav-item>
+        </b-navbar-nav>
       </b-container>
     </b-navbar>
     <b-alert show dismissible fade class="mb-0 text-md-center">
@@ -41,5 +45,8 @@
 <style>
 body {
   background-color: #ececec;
+}
+a.nuxt-link-exact-active {
+  color: #000000 !important;
 }
 </style>
