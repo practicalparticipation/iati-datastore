@@ -494,65 +494,23 @@ export default {
         }
       ],
       breakdown: 'activity',
-      breakdownOptions: [
-        {
-          'value': 'activity',
-          'text': 'One activity per row',
-          'description': "Each row contains a unique activity. Financial information is aggregated. Budget information is excluded. Other potentially repeating fields (such as sectors) are reported in a single cell, delimited by semi-colons."
-        },
-        {
-          'value': 'transaction',
-          'text': 'One transaction per row',
-          'description': "Each row contains a unique financial transaction. The parent activity identifier and other activity-level fields are repeated for each transaction.<br/>If you are looking to analyse activity finances by year you need to select “Transactions” and calculate the year from the transaction date."
-        },
-        {
-          'value': 'budget',
-          'text': 'One budget per row',
-          'description': "Each row contains a budget-period entry. Transaction data is not included. The parent activity identifier and other activity-level fields are repeated for each budget line."
-        }
-      ],
       grouping: '',
-      groupingOptions: [
-        {
-          'value': '',
-          'text': 'No',
-          'description': "Information is not disaggregated."
-        },
-        {
-          'value': '/by_sector',
-          'text': 'Multi-sector expansion',
-          'description': "Each Activity, Transaction or Budget row is repeated for each separate Sector reported. The corresponding percentage for the sector split is reported in a separate column. This allows you to easily add arithmetic to your spreadsheet to calculate values proportionately."
-        },
-        {
-          'value': '/by_country',
-          'text': 'Multi-country expansion',
-          'description': "Each Activity, Transaction or Budget row is repeated for each separate Country reported. The corresponding percentage for the sector split is reported in a separate column. This allows you to easily add arithmetic to your spreadsheet to calculate values proportionately."
-        }
-      ],
       stream: '50',
-      streamOptions: [
-        {
-          'value': '1',
-          'text': '1 row',
-          'description': "Preview your selection by viewing only the first row of data."
-        },
-        {
-          'value': '50',
-          'text': '50 rows',
-          'description': "Preview your selection by viewing only the first 50 rows of data."
-        },
-        {
-          'value': 'stream',
-          'text': 'Entire selection',
-          'description': "Get all results that match your search criteria."
-        }
-      ],
       codelistURLs: ['Country', 'Region', 'Sector', 'OrganisationType', 'ActivityStatus', 'PolicyMarker', 'PolicySignificance']
     }
   },
   components: {
   },
   computed: {
+    streamOptions() {
+      return this.$t('outputFormat.chooseSampleSize.options')
+    },
+    breakdownOptions() {
+      return this.$t('outputFormat.csvOptions.chooseBreakdown.options')
+    },
+    groupingOptions() {
+      return this.$t('outputFormat.csvOptions.repeatRows.options')
+    },
     last_updated_ago() {
       const now = new Date();
       const change = now - new Date(this.healthData.status_data.last_parsed)
