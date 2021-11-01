@@ -20,6 +20,11 @@ export default {
     unknown: 'inconnu',
     queueData: `{itemsOnQueue} datasets are queued for update, out of {NumDatasets} total datasets. Go ahead and use the data, or wait a little while for today's updates to become available.`,
     updatePctComplete: `Daily update {parsingComplete}% complete.`,
+    timing: {
+      hoursAgo: 'il y a une heure | il y a {hours} heures',
+      minutesAgo: 'il y a une minute | il y a {minutes} minutes',
+      secondsAgo: 'il y a une seconde | il y a {seconds} secondes'
+    }
   },
   getTheData: {
     heading: 'Obtenir les données',
