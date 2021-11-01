@@ -2,37 +2,40 @@
   <div>
     <b-container class="bg-dark ml-0 mr-0" fluid>
       <b-jumbotron
-        header="IATI Datastore Classic"
-        :lead="$t('datastoreClassicStrapline')"
+        :header="$t('datastoreClassic.heading')"
+        :lead="$t('datastoreClassic.strapline')"
         class="mb-0 mt-0 text-center"
         bg-variant="dark"
         text-variant="light"
         >
         <b-container>
           <template v-if="busy">
-            <b-spinner label="Checking health..." variant="secondary"></b-spinner>
+            <b-spinner :label="$t('health.checkingDatastoreStatus')" variant="secondary"></b-spinner>
             <br />
-            <p class="text-center">{{ $t('checkingDatastoreStatus') }}...</p>
+            <p class="text-center">{{ $t('health.checkingDatastoreStatus') }}...</p>
           </template>
           <template v-else>
-            <p class="lead">
-              {{ $t('access') }} <code>{{ formatNumber(healthData.indexed_activities) }}</code> {{ $t('activitiesAnd') }} <code>{{ formatNumber(healthData.indexed_transactions) }}</code> {{$t('transactions')}}.
+            <p class="lead" v-html="$t('accessText', {
+                activities: formatNumber(this.healthData.indexed_activities),
+                transactions: formatNumber(this.healthData.indexed_transactions)})">
             </p>
             <hr />
             <h5>
               <b-row>
                 <b-col class="bg-success p-2" v-if="healthData.ok == true" md="6">
-                  {{ $t('datastoreOperational') }}
+                  {{ $t('health.datastoreOperational') }}
                 </b-col>
                 <b-col class="bg-danger p-2" v-else md="6">
-                  {{ $t('datastoreProblems') }}
+                  {{ $t('health.datastoreProblems') }}
                 </b-col>
                 <b-col class="bg-secondary p-2" md="6" v-if="healthData.items_on_queue>0">
                   <b-spinner small type="grow" label="Parsing..." class="mr-2" style="vertical-align: middle;"></b-spinner>
                   <span
                     v-b-tooltip.hover
-                    :title="`${this.healthData.items_on_queue} datasets are queued for update, out of ${this.healthData.num_datasets} total datasets. Go ahead and use the data, or wait a little while for today's updates to become available.`">
-                    Daily update {{ parsing_complete }}% complete.
+                    :title="$t('health.queueData', {
+                      itemsOnQueue: this.healthData.items_on_queue,
+                      numDatasets: this.healthData.num_datasets })">
+                    {{ $t('health.updatePctComplete', { parsingComplete: this.parsing_complete} )}}
                     <b-btn
                       :variant="refreshLinkVariant"
                       @click.prevent="refreshHealthData"
@@ -42,13 +45,13 @@
                 </b-col>
                 <b-col class="bg-secondary p-2" md="6" v-else>
                   <span v-if="this.healthData.status_data.last_parsed=='unknown'">
-                    {{ $t('lastUpdated') }}: {{ $t('unknown') }}
+                    {{ $t('health.lastUpdated') }}: {{ $t('health.unknown') }}
                   </span>
                   <span
                     v-else
                     v-b-tooltip.hover
                     :title="this.healthData.status_data.last_parsed">
-                    {{ $t('lastUpdated') }} {{ last_updated_ago }}
+                    {{ $t('health.lastUpdated') }} {{ last_updated_ago }}
                   </span>
                 </b-col>
               </b-row>
@@ -68,32 +71,32 @@
       <b-row>
         <b-col>
           <h1>
-            <a id="get-the-data" href="#get-the-data">{{ $t('getTheData') }}</a>
+            <a id="get-the-data" href="#get-the-data">{{ $t('getTheData.heading') }}</a>
           </h1>
-          <p>You can obtain data from IATI Datastore Classic in various formats.</p>
-          <p>You can choose to filter based on which organisation is reporting the information, where the activity is happening, and the activity's sector. You can choose to output individual activities, transactions or budgets.</p>
+          <p>{{ $t('getTheData.para1') }}</p>
+          <p>{{ $t('getTheData.para2') }}</p>
         </b-col>
       </b-row>
       <b-row>
         <b-col>
-          <h2>Choose your filters</h2>
-          <p>These options let you filter IATI data, depending on what you are looking for. Additional filters <a :href="`${baseURL}/docs/api/#filtering`">are available</a> by querying the datastore directly.</p>
+          <h2>{{ $t('getTheData.chooseFilters.heading') }}</h2>
+          <p v-html="$t('getTheData.chooseFilters.text', { baseURL: baseURL })"></p>
         </b-col>
       </b-row>
       <b-row>
         <b-col>
           <b-card
-          header="Specific activities"
+          :header="$t('fields.specificActivities.label')"
           header-tag="h4"
           class="mb-3">
             <b-card-text>
-              Search for specific activities using the IATI Identifier, Title or Description.
+              {{ $t('fields.specificActivities.description') }}
             </b-card-text>
             <b-row>
               <b-col>
                 <b-form-group
-                  label="IATI Identifier"
-                  description="Search for an activity containing a specific IATI Identifier (similar to a project code).">
+                  :label="$t('fields.iatiIdentifier.label')"
+                  :description="$t('fields.iatiIdentifier.description')">
                   <b-input
                     v-model="filters['iati-identifier']"
                     placeholder="All IATI Identifiers">
@@ -193,26 +196,23 @@
                 :reduce="item => item.code"
                 multiple></v-select>
             </b-form-group>
-            <b-alert variant="info" show>
-              For more details of the sectors, see the <a href="https://codelists.codeforiati.org/Sector" rel="noopener noreferrer" target="_blank">DAC 5 Digit Sector</a> codelist.
-            </b-alert>
+            <b-alert variant="info" show v-html="$t('fields.sector.note')"></b-alert>
           </b-card>
           <b-card
-            header="Policy Marker"
+            :header="$t('fields.policyMarker.label')"
             header-tag="h4"
             class="mb-3">
             <b-card-text>
-              A policy or theme addressed by the activity, according to
-              OECD DAC CRS policy markers.
+              {{ $t('fields.policyMarker.description') }}
             </b-card-text>
             <b-row>
               <b-col>
                 <b-form-group
-                label="Policy Marker">
+                :label="$t('fields.policyMarker.code.label')">
                   <v-select
                     v-model="filters['policy-marker.code']"
                     :options="codelists['PolicyMarker']"
-                    placeholder="All policy markers"
+                    :placeholder="$t('fields.policyMarker.code.placeholder')"
                     :reduce="item => item.code"
                     multiple>
                   </v-select>
@@ -220,11 +220,11 @@
               </b-col>
               <b-col>
                 <b-form-group
-                label="Policy Significance">
+                :label="$t('fields.policyMarker.significance.label')">
                   <v-select
                     v-model="filters['policy-marker.significance']"
                     :options="codelists['PolicySignificance']"
-                    placeholder="All policy signifiance"
+                    :placeholder="$t('fields.policyMarker.significance.placeholder')"
                     :reduce="item => item.code"
                     multiple>
                   </v-select>
@@ -233,17 +233,17 @@
             </b-row>
           </b-card>
           <b-card
-            header="Recipient location"
+            :header="$t('fields.recipientLocation.label')"
             header-tag="h4"
             class="mb-3">
             <b-row>
               <b-col>
                 <b-form-group
-                label="Recipient country">
+                :label="$t('fields.recipientLocation.country.label')">
                   <v-select
                     v-model="filters['recipient-country']"
                     :options="codelists['Country']"
-                    placeholder="All recipient countries"
+                    :placeholder="$t('fields.recipientLocation.country.placeholder')"
                     :reduce="item => item.code"
                     multiple>
                   </v-select>
@@ -251,11 +251,11 @@
               </b-col>
               <b-col>
                 <b-form-group
-                label="Recipient region">
+                :label="$t('fields.recipientLocation.region.label')">
                   <v-select
                     v-model="filters['recipient-region']"
                     :options="codelists['Region']"
-                    placeholder="All recipient regions"
+                    :placeholder="$t('fields.recipientLocation.region.placeholder')"
                     :reduce="item => item.code"
                     multiple>
                   </v-select>
@@ -265,17 +265,17 @@
             <b-alert
               variant="warning"
               :show="(filters['recipient-country'].length > 0) && (filters['recipient-region'].length > 0)">
-              Choosing a region and a country will likely not return data, as most publishers publish either a country or a region.
+              {{ $t('fields.recipientLocation.note') }}
             </b-alert>
           </b-card>
           <b-card
-            header="Dates"
+            :header="$t('fields.dates.label')"
             header-tag="h4"
             class="mb-3">
             <b-row>
               <b-col>
                 <b-form-group
-                label="Start date (after)">
+                :label="$t('fields.dates.startDateAfter')">
                   <b-form-datepicker
                     v-model="filters['start-date__gt']">
                   </b-form-datepicker>
@@ -283,7 +283,7 @@
               </b-col>
               <b-col>
                 <b-form-group
-                label="Start date (before)">
+                :label="$t('fields.dates.startDateBefore')">
                   <b-form-datepicker
                     v-model="filters['start-date__lt']">
                   </b-form-datepicker>
@@ -293,7 +293,7 @@
             <b-row>
               <b-col>
                 <b-form-group
-                label="End date (after)">
+                :label="$t('fields.dates.endDateAfter')">
                   <b-form-datepicker
                     v-model="filters['end-date__gt']">
                   </b-form-datepicker>
@@ -301,7 +301,7 @@
               </b-col>
               <b-col>
                 <b-form-group
-                label="End date (before)">
+                :label="$t('fields.dates.endDateBefore')">
                   <b-form-datepicker
                     v-model="filters['end-date__lt']">
                   </b-form-datepicker>
@@ -309,8 +309,8 @@
               </b-col>
             </b-row>
           </b-card>
-          <h3>How would you like to view this information?</h3>
-          <p>These options allow you to configure the way in which your data is disaggregated, making different sorts of analysis possible.</p>
+          <h3>{{ $t('howToView.heading') }}</h3>
+          <p>{{ $t('howToView.text') }}</p>
           <b-row>
             <b-col md="4">
               <b-row>
@@ -343,14 +343,14 @@
               md="8"
               :class="format!='csv' ? 'text-muted' : null">
               <b-card
-                header="CSV Options"
+                :header="$t('outputFormat.csvOptions.label')"
                 header-tag="h4"
                 class="mb-3"
                 id="csv-options">
                 <b-row>
                   <b-col>
                     <b-form-group
-                      label="Choose breakdown"
+                      :label="$t('outputFormat.csvOptions.chooseBreakdown.label')"
                       :disabled="format!='csv'">
                       <b-radio-group
                         stacked
@@ -362,7 +362,7 @@
                   </b-col>
                   <b-col>
                     <b-form-group
-                      label="Repeat rows"
+                      :label="$t('outputFormat.csvOptions.repeatRows.label')"
                       :disabled="format!='csv'">
                       <b-radio-group
                         stacked
@@ -378,21 +378,25 @@
                 target="csv-options"
                 ref="tooltip"
                 :disabled="format=='csv'">
-                Options only available for CSV output.
+                {{ $t('outputFormat.csvOptions.csvOnlyNote') }}
               </b-tooltip>
             </b-col>
           </b-row>
           <hr />
           <b-row class="mb-2">
             <b-col>
-              <b-btn variant="primary" value="Download" :href="queryLink">Download</b-btn>
-              <b-btn variant="secondary" value="Reset" @click="reset">Reset</b-btn>
+              <b-btn variant="primary"
+              :value="$t('downloadData.buttons.download')"
+              :href="queryLink">{{ $t('downloadData.buttons.download') }}</b-btn>
+              <b-btn variant="secondary"
+              :value="$t('downloadData.buttons.reset')"
+              @click="reset">{{ $t('downloadData.buttons.reset') }}</b-btn>
             </b-col>
           </b-row>
           <b-row>
             <b-col>
               <b-alert variant="success" show>
-                <strong>Your link:</strong>
+                <strong>{{ $t('downloadData.yourLink') }}</strong>
                 <b-input-group>
                   <b-input
                     readonly
@@ -403,7 +407,7 @@
                     <b-btn
                       variant="secondary"
                       @click="copyLink"
-                      id="query-link-copy">Copy</b-btn>
+                      id="query-link-copy">{{ $t('downloadData.copy') }}</b-btn>
                   </b-input-group-append>
                 </b-input-group>
                 <b-tooltip
@@ -411,7 +415,7 @@
                   ref="tooltip"
                   id="query-link-copy-tooltip"
                   target="query-link-copy">
-                  Copied!
+                  {{ $t('downloadData.copied') }}
                 </b-tooltip>
               </b-alert>
             </b-col>
