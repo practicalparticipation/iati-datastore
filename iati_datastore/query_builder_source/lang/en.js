@@ -150,12 +150,12 @@ export default {
       description: 'The reporting organisation is the publisher of the IATI data.',
       type: {
         label: 'Reporting Organisation Type',
-        description: 'All types of publishers (e.g. Governments).',
+        description: 'Select only a particular type of publisher’s data.',
         placeholder: 'All types of publishers (e.g. Governments).'
       },
       ref: {
         label: 'Reporting Organisation',
-        description: "Select only a particular publisher's data (e.g. DFID).",
+        description: 'Select only a particular publisher’s data (e.g. World Bank).',
         placeholder: 'All reporting organisations'
       }
     },
