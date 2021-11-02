@@ -149,12 +149,12 @@ export default {
       description: 'L’organisme qui déclare les données est celui qui publie les données de l’IITA.',
       type: {
         label: 'Type d’organisme déclarant',
-        description: 'Tous les types d’organisme déclarant',
+        description: 'Sélectionner seulement les données d’un type d’organisme déclarant',
         placeholder: 'Tous les types d’organisme déclarant'
       },
       ref: {
         label: 'Organisme déclarant',
-        description: "Sélectionner seulement les données d'un organisme en particulier (ex: DFID)",
+        description: 'Sélectionner seulement les données d’un organisme en particulier (ex: Banque mondiale)',
         placeholder: 'Tous les organismes déclarants'
       }
     },
