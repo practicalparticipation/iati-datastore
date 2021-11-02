@@ -196,7 +196,22 @@ export default {
       startDateAfter: 'Start date (after)',
       startDateBefore: 'Start date (before)',
       endDateAfter: 'End date (after)',
-      endDateBefore: 'End date (before)'
+      endDateBefore: 'End date (before)',
+      datePickerLabels: {
+        labelPrevDecade: 'Previous decade',
+        labelPrevYear: 'Previous year',
+        labelPrevMonth: 'Previous month',
+        labelCurrentMonth: 'Current month',
+        labelNextMonth: 'Next month',
+        labelNextYear: 'Next year',
+        labelNextDecade: 'Next decade',
+        labelToday: 'Today',
+        labelSelected: 'Selected date',
+        labelNoDateSelected: 'No date selected',
+        labelCalendar: 'Calendar',
+        labelNav: 'Calendar navigation',
+        labelHelp: 'Use cursor keys to navigate calendar dates'
+      },
     }
   }
 }

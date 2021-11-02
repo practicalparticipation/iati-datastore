@@ -277,6 +277,8 @@
                 <b-form-group
                 :label="$t('fields.dates.startDateAfter')">
                   <b-form-datepicker
+                    :locale="$i18n.locale"
+                    v-bind="$t('fields.dates.datePickerLabels') || {}"
                     v-model="filters['start-date__gt']">
                   </b-form-datepicker>
                 </b-form-group>
@@ -285,6 +287,8 @@
                 <b-form-group
                 :label="$t('fields.dates.startDateBefore')">
                   <b-form-datepicker
+                    :locale="$i18n.locale"
+                    v-bind="$t('fields.dates.datePickerLabels') || {}"
                     v-model="filters['start-date__lt']">
                   </b-form-datepicker>
                 </b-form-group>
@@ -295,6 +299,8 @@
                 <b-form-group
                 :label="$t('fields.dates.endDateAfter')">
                   <b-form-datepicker
+                    :locale="$i18n.locale"
+                    v-bind="$t('fields.dates.datePickerLabels') || {}"
                     v-model="filters['end-date__gt']">
                   </b-form-datepicker>
                 </b-form-group>
@@ -303,6 +309,8 @@
                 <b-form-group
                 :label="$t('fields.dates.endDateBefore')">
                   <b-form-datepicker
+                    :locale="$i18n.locale"
+                    v-bind="$t('fields.dates.datePickerLabels') || {}"
                     v-model="filters['end-date__lt']">
                   </b-form-datepicker>
                 </b-form-group>
