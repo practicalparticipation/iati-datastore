@@ -1,7 +1,7 @@
 export default {
   codeForIATIProject: 'Un projet de Code pour IITA',
   datastoreDowntimeNotice: `Utilisez-vous la version classique du Datastore, y compris pendant
-    <a href="https://iatistandard.org/en/news/technical-notice-2-iatis-datastore-to-be-integrated-in-new-unified-single-platform/">
+    <a href="https://iatistandard.org/fr/news/technical-notice-2-iatis-datastore-to-be-integrated-in-new-unified-single-platform/">
     l’interruption du Datastore officiel de l’IITA</a>? Nous aimerions en savoir plus sur vous afin de nous permettre de mieux comprendre nos usagers et leurs besoins <br /> Contactez-nous à
     <a href="mailto:hello@codeforiati.org">hello@codeforiati.org</a>`,
   datastoreClassic: {
