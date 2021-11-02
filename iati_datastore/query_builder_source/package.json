@@ -18,7 +18,7 @@
     "bootstrap": "^4.6.1",
     "bootstrap-vue": "^2.21.2",
     "nuxt": "^2.15.8",
-    "nuxt-vue-select": "^0.1.4"
+    "vue-select": "^3.16.0"
   },
   "devDependencies": {
     "push-dir": "^0.4.1"
