@@ -12,6 +12,16 @@
           <b-nav-item :to="switchLocalePath('en')">EN</b-nav-item>
           <b-nav-item :to="switchLocalePath('fr')">FR</b-nav-item>
         </b-navbar-nav>
+        <b-navbar-toggle
+          target="none"
+          data-c4i-toggle="sidebar"
+          type="button"
+          aria-controls="c4i-sidebar"
+          aria-expanded="false"
+          aria-label="Toggle Code for IATI sidebar"
+          class="navbar-toggler">
+          <span class="navbar-toggler-icon"></span>
+        </b-navbar-toggle>
       </b-container>
     </b-navbar>
     <b-alert show dismissible fade class="mb-0 text-md-center">
@@ -42,4 +52,19 @@ body {
 a.nuxt-link-exact-active {
   color: #000000 !important;
 }
+.navbar-expand .navbar-toggler {
+  margin-left: 10px;
+  display: inherit;
+}
 </style>
+<script>
+export default {
+  head: {
+    script: [
+      {
+        src: 'https://codeforiati.org/sidebar/sidebar.min.js'
+      }
+    ]
+  },
+};
+</script>
