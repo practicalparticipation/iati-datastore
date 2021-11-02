@@ -432,6 +432,9 @@
 </style>
 <script>
 import axios from 'axios'
+import Vue from 'vue'
+import vSelect from 'vue-select'
+import 'vue-select/dist/vue-select.css';
 export default {
   data() {
     return {
@@ -500,6 +503,7 @@ export default {
     }
   },
   components: {
+    vSelect
   },
   computed: {
     streamOptions() {
