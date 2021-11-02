@@ -122,7 +122,7 @@ export default {
   fields: {
     specificActivities: {
       label: 'Activités spécifiques',
-      description: 'Chercher chaque activité spécifique en utilisant l’identifiant IITA, le Titre ou la Description.'
+      description: 'Chercher les activités spécifiques en utilisant l’identifiant IITA, le Titre ou la Description.'
     },
     iatiIdentifier: {
       label: 'Identifiant de l’IITA',
