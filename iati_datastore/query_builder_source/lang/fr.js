@@ -1,13 +1,12 @@
 export default {
-  codeForIATIProject: 'Un projet de Code for IATI',
-  datastoreDowntimeNotice: `Are you using Datastore Classic, including during
+  codeForIATIProject: 'Un projet de Code pour IITA',
+  datastoreDowntimeNotice: `Utilisez-vous la version classique du Datastore, y compris pendant
     <a href="https://iatistandard.org/en/news/technical-notice-2-iatis-datastore-to-be-integrated-in-new-unified-single-platform/">
-    downtime of the official IATI Datastore</a>? We'd
-    love to hear from you, so we can better understand our users and their needs.<br />Get in touch with
-    us at <a href="mailto:hello@codeforiati.org">hello@codeforiati.org</a>`,
+    downtime of the official IATI Datastore</a>? Nous aimerions en savoir plus sur vous afin de nous permettre de mieux comprendre nos usagers et leurs besoins <br /> Contactez-nous à 
+    <a href="mailto:hello@codeforiati.org">hello@codeforiati.org</a>`,
   datastoreClassic: {
-    heading: 'IATI Datastore Classic',
-    strapline: "La version classique de l’IATI Datastore, renouvelé.",
+    heading: 'Le Datastore classique de l'IITA',
+    strapline: "La version classique de l’IITA Datastore, renouvelé.",
   },
   accessText: 'Accédez à <code>{activities}</code> activités et <code>{transactions}</code> transactions.',
   viewDocumentation: 'Voir la documentation (en anglais)',
@@ -18,8 +17,8 @@ export default {
     datastoreProblems: 'Le Datastore a des problèmes',
     lastUpdated: 'Dernière actualisation :',
     unknown: 'inconnu',
-    queueData: `{itemsOnQueue} datasets are queued for update, out of {NumDatasets} total datasets. Go ahead and use the data, or wait a little while for today's updates to become available.`,
-    updatePctComplete: `Daily update {parsingComplete}% complete.`,
+    queueData: `{itemsOnQueue} les jeux de données sont en attente de mise à jour, sur un total de {NumDatasets} jeux de données. Utilisez les données dès  présent ou patientez un instant que les mises à jour d'aujourd'hui soient disponibles.`,
+    updatePctComplete: `Mise à jour quotidienne {parsingComplete}% complète.`,
     timing: {
       hoursAgo: 'il y a une heure | il y a {hours} heures',
       minutesAgo: 'il y a une minute | il y a {minutes} minutes',
@@ -28,16 +27,16 @@ export default {
   },
   getTheData: {
     heading: 'Obtenir les données',
-    para1: 'Vous pouvez obtenir des données de IATI Datastore Classic dans différents formats.',
-    para2: "Vous pouvez choisir de filtrer selon l'organisme déclarante, l'endroit où se déroule l'activité et le secteur de l’activité. Vous pouvez choisir de sortir des activités, des transactions ou des budgets.",
+    para1: 'Vous pouvez obtenir des données de IITA Datastore Classic dans différents formats.',
+    para2: "Vous pouvez choisir de filtrer selon l'organisme qui publie, le lieu où se déroule l'activité et le secteur de l’activité. Vous pouvez choisir d'exclure certaines activités, des transactions ou des budgets.",
     chooseFilters: {
       heading: 'Choisir vos filtres',
-      text: 'These options let you filter IATI data, depending on what you are looking for. Additional filters <a href="{baseURL}/docs/api/#filtering">are available</a> by querying the datastore directly.'
+      text: 'Ces options vous laissent filtrer les données IITA en fonction de ce que vous cherchez. Des filtres additionnels sont disponibles sur le serveur directement <a href="{baseURL}/docs/api/#filtering">are available</a>.'
     }
   },
   howToView: {
-    heading: 'How would you like to view this information?',
-    text: 'These options allow you to configure the way in which your data is disaggregated, making different sorts of analysis possible.'
+    heading: 'Comment souhaiteriez-vous visualiser cette information?',
+    text: 'Ces options vous permettent de configurer la façon dont vos données sont désagrégées, rendant ainsi tous types d'analyse possibles.'
   },
   downloadData: {
     buttons: {
@@ -54,67 +53,67 @@ export default {
     privacyPolicy: 'Politique de confidentialité - en anglais'
   },
   outputFormat: {
-    chooseFormat: 'Choose format',
+    chooseFormat: 'Choisir le format',
     chooseSampleSize: {
-      label: 'Choose sample size',
+      label: 'Choisir la taille de l'échantillon',
       options: [
         {
           'value': '1',
-          'text': '1 row',
-          'description': "Preview your selection by viewing only the first row of data."
+          'text': '1 row', 1 ligne
+          'description': "Visualiser la sélection en n'incluant que la première ligne de données."
         },
         {
           'value': '50',
-          'text': '50 rows',
-          'description': "Preview your selection by viewing only the first 50 rows of data."
+          'text': '50 rows',50 lignes
+          'description': "Visualiser la sélection en incluant 50 lignes de données."
         },
         {
           'value': 'stream',
-          'text': 'Entire selection',
-          'description': "Get all results that match your search criteria."
+          'text': 'Entire selection',sélection entière
+          'description': "Obtenir tous les résultats correspondant aux critères de recherche."
         }
       ]
     },
     csvOptions: {
       label: 'CSV Options',
-      csvOnlyNote: 'Options only available for CSV output.',
+      csvOnlyNote: 'Options disponibles seulement en format CSV.',
       chooseBreakdown: {
-        label: 'Choose breakdown',
+        label: 'Choisir le type de détail',
         options: [
           {
-            'value': 'activity',
-            'text': 'One activity per row',
-            'description': "Each row contains a unique activity. Financial information is aggregated. Budget information is excluded. Other potentially repeating fields (such as sectors) are reported in a single cell, delimited by semi-colons."
+            'value': 'activité',
+            'text': 'une activité par ligne',
+            'description': "Chaque ligne contient une activité unique. Les informations financières sont désagrégées. Les informations budgétaires sont exclues. Les autres champs potentiellement redondants (tels que les secteurs) sont publiés dans une case unique et délimités par un point virgule ."
           },
           {
             'value': 'transaction',
-            'text': 'One transaction per row',
-            'description': "Each row contains a unique financial transaction. The parent activity identifier and other activity-level fields are repeated for each transaction.<br/>If you are looking to analyse activity finances by year you need to select “Transactions” and calculate the year from the transaction date."
+            'text': 'Une transaction par ligne',
+            'description': "Chaque ligne contient une transaction financière unique. L'identifiant de l'activité mère et les autres champs au niveau des activités sont répétés pour chaque activité. <br/> Si vous souhaitez analyser les activités financières par année, il faut sélectionner "Transactions" et calculer l'année de la transaction."
           },
           {
             'value': 'budget',
-            'text': 'One budget per row',
-            'description': "Each row contains a budget-period entry. Transaction data is not included. The parent activity identifier and other activity-level fields are repeated for each budget line."
+            'text': 'Un budget par ligne',
+            'description': "Chaque ligne continent une entrée pour la période budgétaire. Les données de transaction ne sont pas inclues. L'identifiant de l'activité mère et les autres champs au niveau des activités sont répétés pour chaque activité."
           }
         ],
       },
       repeatRows: {
-        label: 'Repeat rows',
+        label: 'Reproduire les lignes',
         options: [
           {
             'value': '',
-            'text': 'No',
-            'description': "Information is not disaggregated."
+            'text': 'Non',
+            'description': "L'information n'est pas désagrégée."
           },
           {
-            'value': '/by_sector',
-            'text': 'Multi-sector expansion',
-            'description': "Each Activity, Transaction or Budget row is repeated for each separate Sector reported. The corresponding percentage for the sector split is reported in a separate column. This allows you to easily add arithmetic to your spreadsheet to calculate values proportionately."
+            'value': '/par_secteur',
+            'text': 'Extension multi-secteur',
+            'description': "Chaque ligne Activité, Transaction ou Budget est reproduite pour chaque secteur publié séparémment. Le pourcentage correspondant à chaque division sectorielle est publié dans une colonne séparée. Cela vous permet d'ajouter facilement l'arithmétique à votre tableur pour calculer les valeurs proportionnelles."
           },
           {
-            'value': '/by_country',
-            'text': 'Multi-country expansion',
-            'description': "Each Activity, Transaction or Budget row is repeated for each separate Country reported. The corresponding percentage for the sector split is reported in a separate column. This allows you to easily add arithmetic to your spreadsheet to calculate values proportionately."
+            'value': '/par_pays',
+            'text': 'Extension multi-pays',
+            'description': "Chaque ligne Activité, Transaction ou Budget est reproduite pour chaque pays publié séparémment. Le pourcentage correspondant à chaque division sectorielle est publié dans une colonne séparée. Cela vous permet d'ajouter facilement l'arithmétique à votre tableur pour calculer les valeurs proportionnelles."
           }
         ]
       }
@@ -122,52 +121,52 @@ export default {
   },
   fields: {
     specificActivities: {
-      label: 'Specific activities',
-      description: 'Search for specific activities using the IATI Identifier, Title or Description.'
+      label: 'Activités spécifiques',
+      description: 'Chercher chaque activité spécifique en utilisant l'identifiant IITA, le Titre ou la Description.'
     },
     iatiIdentifier: {
       label: 'Identifiant de l’IITA',
-      description: 'Search for an activity containing a specific IATI Identifier (similar to a project code).',
+      description: 'Chercher une activité avec un identifiant IITA spécifique (tel qu'un code projet).',
       placeholder: 'Tous les identifiants de l’IITA'
     },
     title: {
       label: 'Titre',
-      description: 'Search for activities with titles containing the specified text.',
+      description: 'Chercher les activités avec des titres qui incluent le text indiqué.',
       placeholder: 'Tous les titres'
     },
     description: {
       label: 'Description',
-      description: 'Search for activities with descriptions containing the specified text.',
+      description: 'Chercher les activités avec des descriptions qui incluent le text indiqué.',
       placeholder: 'Toutes les descriptions'
     },
     activityStatus: {
       label: "Statut de l’activité",
-      description: 'Search for activities with only the specified activity status.',
+      description: 'Chercher les activités contenant seulement le statut de l'activité indiqué.',
       placeholder: 'Tous les types de statut de l’activité'
     },
     reportingOrganisation: {
-      label: 'Organisme déclarante',
-      description: 'The reporting organisation is the publisher of the IATI data.',
+      label: 'Organisme déclarant',
+      description: 'L'organisme qui déclare les données est celui qui publie les données de l'IITA.',
       type: {
-        label: 'Type d’organisme déclarante',
-        description: 'Tous les types d’organisme déclarante',
-        placeholder: 'Tous les types d’organisme déclarante'
+        label: 'Type d’organisme déclarant',
+        description: 'Tous les types d’organisme déclarant',
+        placeholder: 'Tous les types d’organisme déclarant'
       },
       ref: {
-        label: 'Organisme déclarante',
-        description: "Select only a particular publisher's data (e.g. DFID).",
-        placeholder: 'Tous les organismes déclarante'
+        label: 'Organisme déclarant',
+        description: "Sélectionner seulement les données d'un organisme en particulier (ex: DFID)",
+        placeholder: 'Tous les organismes déclarants'
       }
     },
     sector: {
       label: 'Secteur',
-      description: 'Choose the sector or sectors you are looking for.',
+      description: 'Choisir le secteur ou les secteurs que vous cherchez.',
       placeholder: 'Tous les secteurs',
-      note: 'For more details of the sectors, see the <a href="https://codelists.codeforiati.org/fr/Sector" rel="noopener noreferrer" target="_blank">DAC 5 Digit Sector</a> codelist.'
+      note: 'Pour plus de détails sur les secteurs, voir <a href="https://codelists.codeforiati.org/fr/Sector" rel="noopener noreferrer" target="_blank">DAC 5 Digit Sector</a> codelist.'
     },
     policyMarker: {
       label: 'Marqueur d’objectifs politiques',
-      description: 'A policy or theme addressed by the activity, according to OECD DAC CRS policy markers.',
+      description: 'Un objectif politique ou thème abordé par l'activité, selon les marqueyrs de l'OCDE CAD.',
       code: {
         label: 'Marqueur d’objectifs politiques',
         description: '',
@@ -189,14 +188,14 @@ export default {
         label: 'Région bénéficiaire',
         placeholder: 'Toutes les régions beneficiaires'
       },
-      note: 'Choosing a region and a country will likely not return data, as most publishers publish either a country or a region.'
+      note: 'Choisir une région et un pays ne vont probablement pas fournir de données dans la mesure où la plupart des institutions qui publient le font soit pour une région soit pour un pays.'
     },
     dates: {
       label: 'Dates',
-      startDateAfter: 'Start date (after)',
-      startDateBefore: 'Start date (before)',
-      endDateAfter: 'End date (after)',
-      endDateBefore: 'End date (before)'
+      startDateAfter: 'Date de début (après)',
+      startDateBefore: 'Date de début (avant)',
+      endDateAfter: 'Date de fin (après)',
+      endDateBefore: 'Date de fin (avant)'
     }
   }
 }
