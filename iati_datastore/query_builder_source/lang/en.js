@@ -179,7 +179,7 @@ export default {
       }
     },
     recipientLocation: {
-      label: 'Recipient Location',
+      label: 'Recipient country or region',
       country: {
         label: 'Recipient country',
         description: '',
