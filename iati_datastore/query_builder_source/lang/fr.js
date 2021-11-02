@@ -128,41 +128,41 @@ export default {
     iatiIdentifier: {
       label: 'Identifiant de l’IITA',
       description: 'Search for an activity containing a specific IATI Identifier (similar to a project code).',
-      placeholder: 'All IATI Identifiers'
+      placeholder: 'Tous les identifiants de l’IITA'
     },
     title: {
       label: 'Titre',
       description: 'Search for activities with titles containing the specified text.',
-      placeholder: 'All titles'
+      placeholder: 'Tous les titres'
     },
     description: {
       label: 'Description',
       description: 'Search for activities with descriptions containing the specified text.',
-      placeholder: 'All descriptions'
+      placeholder: 'Toutes les descriptions'
     },
     activityStatus: {
       label: "Statut de l’activité",
       description: 'Search for activities with only the specified activity status.',
-      placeholder: 'All types of activity status'
+      placeholder: 'Tous les types de statut de l’activité'
     },
     reportingOrganisation: {
       label: 'Organisme déclarante',
       description: 'The reporting organisation is the publisher of the IATI data.',
       type: {
         label: 'Type d’organisme déclarante',
-        description: 'All types of publishers (e.g. Governments).',
-        placeholder: 'All types of publishers (e.g. Governments).'
+        description: 'Tous les types d’organisme déclarante',
+        placeholder: 'Tous les types d’organisme déclarante'
       },
       ref: {
         label: 'Organisme déclarante',
         description: "Select only a particular publisher's data (e.g. DFID).",
-        placeholder: 'All reporting organisations'
+        placeholder: 'Tous les organismes déclarante'
       }
     },
     sector: {
       label: 'Secteur',
       description: 'Choose the sector or sectors you are looking for.',
-      placeholder: 'All sectors',
+      placeholder: 'Tous les secteurs',
       note: 'For more details of the sectors, see the <a href="https://codelists.codeforiati.org/fr/Sector" rel="noopener noreferrer" target="_blank">DAC 5 Digit Sector</a> codelist.'
     },
     policyMarker: {
@@ -171,23 +171,23 @@ export default {
       code: {
         label: 'Marqueur d’objectifs politiques',
         description: '',
-        placeholder: 'All policy markers'
+        placeholder: 'Tous les marqueurs d’objectifs politiques'
       },
       significance: {
         label: 'Degré d’implication politique',
-        placeholder: 'All policy significance'
+        placeholder: 'Tous les degrés d’implication politique'
       }
     },
     recipientLocation: {
-      label: 'Recipient Location',
+      label: 'Pays ou région bénéficiaire',
       country: {
         label: 'Pays bénéficiaire',
         description: '',
-        placeholder: 'All recipient countries'
+        placeholder: 'Tous les pays beneficiaires'
       },
       region: {
         label: 'Région bénéficiaire',
-        placeholder: 'All recipient regions'
+        placeholder: 'Toutes les régions beneficiaires'
       },
       note: 'Choosing a region and a country will likely not return data, as most publishers publish either a country or a region.'
     },
