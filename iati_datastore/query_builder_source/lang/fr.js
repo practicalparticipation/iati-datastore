@@ -48,7 +48,7 @@ export default {
     copied: 'Copié !'
   },
   footer: {
-    sourceCode: '<a href="https://github.com/codeforIATI/iati-datastore">IATI Datastore Classic sur GitHub</a>, logiciel libre distribué sous la licence GNU Affero GPL v3.',
+    sourceCode: '<a href="https://github.com/codeforIATI/iati-datastore">Le Datastore classique de l’IITA sur GitHub</a>, logiciel libre distribué sous la licence GNU Affero GPL v3.',
     credits: 'Le Datastore classique de l’IITA est un projet de <a href="https://codeforiati.org">Code for IATI</a>',
     privacyPolicy: 'Politique de confidentialité - en anglais'
   },
