@@ -2,13 +2,11 @@
   <div>
     <b-navbar type="light" variant="light">
       <b-container>
-        <b-navbar-brand href="#">
-          <a href="https://codeforiati.org">
-            <img
-              width="100px"
-              src="https://codeforiati.org/assets/img/logo.png"
-              :title="$t('codeForIATIProject')" />
-          </a>
+        <b-navbar-brand href="https://codeforiati.org">
+          <img
+            width="100px"
+            src="https://codeforiati.org/assets/img/logo.png"
+            :title="$t('codeForIATIProject')" />
         </b-navbar-brand>
         <b-navbar-nav class="ml-auto">
           <b-nav-item :to="switchLocalePath('en')">EN</b-nav-item>
