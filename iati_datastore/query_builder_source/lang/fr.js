@@ -2,10 +2,10 @@ export default {
   codeForIATIProject: 'Un projet de Code pour IITA',
   datastoreDowntimeNotice: `Utilisez-vous la version classique du Datastore, y compris pendant
     <a href="https://iatistandard.org/en/news/technical-notice-2-iatis-datastore-to-be-integrated-in-new-unified-single-platform/">
-    downtime of the official IATI Datastore</a>? Nous aimerions en savoir plus sur vous afin de nous permettre de mieux comprendre nos usagers et leurs besoins <br /> Contactez-nous à 
+    l’interruption du Datastore officiel de l’IITA</a>? Nous aimerions en savoir plus sur vous afin de nous permettre de mieux comprendre nos usagers et leurs besoins <br /> Contactez-nous à
     <a href="mailto:hello@codeforiati.org">hello@codeforiati.org</a>`,
   datastoreClassic: {
-    heading: 'Le Datastore classique de l'IITA',
+    heading: 'Le Datastore classique de l’IITA',
     strapline: "La version classique de l’IITA Datastore, renouvelé.",
   },
   accessText: 'Accédez à <code>{activities}</code> activités et <code>{transactions}</code> transactions.',
@@ -28,15 +28,15 @@ export default {
   getTheData: {
     heading: 'Obtenir les données',
     para1: 'Vous pouvez obtenir des données de IITA Datastore Classic dans différents formats.',
-    para2: "Vous pouvez choisir de filtrer selon l'organisme qui publie, le lieu où se déroule l'activité et le secteur de l’activité. Vous pouvez choisir d'exclure certaines activités, des transactions ou des budgets.",
+    para2: "Vous pouvez choisir de filtrer selon l'organisme qui publie, le lieu où se déroule l'activité et le secteur de l’activité. Vous pouvez choisir de télécharger des activités, des transactions ou des budgets.",
     chooseFilters: {
       heading: 'Choisir vos filtres',
-      text: 'Ces options vous laissent filtrer les données IITA en fonction de ce que vous cherchez. Des filtres additionnels sont disponibles sur le serveur directement <a href="{baseURL}/docs/api/#filtering">are available</a>.'
+      text: 'Ces options vous laissent filtrer les données IITA en fonction de ce que vous cherchez. Des filtres additionnels <a href="{baseURL}/docs/api/#filtering">sont disponibles</a> sur le serveur directement.'
     }
   },
   howToView: {
     heading: 'Comment souhaiteriez-vous visualiser cette information?',
-    text: 'Ces options vous permettent de configurer la façon dont vos données sont désagrégées, rendant ainsi tous types d'analyse possibles.'
+    text: 'Ces options vous permettent de configurer la façon dont vos données sont désagrégées, rendant ainsi tous types d’analyse possibles.'
   },
   downloadData: {
     buttons: {
@@ -48,28 +48,28 @@ export default {
     copied: 'Copié !'
   },
   footer: {
-    sourceCode: '<a href="https://github.com/codeforIATI/iati-datastore">IATI Datastore Classic on GitHub</a>, free software licensed under the GNU Affero General Public License v3.',
-    credits: 'IATI Datastore Classic is a project of <a href="https://codeforiati.org">Code for IATI</a>',
+    sourceCode: '<a href="https://github.com/codeforIATI/iati-datastore">IATI Datastore Classic sur GitHub</a>, logiciel libre distribué sous la licence GNU Affero GPLv3 v3.',
+    credits: 'Le Datastore classique de l’IITA est un projet de <a href="https://codeforiati.org">Code for IATI</a>',
     privacyPolicy: 'Politique de confidentialité - en anglais'
   },
   outputFormat: {
     chooseFormat: 'Choisir le format',
     chooseSampleSize: {
-      label: 'Choisir la taille de l'échantillon',
+      label: 'Choisir la taille de l’échantillon',
       options: [
         {
           'value': '1',
-          'text': '1 row', 1 ligne
+          'text': '1 ligne',
           'description': "Visualiser la sélection en n'incluant que la première ligne de données."
         },
         {
           'value': '50',
-          'text': '50 rows',50 lignes
+          'text': '50 lignes',
           'description': "Visualiser la sélection en incluant 50 lignes de données."
         },
         {
           'value': 'stream',
-          'text': 'Entire selection',sélection entière
+          'text': 'Sélection entière',
           'description': "Obtenir tous les résultats correspondant aux critères de recherche."
         }
       ]
@@ -81,14 +81,14 @@ export default {
         label: 'Choisir le type de détail',
         options: [
           {
-            'value': 'activité',
-            'text': 'une activité par ligne',
+            'value': 'activity',
+            'text': 'Une activité par ligne',
             'description': "Chaque ligne contient une activité unique. Les informations financières sont désagrégées. Les informations budgétaires sont exclues. Les autres champs potentiellement redondants (tels que les secteurs) sont publiés dans une case unique et délimités par un point virgule ."
           },
           {
             'value': 'transaction',
             'text': 'Une transaction par ligne',
-            'description': "Chaque ligne contient une transaction financière unique. L'identifiant de l'activité mère et les autres champs au niveau des activités sont répétés pour chaque activité. <br/> Si vous souhaitez analyser les activités financières par année, il faut sélectionner "Transactions" et calculer l'année de la transaction."
+            'description': 'Chaque ligne contient une transaction financière unique. L’identifiant de l’activité mère et les autres champs au niveau des activités sont répétés pour chaque activité. <br/> Si vous souhaitez analyser les activités financières par année, il faut sélectionner "Transactions" et calculer l’année de la transaction.'
           },
           {
             'value': 'budget',
@@ -106,12 +106,12 @@ export default {
             'description': "L'information n'est pas désagrégée."
           },
           {
-            'value': '/par_secteur',
+            'value': '/by_sector',
             'text': 'Extension multi-secteur',
             'description': "Chaque ligne Activité, Transaction ou Budget est reproduite pour chaque secteur publié séparémment. Le pourcentage correspondant à chaque division sectorielle est publié dans une colonne séparée. Cela vous permet d'ajouter facilement l'arithmétique à votre tableur pour calculer les valeurs proportionnelles."
           },
           {
-            'value': '/par_pays',
+            'value': '/by_country',
             'text': 'Extension multi-pays',
             'description': "Chaque ligne Activité, Transaction ou Budget est reproduite pour chaque pays publié séparémment. Le pourcentage correspondant à chaque division sectorielle est publié dans une colonne séparée. Cela vous permet d'ajouter facilement l'arithmétique à votre tableur pour calculer les valeurs proportionnelles."
           }
@@ -122,11 +122,11 @@ export default {
   fields: {
     specificActivities: {
       label: 'Activités spécifiques',
-      description: 'Chercher chaque activité spécifique en utilisant l'identifiant IITA, le Titre ou la Description.'
+      description: 'Chercher chaque activité spécifique en utilisant l’identifiant IITA, le Titre ou la Description.'
     },
     iatiIdentifier: {
       label: 'Identifiant de l’IITA',
-      description: 'Chercher une activité avec un identifiant IITA spécifique (tel qu'un code projet).',
+      description: 'Chercher une activité avec un identifiant IITA spécifique (tel qu’un code projet).',
       placeholder: 'Tous les identifiants de l’IITA'
     },
     title: {
@@ -141,12 +141,12 @@ export default {
     },
     activityStatus: {
       label: "Statut de l’activité",
-      description: 'Chercher les activités contenant seulement le statut de l'activité indiqué.',
+      description: 'Chercher les activités contenant seulement le statut de l’activité indiqué.',
       placeholder: 'Tous les types de statut de l’activité'
     },
     reportingOrganisation: {
       label: 'Organisme déclarant',
-      description: 'L'organisme qui déclare les données est celui qui publie les données de l'IITA.',
+      description: 'L’organisme qui déclare les données est celui qui publie les données de l’IITA.',
       type: {
         label: 'Type d’organisme déclarant',
         description: 'Tous les types d’organisme déclarant',
@@ -162,11 +162,11 @@ export default {
       label: 'Secteur',
       description: 'Choisir le secteur ou les secteurs que vous cherchez.',
       placeholder: 'Tous les secteurs',
-      note: 'Pour plus de détails sur les secteurs, voir <a href="https://codelists.codeforiati.org/fr/Sector" rel="noopener noreferrer" target="_blank">DAC 5 Digit Sector</a> codelist.'
+      note: 'Pour plus de détails sur les secteurs, voir la liste de codes <a href="https://codelists.codeforiati.org/fr/Sector" rel="noopener noreferrer" target="_blank">Secteur du CAD à 5 chiffres</a>.'
     },
     policyMarker: {
       label: 'Marqueur d’objectifs politiques',
-      description: 'Un objectif politique ou thème abordé par l'activité, selon les marqueyrs de l'OCDE CAD.',
+      description: 'Un objectif politique ou thème abordé par l’activité, selon les marqueurs de l’OCDE CAD.',
       code: {
         label: 'Marqueur d’objectifs politiques',
         description: '',
