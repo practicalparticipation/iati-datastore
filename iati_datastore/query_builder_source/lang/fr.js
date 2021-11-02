@@ -9,7 +9,7 @@ export default {
     heading: 'IATI Datastore Classic',
     strapline: "La version classique de l’IATI Datastore, renouvelé.",
   },
-  accessText: 'Accédez à {activities} activités et {transactions} transactions.',
+  accessText: 'Accédez à <code>{activities}</code> activités et <code>{transactions}</code> transactions.',
   viewDocumentation: 'Voir la documentation (en anglais)',
   viewAPI: "Voir l’API",
   health: {
