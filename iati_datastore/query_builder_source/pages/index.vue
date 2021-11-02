@@ -99,7 +99,7 @@
                   :description="$t('fields.iatiIdentifier.description')">
                   <b-input
                     v-model="filters['iati-identifier']"
-                    placeholder="All IATI Identifiers">
+                    :placeholder="$t('fields.iatiIdentifier.placeholder')">
                   </b-input>
                 </b-form-group>
               </b-col>
