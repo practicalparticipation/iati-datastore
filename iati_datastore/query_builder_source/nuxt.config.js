@@ -74,6 +74,10 @@ export default {
       {
           'code': 'fr',
           'file': 'fr.js'
+      },
+      {
+          'code': 'pt',
+          'file': 'pt.js'
       }
     ],
     lazy: true,

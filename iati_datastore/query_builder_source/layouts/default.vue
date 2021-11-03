@@ -11,6 +11,7 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item :to="switchLocalePath('en')">EN</b-nav-item>
           <b-nav-item :to="switchLocalePath('fr')">FR</b-nav-item>
+          <b-nav-item :to="switchLocalePath('pt')">PT</b-nav-item>
         </b-navbar-nav>
         <b-navbar-toggle
           target="none"
