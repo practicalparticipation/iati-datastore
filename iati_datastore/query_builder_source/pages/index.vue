@@ -324,7 +324,7 @@
               <b-row>
                 <b-col>
                   <b-form-group
-                    label="Choose format">
+                    :label="$t('outputFormat.chooseFormat')">
                     <b-radio-group
                       buttons
                       button-variant="outline-secondary"
@@ -337,7 +337,7 @@
               <b-row>
                 <b-col>
                   <b-form-group
-                    label="Choose sample size">
+                    :label="$t('outputFormat.chooseSampleSize.label')">
                     <b-radio-group
                       stacked
                       v-model="stream"
