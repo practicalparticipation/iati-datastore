@@ -20,7 +20,7 @@ class ConsoleTestCase(AppTestCase):
 
     @mock.patch('subprocess.run')
     def test_build_query_builder(self, mock):
-        install_command = 'npm i'
+        install_command = 'npm ci'
         build_command = 'npm run generate'
         result = self.runner.invoke(console.build_query_builder)
         self.assertEquals(0, result.exit_code)
