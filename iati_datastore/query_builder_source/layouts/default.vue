@@ -62,7 +62,7 @@ export default {
   head: {
     script: [
       {
-        src: 'https://codeforiati.org/sidebar/sidebar.min.js'
+        src: 'https://codeforiati.org/sidebar/sidebar-rhs.min.js'
       }
     ]
   },
