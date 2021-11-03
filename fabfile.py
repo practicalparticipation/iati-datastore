@@ -14,6 +14,8 @@ def virtualenv(conn):
 @task
 def deploy(conn):
     with virtualenv(conn):
+        # check out latest version of repository
+        conn.run('git checkout -- .')
         # pull latest copy of code in version control
         conn.run('git pull origin main')
         # install dependencies
