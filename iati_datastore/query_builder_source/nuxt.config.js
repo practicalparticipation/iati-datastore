@@ -2,7 +2,11 @@ const routerBase = process.env.DEPLOY_ENV === 'WITH_SUBFOLDER' ? {
   router: {
     base: '/vuejs-datastore-query-builder/'
   }
-} : {}
+} : {
+  router: {
+    trailingSlash: true
+  }
+}
 
 const axiosBase = process.env.IATI_DATASTORE_DEPLOY_URL ? {
   axios: {
