@@ -1,252 +1,258 @@
-code,name,description,category,url
-AF,Afghanistan,,,
-AX,Åland Islands,,,
-AL,Albania,,,
-DZ,Algeria,,,
-AS,American Samoa,,,
-AD,Andorra,,,
-AO,Angola,,,
-AI,Anguilla,,,
-AQ,Antarctica,,,
-AG,Antigua and Barbuda,,,
-AR,Argentina,,,
-AM,Armenia,,,
-AW,Aruba,,,
-AU,Australia,,,
-AT,Austria,,,
-AZ,Azerbaijan,,,
-BS,Bahamas (the),,,
-BH,Bahrain,,,
-BD,Bangladesh,,,
-BB,Barbados,,,
-BY,Belarus,,,
-BE,Belgium,,,
-BZ,Belize,,,
-BJ,Benin,,,
-BM,Bermuda,,,
-BT,Bhutan,,,
-BO,Bolivia (Plurinational State of),,,
-BQ,"Bonaire, Sint Eustatius and Saba",,,
-BA,Bosnia and Herzegovina,,,
-BW,Botswana,,,
-BV,Bouvet Island,,,
-BR,Brazil,,,
-IO,British Indian Ocean Territory (the),,,
-BN,Brunei Darussalam,,,
-BG,Bulgaria,,,
-BF,Burkina Faso,,,
-BI,Burundi,,,
-KH,Cambodia,,,
-CM,Cameroon,,,
-CA,Canada,,,
-CV,Cabo Verde,,,
-KY,Cayman Islands (the),,,
-CF,Central African Republic (the),,,
-TD,Chad,,,
-CL,Chile,,,
-CN,China,,,
-CX,Christmas Island,,,
-CC,Cocos (Keeling) Islands (the),,,
-CO,Colombia,,,
-KM,Comoros (the),,,
-CG,Congo (the),,,
-CD,Congo (the Democratic Republic of the),,,
-CK,Cook Islands (the),,,
-CR,Costa Rica,,,
-CI,Côte d'Ivoire,,,
-HR,Croatia,,,
-CU,Cuba,,,
-CW,Curaçao,,,
-CY,Cyprus,,,
-CZ,Czechia,,,
-DK,Denmark,,,
-DJ,Djibouti,,,
-DM,Dominica,,,
-DO,Dominican Republic (the),,,
-EC,Ecuador,,,
-EG,Egypt,,,
-SV,El Salvador,,,
-GQ,Equatorial Guinea,,,
-ER,Eritrea,,,
-EE,Estonia,,,
-ET,Ethiopia,,,
-FK,Falkland Islands (the) [Malvinas],,,
-FO,Faroe Islands (the),,,
-FJ,Fiji,,,
-FI,Finland,,,
-FR,France,,,
-GF,French Guiana,,,
-PF,French Polynesia,,,
-TF,French Southern Territories (the),,,
-GA,Gabon,,,
-GM,Gambia (the),,,
-GE,Georgia,,,
-DE,Germany,,,
-GH,Ghana,,,
-GI,Gibraltar,,,
-GR,Greece,,,
-GL,Greenland,,,
-GD,Grenada,,,
-GP,Guadeloupe,,,
-GU,Guam,,,
-GT,Guatemala,,,
-GG,Guernsey,,,
-GN,Guinea,,,
-GW,Guinea-Bissau,,,
-GY,Guyana,,,
-HT,Haiti,,,
-HM,Heard Island and McDonald Islands,,,
-VA,Holy See (the),,,
-HN,Honduras,,,
-HK,Hong Kong,,,
-HU,Hungary,,,
-IS,Iceland,,,
-IN,India,,,
-ID,Indonesia,,,
-IR,Iran (Islamic Republic of),,,
-IQ,Iraq,,,
-IE,Ireland,,,
-IM,Isle of Man,,,
-IL,Israel,,,
-IT,Italy,,,
-JM,Jamaica,,,
-JP,Japan,,,
-JE,Jersey,,,
-JO,Jordan,,,
-KZ,Kazakhstan,,,
-KE,Kenya,,,
-KI,Kiribati,,,
-KP,Korea (the Democratic People's Republic of),,,
-KR,Korea (the Republic of),,,
-XK,Kosovo,,,
-KW,Kuwait,,,
-KG,Kyrgyzstan,,,
-LA,Lao People's Democratic Republic (the),,,
-LV,Latvia,,,
-LB,Lebanon,,,
-LS,Lesotho,,,
-LR,Liberia,,,
-LY,Libya,,,
-LI,Liechtenstein,,,
-LT,Lithuania,,,
-LU,Luxembourg,,,
-MO,Macao,,,
-MK,North Macedonia,,,
-MG,Madagascar,,,
-MW,Malawi,,,
-MY,Malaysia,,,
-MV,Maldives,,,
-ML,Mali,,,
-MT,Malta,,,
-MH,Marshall Islands (the),,,
-MQ,Martinique,,,
-MR,Mauritania,,,
-MU,Mauritius,,,
-YT,Mayotte,,,
-MX,Mexico,,,
-FM,Micronesia (Federated States of),,,
-MD,Moldova (the Republic of),,,
-MC,Monaco,,,
-MN,Mongolia,,,
-ME,Montenegro,,,
-MS,Montserrat,,,
-MA,Morocco,,,
-MZ,Mozambique,,,
-MM,Myanmar,,,
-NA,Namibia,,,
-NR,Nauru,,,
-NP,Nepal,,,
-NL,Netherlands (the),,,
-AN,NETHERLAND ANTILLES,,,
-NC,New Caledonia,,,
-NZ,New Zealand,,,
-NI,Nicaragua,,,
-NE,Niger (the),,,
-NG,Nigeria,,,
-NU,Niue,,,
-NF,Norfolk Island,,,
-MP,Northern Mariana Islands (the),,,
-NO,Norway,,,
-OM,Oman,,,
-PK,Pakistan,,,
-PW,Palau,,,
-PS,"Palestine, State of",,,
-PA,Panama,,,
-PG,Papua New Guinea,,,
-PY,Paraguay,,,
-PE,Peru,,,
-PH,Philippines (the),,,
-PN,Pitcairn,,,
-PL,Poland,,,
-PT,Portugal,,,
-PR,Puerto Rico,,,
-QA,Qatar,,,
-RE,Réunion,,,
-RO,Romania,,,
-RU,Russian Federation (the),,,
-RW,Rwanda,,,
-BL,Saint Barthélemy,,,
-SH,"Saint Helena, Ascension and Tristan da Cunha",,,
-KN,Saint Kitts and Nevis,,,
-LC,Saint Lucia,,,
-MF,Saint Martin (French part),,,
-PM,Saint Pierre and Miquelon,,,
-VC,Saint Vincent and the Grenadines,,,
-WS,Samoa,,,
-SM,San Marino,,,
-ST,Sao Tome and Principe,,,
-SA,Saudi Arabia,,,
-SN,Senegal,,,
-RS,Serbia,,,
-SC,Seychelles,,,
-SL,Sierra Leone,,,
-SG,Singapore,,,
-SX,Sint Maarten (Dutch part),,,
-SK,Slovakia,,,
-SI,Slovenia,,,
-SB,Solomon Islands,,,
-SO,Somalia,,,
-ZA,South Africa,,,
-GS,South Georgia and the South Sandwich Islands,,,
-SS,South Sudan,,,
-ES,Spain,,,
-LK,Sri Lanka,,,
-SD,Sudan (the),,,
-SR,Suriname,,,
-SJ,Svalbard and Jan Mayen,,,
-SZ,Eswatini,,,
-SE,Sweden,,,
-CH,Switzerland,,,
-SY,Syrian Arab Republic,,,
-TW,Taiwan (Province of China),,,
-TJ,Tajikistan,,,
-TZ,"Tanzania, United Republic of",,,
-TH,Thailand,,,
-TL,Timor-Leste,,,
-TG,Togo,,,
-TK,Tokelau,,,
-TO,Tonga,,,
-TT,Trinidad and Tobago,,,
-TN,Tunisia,,,
-TR,Turkey,,,
-TM,Turkmenistan,,,
-TC,Turks and Caicos Islands (the),,,
-TV,Tuvalu,,,
-UG,Uganda,,,
-UA,Ukraine,,,
-AE,United Arab Emirates (the),,,
-GB,United Kingdom of Great Britain and Northern Ireland (the),,,
-US,United States of America (the),,,
-UM,United States Minor Outlying Islands (the),,,
-UY,Uruguay,,,
-UZ,Uzbekistan,,,
-VU,Vanuatu,,,
-VE,Venezuela (Bolivarian Republic of),,,
-VN,Viet Nam,,,
-VG,Virgin Islands (British),,,
-VI,Virgin Islands (U.S.),,,
-WF,Wallis and Futuna,,,
-EH,Western Sahara,,,
-YE,Yemen,,,
-ZM,Zambia,,,
-ZW,Zimbabwe,,,
+code,name,status
+AF,Afghanistan,active
+AX,Åland Islands,active
+AL,Albania,active
+DZ,Algeria,active
+AS,American Samoa,active
+AD,Andorra,active
+AO,Angola,active
+AI,Anguilla,active
+AQ,Antarctica,active
+AG,Antigua and Barbuda,active
+AR,Argentina,active
+AM,Armenia,active
+AW,Aruba,active
+AU,Australia,active
+AT,Austria,active
+AZ,Azerbaijan,active
+BS,Bahamas (the),active
+BH,Bahrain,active
+BD,Bangladesh,active
+BB,Barbados,active
+BY,Belarus,active
+BE,Belgium,active
+BZ,Belize,active
+BJ,Benin,active
+BM,Bermuda,active
+BT,Bhutan,active
+BO,Bolivia (Plurinational State of),active
+BQ,"Bonaire, Sint Eustatius and Saba",active
+BA,Bosnia and Herzegovina,active
+BW,Botswana,active
+BV,Bouvet Island,active
+BR,Brazil,active
+IO,British Indian Ocean Territory (the),active
+BN,Brunei Darussalam,active
+BG,Bulgaria,active
+BF,Burkina Faso,active
+BU,Burma,withdrawn
+BI,Burundi,active
+KH,Cambodia,active
+CM,Cameroon,active
+CA,Canada,active
+CV,Cabo Verde,active
+KY,Cayman Islands (the),active
+CF,Central African Republic (the),active
+TD,Chad,active
+CL,Chile,active
+CN,China,active
+CX,Christmas Island,active
+CC,Cocos (Keeling) Islands (the),active
+CO,Colombia,active
+KM,Comoros (the),active
+CG,Congo (the),active
+CD,Congo (the Democratic Republic of the),active
+CK,Cook Islands (the),active
+CR,Costa Rica,active
+CI,Côte d'Ivoire,active
+HR,Croatia,active
+CU,Cuba,active
+CW,Curaçao,active
+CY,Cyprus,active
+CZ,Czechia,active
+DK,Denmark,active
+DJ,Djibouti,active
+DM,Dominica,active
+DO,Dominican Republic (the),active
+TP,East Timor,withdrawn
+EC,Ecuador,active
+EG,Egypt,active
+SV,El Salvador,active
+GQ,Equatorial Guinea,active
+ER,Eritrea,active
+EE,Estonia,active
+ET,Ethiopia,active
+FK,Falkland Islands (the) [Malvinas],active
+FO,Faroe Islands (the),active
+FJ,Fiji,active
+FI,Finland,active
+FR,France,active
+GF,French Guiana,active
+PF,French Polynesia,active
+TF,French Southern Territories (the),active
+GA,Gabon,active
+GM,Gambia (the),active
+GE,Georgia,active
+DE,Germany,active
+GH,Ghana,active
+GI,Gibraltar,active
+GR,Greece,active
+GL,Greenland,active
+GD,Grenada,active
+GP,Guadeloupe,active
+GU,Guam,active
+GT,Guatemala,active
+GG,Guernsey,active
+GN,Guinea,active
+GW,Guinea-Bissau,active
+GY,Guyana,active
+HT,Haiti,active
+HM,Heard Island and McDonald Islands,active
+VA,Holy See (the),active
+HN,Honduras,active
+HK,Hong Kong,active
+HU,Hungary,active
+IS,Iceland,active
+IN,India,active
+ID,Indonesia,active
+IR,Iran (Islamic Republic of),active
+IQ,Iraq,active
+IE,Ireland,active
+IM,Isle of Man,active
+IL,Israel,active
+IT,Italy,active
+JM,Jamaica,active
+JP,Japan,active
+JE,Jersey,active
+JO,Jordan,active
+KZ,Kazakhstan,active
+KE,Kenya,active
+KI,Kiribati,active
+KP,Korea (the Democratic People's Republic of),active
+KR,Korea (the Republic of),active
+XK,Kosovo,active
+KW,Kuwait,active
+KG,Kyrgyzstan,active
+LA,Lao People's Democratic Republic (the),active
+LV,Latvia,active
+LB,Lebanon,active
+LS,Lesotho,active
+LR,Liberia,active
+LY,Libya,active
+LI,Liechtenstein,active
+LT,Lithuania,active
+LU,Luxembourg,active
+MO,Macao,active
+MK,North Macedonia,active
+MG,Madagascar,active
+MW,Malawi,active
+MY,Malaysia,active
+MV,Maldives,active
+ML,Mali,active
+MT,Malta,active
+MH,Marshall Islands (the),active
+MQ,Martinique,active
+MR,Mauritania,active
+MU,Mauritius,active
+YT,Mayotte,active
+MX,Mexico,active
+FM,Micronesia (Federated States of),active
+MD,Moldova (the Republic of),active
+MC,Monaco,active
+MN,Mongolia,active
+ME,Montenegro,active
+MS,Montserrat,active
+MA,Morocco,active
+MZ,Mozambique,active
+MM,Myanmar,active
+NA,Namibia,active
+NR,Nauru,active
+NP,Nepal,active
+NL,Netherlands (the),active
+AN,Netherlands Antilles,withdrawn
+NT,Neutral Zone,withdrawn
+NC,New Caledonia,active
+NZ,New Zealand,active
+NI,Nicaragua,active
+NE,Niger (the),active
+NG,Nigeria,active
+NU,Niue,active
+NF,Norfolk Island,active
+MP,Northern Mariana Islands (the),active
+NO,Norway,active
+OM,Oman,active
+PK,Pakistan,active
+PW,Palau,active
+PS,"Palestine, State of",active
+PA,Panama,active
+PG,Papua New Guinea,active
+PY,Paraguay,active
+PE,Peru,active
+PH,Philippines (the),active
+PN,Pitcairn,active
+PL,Poland,active
+PT,Portugal,active
+PR,Puerto Rico,active
+QA,Qatar,active
+RE,Réunion,active
+RO,Romania,active
+RU,Russian Federation (the),active
+RW,Rwanda,active
+BL,Saint Barthélemy,active
+SH,"Saint Helena, Ascension and Tristan da Cunha",active
+KN,Saint Kitts and Nevis,active
+LC,Saint Lucia,active
+MF,Saint Martin (French part),active
+PM,Saint Pierre and Miquelon,active
+VC,Saint Vincent and the Grenadines,active
+WS,Samoa,active
+SM,San Marino,active
+ST,Sao Tome and Principe,active
+SA,Saudi Arabia,active
+SN,Senegal,active
+RS,Serbia,active
+SC,Seychelles,active
+SL,Sierra Leone,active
+SG,Singapore,active
+SX,Sint Maarten (Dutch part),active
+SK,Slovakia,active
+SI,Slovenia,active
+SB,Solomon Islands,active
+SO,Somalia,active
+ZA,South Africa,active
+GS,South Georgia and the South Sandwich Islands,active
+SS,South Sudan,active
+ES,Spain,active
+LK,Sri Lanka,active
+SD,Sudan (the),active
+SR,Suriname,active
+SJ,Svalbard and Jan Mayen,active
+SZ,Eswatini,active
+CS,Serbia and Montenegro,withdrawn
+SE,Sweden,active
+CH,Switzerland,active
+SY,Syrian Arab Republic (the),active
+TW,Taiwan (Province of China),active
+TJ,Tajikistan,active
+TZ,"Tanzania, the United Republic of",active
+TH,Thailand,active
+TL,Timor-Leste,active
+TG,Togo,active
+TK,Tokelau,active
+TO,Tonga,active
+TT,Trinidad and Tobago,active
+TN,Tunisia,active
+TR,Turkey,active
+TM,Turkmenistan,active
+TC,Turks and Caicos Islands (the),active
+TV,Tuvalu,active
+UG,Uganda,active
+UA,Ukraine,active
+AE,United Arab Emirates (the),active
+GB,United Kingdom of Great Britain and Northern Ireland (the),active
+US,United States of America (the),active
+UM,United States Minor Outlying Islands (the),active
+UY,Uruguay,active
+UZ,Uzbekistan,active
+VU,Vanuatu,active
+VE,Venezuela (Bolivarian Republic of),active
+VN,Viet Nam,active
+VG,Virgin Islands (British),active
+VI,Virgin Islands (U.S.),active
+WF,Wallis and Futuna,active
+EH,Western Sahara,active
+YE,Yemen,active
+YU,Yugoslavia,withdrawn
+ZR,Zaire,withdrawn
+ZM,Zambia,active
+ZW,Zimbabwe,active
