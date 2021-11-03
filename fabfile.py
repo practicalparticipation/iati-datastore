@@ -15,7 +15,7 @@ def virtualenv(conn):
 def deploy(conn):
     with virtualenv(conn):
         # check out latest version of repository
-        conn.run('git checkout -- .')
+        conn.run('git checkout iati_datastore/query_builder_source/package-lock.json')
         # pull latest copy of code in version control
         conn.run('git pull origin main')
         # install dependencies
