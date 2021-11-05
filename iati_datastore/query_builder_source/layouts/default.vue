@@ -59,12 +59,23 @@ a.nuxt-link-exact-active {
 </style>
 <script>
 export default {
-  head: {
-    script: [
-      {
-        src: 'https://codeforiati.org/sidebar/sidebar-rhs.min.js'
-      }
-    ]
+  head() {
+    return {
+      title: this.$t('datastoreClassic.heading'),
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { hid: 'description', name: 'description', content: this.$t('datastoreClassic.strapline') }
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      ],
+      script: [
+        {
+          src: 'https://codeforiati.org/sidebar/sidebar-rhs.min.js'
+        }
+      ]
+    }
   },
 };
 </script>
