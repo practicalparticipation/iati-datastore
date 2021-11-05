@@ -59,12 +59,29 @@ a.nuxt-link-exact-active {
 </style>
 <script>
 export default {
-  head: {
-    script: [
-      {
-        src: 'https://codeforiati.org/sidebar/sidebar-rhs.min.js'
-      }
-    ]
+  head() {
+    return {
+      title: this.$t('datastoreClassic.heading'),
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { hid: 'description', name: 'description', content: this.$t('datastoreClassic.strapline') },
+        { name: 'twitter:card', content: 'summary' },
+        { name: 'twitter:site', content: '@codeforiati' },
+        { name: 'twitter:title', content: this.$t('datastoreClassic.heading') },
+        { name: 'twitter:description', content: this.$t('datastoreClassic.strapline') },
+        { name: 'twitter:image', content: `${this.$axios.defaults.baseURL}/screenshot_${this.$i18n.locale}.png` },
+        { name: 'twitter:image:alt', content: this.$t('datastoreClassic.heading') }
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      ],
+      script: [
+        {
+          src: 'https://codeforiati.org/sidebar/sidebar-rhs.min.js'
+        }
+      ]
+    }
   },
 };
 </script>

@@ -45,7 +45,7 @@
                 </b-col>
                 <b-col class="bg-secondary p-2" md="6" v-else>
                   <span v-if="this.healthData.status_data.last_parsed=='unknown'">
-                    {{ $t('health.lastUpdated') }}: {{ $t('health.unknown') }}
+                    {{ $t('health.lastUpdated') }} {{ $t('health.unknown') }}
                   </span>
                   <span
                     v-else
