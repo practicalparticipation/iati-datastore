@@ -10,8 +10,8 @@ export default {
     strapline: 'The classic version of the IATI Datastore, reloaded.',
   },
   accessText: 'Access <code>{activities}</code> activities and <code>{transactions}</code> transactions.',
-  viewDocumentation: 'View documentation',
-  viewAPI: 'View API',
+  viewDocumentation: 'Documentation',
+  viewAPI: 'API',
   health: {
     checkingDatastoreStatus: "Checking Datastore status",
     datastoreOperational: 'Datastore fully operational',
