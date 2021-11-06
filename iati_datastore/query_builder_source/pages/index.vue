@@ -57,13 +57,6 @@
               </b-row>
             </h5>
           </template>
-          <hr />
-          <b-row>
-            <b-col>
-              <b-btn :href="`${baseURL}/docs/`" variant="primary">{{ $t('viewDocumentation') }}</b-btn>
-              <b-btn :href="`${baseURL}/api/`" variant="warning">{{ $t('viewAPI') }}</b-btn>
-            </b-col>
-          </b-row>
         </b-container>
       </b-jumbotron>
     </b-container>
