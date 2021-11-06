@@ -6,8 +6,8 @@
     "strapline": "La version classique de l’IITA Datastore, renouvelé."
   },
   "accessText": "Accédez à <code>{activities}</code> activités et <code>{transactions}</code> transactions.",
-  "viewDocumentation": "Voir la documentation (en anglais)",
-  "viewAPI": "Voir l’API",
+  "viewDocumentation": "Documentation (en anglais)",
+  "viewAPI": "API",
   "health": {
     "checkingDatastoreStatus": "Vérification des informations sur l’état du Datastore",
     "datastoreOperational": "Le Datastore est pleinement opérationnel",
