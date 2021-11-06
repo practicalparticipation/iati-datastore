@@ -448,7 +448,7 @@ export default {
     return {
       busy: true,
       refreshLinkVariant: "warning",
-      refreshLinkText: "Refresh",
+      refreshLinkText: this.$t('health.refresh'),
       healthData: {
         "indexed_activities": 0,
         "indexed_transactions": 0,
@@ -603,10 +603,10 @@ export default {
       this.isBusy = true
       this.loadHealthData()
       this.refreshLinkVariant = "success"
-      this.refreshLinkText = "Live"
+      this.refreshLinkText = this.$t('health.live')
       setTimeout(() => {
         this.refreshLinkVariant = "warning"
-        this.refreshLinkText = "Refresh"
+        this.refreshLinkText = this.$t('health.refresh')
       }, 5000)
     },
     copyLink() {
