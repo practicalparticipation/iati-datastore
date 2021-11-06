@@ -45,7 +45,7 @@
                 </b-col>
                 <b-col class="bg-secondary p-2" md="6" v-else>
                   <span v-if="this.healthData.status_data.last_parsed=='unknown'">
-                    {{ $t('health.lastUpdated') }}: {{ $t('health.unknown') }}
+                    {{ $t('health.lastUpdated') }} {{ $t('health.unknown') }}
                   </span>
                   <span
                     v-else
@@ -587,6 +587,7 @@ export default {
       if (this.stream === '1') {
         _urlQueryFilters.push(['limit', '1'])
       }
+      _urlQueryFilters.push(['ref', 'qb'])
       const _params = _urlQueryFilters.map(item => {
         return `${item[0]}=${item[1]}`
       }).join("&")
