@@ -55,11 +55,11 @@ export default {
     locales: [
       {
           'code': 'en',
-          'file': 'en.js'
+          'file': 'en.json'
       },
       {
           'code': 'fr',
-          'file': 'fr.js'
+          'file': 'fr.json'
       }
     ],
     lazy: true,
