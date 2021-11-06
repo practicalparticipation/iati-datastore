@@ -16,6 +16,8 @@
     "unknown": "inconnu",
     "queueData": "{itemsOnQueue} les jeux de données sont en attente de mise à jour, sur un total de {NumDatasets} jeux de données. Utilisez les données dès  présent ou patientez un instant que les mises à jour d’aujourd’hui soient disponibles.",
     "updatePctComplete": "Mise à jour quotidienne {parsingComplete}% complète.",
+    "live": "En direct",
+    "refresh": "Actualiser",
     "timing": {
       "hoursAgo": "il y a une heure | il y a {hours} heures",
       "minutesAgo": "il y a une minute | il y a {minutes} minutes",
