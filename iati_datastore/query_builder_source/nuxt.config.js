@@ -63,7 +63,7 @@ export default {
       },
       {
           'code': 'pt',
-          'file': 'pt.js'
+          'file': 'pt.json'
       }
     ],
     lazy: true,
