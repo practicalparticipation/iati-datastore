@@ -4,8 +4,10 @@ from datetime import datetime
 from xml.etree import ElementTree as ET
 import csv
 from io import StringIO
+from tempfile import mkstemp
 
 import mock
+import openpyxl
 
 from . import factories as fac
 from . import ClientTestCase
@@ -247,6 +249,21 @@ class TestEmptyDb_ActivityCSV(ClientTestCase):
             self.assertIn(exp, headers)
 
 
+class TestEmptyDb_ActivityXLSX(ClientTestCase):
+    """
+    XLSX for empty db
+    """
+    url = '/api/1/access/activity.xlsx'
+
+    def test_http_ok(self):
+        resp = self.client.get(self.url)
+        self.assertEquals(200, resp.status_code)
+
+    def test_content_type(self):
+        resp = self.client.get(self.url)
+        self.assertEquals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", resp.content_type)
+
+
 class TestEmptyDb_TransactionCSV(ClientTestCase):
     """
     CSV for empty db
@@ -314,6 +331,40 @@ class TestSingleActivity(ClientTestCase):
             resp = client.get('/api/1/access/activity.csv')
             self.assertEquals(2, resp.get_data(as_text=True).count("\n"))
 
+    def test_xlsx_activity_count(self):
+        load_fix("single_activity.xml")
+        resp = self.client.get('/api/1/access/activity.xlsx')
+        # write response to temporary file
+        (handler, filename) = mkstemp(prefix="iati-datastore-classic-tests-", suffix='.xlsx')
+        os.write(handler, resp.get_data())
+        os.close(handler)
+        # open workbook
+        workbook = openpyxl.load_workbook(filename=filename)
+        # check it
+        worksheet = workbook.active
+        self.assertEquals(2, worksheet.max_row)
+        # cleanup
+        workbook.close()
+        os.remove(filename)
+
+    def test_xlsx_activity_data(self):
+        load_fix("single_activity.xml")
+        resp = self.client.get('/api/1/access/activity.xlsx')
+        # write response to temporary file
+        (handler, filename) = mkstemp(prefix="iati-datastore-classic-tests-", suffix='.xlsx')
+        os.write(handler, resp.get_data())
+        os.close(handler)
+        # open workbook
+        workbook = openpyxl.load_workbook(filename=filename)
+        # open sample data
+        in_xml = ET.parse(fixture_filename("single_activity.xml"))
+        id = in_xml.find('.//iati-activity/iati-identifier').text
+        # check it
+        worksheet = workbook.active
+        self.assertEquals(id, worksheet['A2'].value)
+        # cleanup
+        workbook.close()
+        os.remove(filename)
 
 class TestManyActivities(ClientTestCase):
     def test_xml_activity_count(self):
@@ -366,32 +417,49 @@ class ApiViewMixin(object):
         self.assertEquals(404, resp.status_code)
 
     def test_junk_before_format(self):
-        url = self.base_url[:-4] + '-bad.csv'
+        url = self.base_url[:-4] + '-bad.' + self.extension
         resp = self.client.get(url)
         self.assertEquals(404, resp.status_code)
 
     def test_junk_in_format(self):
-        url = self.base_url[:-4] + '.bad-csv'
+        url = self.base_url[:-4] + '.bad-' + self.extension
         resp = self.client.get(url)
         self.assertEquals(404, resp.status_code)
 
 
 class TestActivityView(ClientTestCase, ApiViewMixin):
     base_url = '/api/1/access/activity.csv'
+    extension = 'csv'
     filter = 'iatilib.frontend.api1.ActivityCSVView.filter'
     serializer = 'iatilib.frontend.api1.ActivityCSVView.serializer'
 
 
+class TestActivityXLSXView(ClientTestCase, ApiViewMixin):
+    base_url = '/api/1/access/activity.xlsx'
+    extension = 'xlsx'
+    filter = 'iatilib.frontend.api1.ActivityXLSXView.filter'
+    serializer = 'iatilib.frontend.api1.ActivityXLSXView.serializer'
+
+
 class TestActivityBySectorView(ClientTestCase, ApiViewMixin):
     base_url = '/api/1/access/activity/by_sector.csv'
+    extension = 'csv'
     filter = 'iatilib.frontend.api1.ActivityBySectorView.filter'
     serializer = 'iatilib.frontend.api1.ActivityBySectorView.serializer'
 
 
 class TestActivityByCountryView(ClientTestCase, ApiViewMixin):
     base_url = '/api/1/access/activity/by_country.csv'
+    extension = 'csv'
     filter = 'iatilib.frontend.api1.ActivityByCountryView.filter'
     serializer = 'iatilib.frontend.api1.ActivityByCountryView.serializer'
+
+
+class TestActivityByCountryXLSXView(ClientTestCase, ApiViewMixin):
+    base_url = '/api/1/access/activity/by_country.xlsx'
+    extension = 'xlsx'
+    filter = 'iatilib.frontend.api1.ActivityByCountryXLSXView.filter'
+    serializer = 'iatilib.frontend.api1.ActivityByCountryXLSXView.serializer'
 
 
 class CommonTransactionTests(object):
@@ -515,18 +583,21 @@ class CommonTransactionTests(object):
 
 class TestTransactionView(ClientTestCase, ApiViewMixin, CommonTransactionTests):
     base_url = '/api/1/access/transaction.csv'
+    extension = 'csv'
     filter = 'iatilib.frontend.api1.TransactionsView.filter'
     serializer = 'iatilib.frontend.api1.TransactionsView.serializer'
 
 
 class TestTransactionByCountryView(ClientTestCase, ApiViewMixin, CommonTransactionTests):
     base_url = '/api/1/access/transaction/by_country.csv'
+    extension = 'csv'
     filter = 'iatilib.frontend.api1.TransactionsByCountryView.filter'
     serializer = 'iatilib.frontend.api1.TransactionsByCountryView.serializer'
 
 
 class TestTransactionBySectorView(ClientTestCase, ApiViewMixin, CommonTransactionTests):
     base_url = '/api/1/access/transaction/by_sector.csv'
+    extension = 'csv'
     filter = 'iatilib.frontend.api1.TransactionsBySectorView.filter'
     serializer = 'iatilib.frontend.api1.TransactionsBySectorView.serializer'
 
@@ -539,11 +610,13 @@ class TestBudgetView(ClientTestCase):
 
 class TestBudgetByCountryView(ClientTestCase, ApiViewMixin):
     base_url = '/api/1/access/budget/by_country.csv'
+    extension = 'csv'
     filter = 'iatilib.frontend.api1.BudgetsByCountryView.filter'
     serializer = 'iatilib.frontend.api1.BudgetsByCountryView.serializer'
 
 
 class TestBudgetBySectorView(ClientTestCase, ApiViewMixin):
     base_url = '/api/1/access/budget/by_sector.csv'
+    extension = 'csv'
     filter = 'iatilib.frontend.api1.BudgetsBySectorView.filter'
     serializer = 'iatilib.frontend.api1.BudgetsBySectorView.serializer'

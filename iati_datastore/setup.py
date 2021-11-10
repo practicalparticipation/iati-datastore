@@ -23,6 +23,7 @@ Flask-Migrate==2.5.3
 Click==7.1.2
 sentry-sdk[flask]==1.3.1
 docutils==0.17.1
+PyExcelerate==0.10.0
 """
 
 tests_require = """
@@ -33,6 +34,7 @@ mock==4.0.2
 factory-boy==3.1.0
 coveralls==2.2.0
 coverage==5.3
+openpyxl==3.0.9
 """
 
 
