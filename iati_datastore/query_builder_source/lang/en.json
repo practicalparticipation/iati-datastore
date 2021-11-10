@@ -14,7 +14,7 @@
     "datastoreProblems": "Datastore has some problems",
     "lastUpdated": "Last updated:",
     "unknown": "unknown",
-    "queueData": "{itemsOnQueue} datasets are queued for update, out of {NumDatasets} total datasets. Go ahead and use the data, or wait a little while for today’s updates to become available.",
+    "queueData": "{itemsOnQueue} datasets are queued for update, out of {numDatasets} total datasets. Go ahead and use the data, or wait a little while for today’s updates to become available.",
     "updatePctComplete": "Daily update {parsingComplete}% complete.",
     "live": "Live",
     "refresh": "Refresh",
