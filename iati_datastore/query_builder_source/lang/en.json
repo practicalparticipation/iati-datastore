@@ -6,16 +6,18 @@
     "strapline": "The classic version of the IATI Datastore, reloaded."
   },
   "accessText": "Access <code>{activities}</code> activities and <code>{transactions}</code> transactions.",
-  "viewDocumentation": "View documentation",
-  "viewAPI": "View API",
+  "viewDocumentation": "Documentation",
+  "viewAPI": "API",
   "health": {
     "checkingDatastoreStatus": "Checking Datastore status",
     "datastoreOperational": "Datastore fully operational",
     "datastoreProblems": "Datastore has some problems",
     "lastUpdated": "Last updated:",
     "unknown": "unknown",
-    "queueData": "{itemsOnQueue} datasets are queued for update, out of {NumDatasets} total datasets. Go ahead and use the data, or wait a little while for today’s updates to become available.",
+    "queueData": "{itemsOnQueue} datasets are queued for update, out of {numDatasets} total datasets. Go ahead and use the data, or wait a little while for today’s updates to become available.",
     "updatePctComplete": "Daily update {parsingComplete}% complete.",
+    "live": "Live",
+    "refresh": "Refresh",
     "timing": {
       "hoursAgo": "one hour ago | {hours} hours ago",
       "minutesAgo": "one minute ago | {minutes} minutes ago",

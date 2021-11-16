@@ -6,16 +6,18 @@
     "strapline": "La version classique de l’IITA Datastore, renouvelé."
   },
   "accessText": "Accédez à <code>{activities}</code> activités et <code>{transactions}</code> transactions.",
-  "viewDocumentation": "Voir la documentation (en anglais)",
-  "viewAPI": "Voir l’API",
+  "viewDocumentation": "Documentation (en anglais)",
+  "viewAPI": "API",
   "health": {
     "checkingDatastoreStatus": "Vérification des informations sur l’état du Datastore",
     "datastoreOperational": "Le Datastore est pleinement opérationnel",
     "datastoreProblems": "Le Datastore a des problèmes",
     "lastUpdated": "Dernière actualisation :",
     "unknown": "inconnu",
-    "queueData": "{itemsOnQueue} les jeux de données sont en attente de mise à jour, sur un total de {NumDatasets} jeux de données. Utilisez les données dès  présent ou patientez un instant que les mises à jour d’aujourd’hui soient disponibles.",
+    "queueData": "{itemsOnQueue} les jeux de données sont en attente de mise à jour, sur un total de {numDatasets} jeux de données. Utilisez les données dès  présent ou patientez un instant que les mises à jour d’aujourd’hui soient disponibles.",
     "updatePctComplete": "Mise à jour quotidienne {parsingComplete}% complète.",
+    "live": "En direct",
+    "refresh": "Actualiser",
     "timing": {
       "hoursAgo": "il y a une heure | il y a {hours} heures",
       "minutesAgo": "il y a une minute | il y a {minutes} minutes",

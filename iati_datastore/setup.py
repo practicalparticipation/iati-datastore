@@ -22,6 +22,7 @@ Flask-Cors==3.0.9
 Flask-Migrate==2.5.3
 Click==7.1.2
 sentry-sdk[flask]==1.3.1
+docutils==0.17.1
 """
 
 tests_require = """

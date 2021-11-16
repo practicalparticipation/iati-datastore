@@ -9,6 +9,9 @@
             :title="$t('codeForIATIProject')" />
         </b-navbar-brand>
         <b-navbar-nav class="ml-auto">
+          <b-nav-item :href="`${baseURL}/docs/`">{{ $t('viewDocumentation') }}</b-nav-item>
+          <b-nav-item :href="`${baseURL}/api/`">{{ $t('viewAPI') }}</b-nav-item>
+          <b-nav-text class="ml-2 mr-2">&#8226;</b-nav-text>
           <b-dropdown text="Language">
             <b-dropdown-item :to="switchLocalePath('en')">EN</b-dropdown-item>
             <b-dropdown-item :to="switchLocalePath('fr')">FR</b-dropdown-item>
@@ -85,6 +88,11 @@ export default {
         }
       ]
     }
+  },
+  computed: {
+    baseURL() {
+      return this.$axios.defaults.baseURL
+    },
   },
 };
 </script>
