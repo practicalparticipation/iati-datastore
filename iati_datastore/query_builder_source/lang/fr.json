@@ -5,6 +5,7 @@
     "heading": "Le Datastore classique de l’IITA",
     "strapline": "La version classique de l’IITA Datastore, renouvelé."
   },
+  "language": "Langue",
   "accessText": "Accédez à <code>{activities}</code> activités et <code>{transactions}</code> transactions.",
   "viewDocumentation": "Documentation (en anglais)",
   "viewAPI": "API",
