@@ -1,9 +1,9 @@
 {
   "codeForIATIProject": "Um projeto de Code for IATI",
-  "datastoreDowntimeNotice": "Você está usando o Datastore Classic durante o <a href=\"https://iatistandard.org/en/news/technical-notice-2-iatis-datastore-to-be-integrated-in-new-unified-single-platform/\"> tempo de inatividade do IATI Datastore oficial</a>? Gostariamos de ouvir de você, para entender melhor os nossos usuários e as suas necessidades.<br />Por favor entre em contacto com nós através <a href=\"mailto:hello@codeforiati.org\">hello@codeforiati.org</a>",
+  "datastoreDowntimeNotice": "Você está usando o Datastore Classic durante o <a href=\"https://iatistandard.org/en/news/technical-notice-2-iatis-datastore-to-be-integrated-in-new-unified-single-platform/\"> tempo de inatividade do IATI Datastore oficial</a>? Gostaríamos de ouvir de você, para entender melhor os nossos usuários e as suas necessidades.<br />Por favor entre em contato com nós através <a href=\"mailto:hello@codeforiati.org\">hello@codeforiati.org</a>",
   "datastoreClassic": {
-    "heading": "IATI Datastore Classico",
-    "strapline": "A versão classica do IATI Datastore, reinventada."
+      "heading": "IATI Datastore Clássico",
+      "strapline": "A versão clássica do IATI Datastore, reinventada."
   },
   "accessText": "Acessar <code>{activities}</code> atividades e <code>{transactions}</code> transações.",
   "viewDocumentation": "Ver documentação",
@@ -12,23 +12,23 @@
     "checkingDatastoreStatus": "Verificando o status do Datastore",
     "datastoreOperational": "Datastore totalmente operacional",
     "datastoreProblems": "Datastore tem alguns problemas",
-    "lastUpdated": "Ultima actualização:",
+    "lastUpdated": "Última atualização:",
     "unknown": "desconhecido",
-    "queueData": "{itemsOnQueue} conjuntos de dados estão aguardando a atualização, dum total de {NumDatasets} conjuntos. Avançe e usa os dados, ou espere um pouco até que as atualizações de hoje se tornam disponíveis.",
+    "queueData": "{itemsOnQueue} conjuntos de dados estão aguardando a atualização, dum total de {numDatasets} conjuntos. Avance e use os dados, ou espere um pouco até que as atualizações de hoje se tornem disponíveis.",
     "updatePctComplete": "Atualização diária {parsingComplete}% concluída",
     "timing": {
       "hoursAgo": "à uma hora | {hours} horas atrás",
       "minutesAgo": "à um minuto | {minutes} minutos atrás",
-      "secondsAgo": "à um segundo | {seconds} secondos atrás"
+      "secondsAgo": "à um segundo | {seconds} segundos atrás"
     }
   },
   "getTheData": {
     "heading": "Obtenha os dados",
-    "para1": "Pode obter dados do IATI datastore classico em vários formatos.",
-    "para2": "Pode filtrar com base da organização que publica a informação, do lugar onde a atividade está acontecendo e do setor da atividade. Você pode escolher extrair atividades, transações ou orçamentos individuais.",
+    "para1": "Você pode obter dados do IATI datastore clássico em vários formatos.",
+    "para2": "Você pode filtrar com base da organização que publica a informação, do lugar onde a atividade está acontecendo e do setor da atividade. Você pode escolher extrair atividades, transações ou orçamentos individuais.",
     "chooseFilters": {
       "heading": "Escolha seus filtros",
-      "text": "Essas opções permitem filtrar dados em IATI, dependendo do que você está procurando. Filtros adicionais <a href=\"{baseURL}/docs/api/#filtering\"> estão disponíveis </a> consultando o Datastore diretamente."
+      "text": "Essas opções permitem filtrar dados da IATI, dependendo do que você está procurando. Filtros adicionais <a href=\"{baseURL}/docs/api/#filtering\"> estão disponíveis </a> consultando o Datastore diretamente."
     }
   },
   "howToView": {
@@ -46,7 +46,7 @@
   },
   "footer": {
     "sourceCode": "<a href=\"https://github.com/codeforIATI/iati-datastore\">IATI Datastore Classico no GitHub</a>, software gratuito licenciado sob a GNU Affero General Public License v3.",
-    "credits": "IATI Datastore Classico é um projeto de <a href=\"https://codeforiati.org\"> Code for IATI </a>",
+    "credits": "IATI Datastore Clássico é um projeto de <a href=\"https://codeforiati.org\"> Code for IATI </a>",
     "privacyPolicy": "Política de Privacidade"
   },
   "outputFormat": {
@@ -57,17 +57,17 @@
         {
           "value": "1",
           "text": "1a linha",
-          "description": "Visualiza sua selecão, mostrando apanas a primeira linha."
+          "description": "Visualize sua seleção, mostrando apenas a primeira linha."
         },
         {
           "value": "50",
           "text": "50 linhas",
-          "description": "Visualiza sua selecão, mostrando as primeiras 50 linhas."
+          "description": "Visualize sua seleção, mostrando as primeiras 50 linhas."
         },
         {
           "value": "stream/fluxo",
           "text": "Seleção inteira",
-          "description": "Obtem todos os resultado que correspondem aos seus critérios de busca/pesquisa."
+          "description": "Obtenha todos os resultados que correspondem aos seus critérios de busca/pesquisa."
         }
       ]
     },
@@ -90,12 +90,12 @@
           {
             "value": "budget",
             "text": "Um orçamento por linha",
-            "description": "Cada linha contem o valor dum periodo do orçamento. Os dados de transação não estão incluídos. O identificador de atividade parente e outros campos de nível de atividade são repetidos para cada linha de orçamento."
+            "description": "Cada linha contém o valor dum período do orçamento. Os dados de transação não estão incluídos. O identificador de atividade parente e outros campos de nível de atividade são repetidos para cada linha de orçamento."
           }
         ]
       },
       "repeatRows": {
-        "label": "Repete limhas",
+        "label": "Repete linhas",
         "options": [
           {
             "value": "",
@@ -105,7 +105,7 @@
           {
             "value": "/by_sector",
             "text": "Expansão Multi-setor",
-            "description": "Cada linha de atividade, transação ou orçamento é repetida separadamente por cada setor relatado. A percentagem correspondente para a divisão do setor é relatada em uma coluna separada. Isso permite que você adicione facilmente aritmética à sua planilha para calcular os valores proporcionalmente."
+            "description": "Cada linha de atividade, transação ou orçamento é repetida separadamente por cada setor relatado. A porcentagem correspondente para a divisão do setor é relatada em uma coluna separada. Isso permite que você adicione facilmente aritmética à sua planilha para calcular os valores proporcionalmente."
           },
           {
             "value": "/by_country",
@@ -119,22 +119,22 @@
   "fields": {
     "specificActivities": {
       "label": "Atividades específicas",
-      "description": "Busca uma atividade específica usando seu identifidor IATI, título ou sua descrição."
+      "description": "Busca de atividade específica usando seu identificador IATI, título ou sua descrição."
     },
     "iatiIdentifier": {
       "label": "Identificador IATI",
-      "description": "Busca uma atividade que contem um identificador IATI específico (similar a um código do projecto).",
+      "description": "Busca de atividade que contém um identificador IATI específico (similar a um código do projecto).",
       "placeholder": "Todos os identificadores IATI"
     },
     "title": {
       "label": "Título",
-      "description": "Busca duma atividade com título que contêm o texto específicado.",
-      "placeholder": "Todos títulos"
+      "description": "Busca de atividade com título que contém o texto especificado.",
+      "placeholder": "Todos os títulos"
     },
     "description": {
       "label": "Descrição",
-      "description": "Busca duma atividade com descrição que contêm texto especificado.",
-      "placeholder": "Todas descrições"
+      "description": "Busca de atividade com descrição que contém texto especificado.",
+      "placeholder": "Todas as descrições"
     },
     "activityStatus": {
       "label": "Status da atividade",
@@ -143,15 +143,15 @@
     },
     "reportingOrganisation": {
       "label": "Organição Relatora",
-      "description": "A organização relatora é a que publica/editora dos dados IATI.",
+      "description": "A organização relatora é a que publica/edita os dados IATI.",
       "type": {
         "label": "Tipo da organização relatora",
-        "description": "Seleciona somente um tipo de organiçao relatora.",
-        "placeholder": "Todos os típos de editoras (por exemplo Governos)."
+        "description": "Seleciona somente um tipo de organização relatora.",
+        "placeholder": "Todos os tipos de editoras (por exemplo, Governos)."
       },
       "ref": {
         "label": "Organização Relatora",
-        "description": "Seleciona apenas os dados duma editora (por exemplo O Banco Mundial).",
+        "description": "Seleciona apenas os dados de uma editora (por exemplo, O Banco Mundial).",
         "placeholder": "Todas as organizações relatoras"
       }
     },
@@ -163,7 +163,7 @@
     },
     "policyMarker": {
       "label": "Marcador de política",
-      "description": "A política ou tema abordade pela atividade, de acordo com is marcadores de política OECD DAC CRS.",
+      "description": "A política ou tema abordado pela atividade, de acordo com os marcadores de política OECD DAC CRS.",
       "code": {
         "label": "Marcador de política",
         "description": "",
@@ -185,7 +185,7 @@
         "label": "Região destinatário",
         "placeholder": "Todas regiões destinários"
       },
-      "note": "Escolher ambos, região e país, provavelmente não retornará dados, já que a maioria dos editors publicam ou região ou país."
+      "note": "Escolher ambos, região e país, provavelmente não retornará dados, já que a maioria dos relatores publicam ou região ou país."
     },
     "dates": {
       "label": "Datas",
@@ -200,7 +200,7 @@
         "labelCurrentMonth": "Mês atual",
         "labelNextMonth": "Próximo mês",
         "labelNextYear": "Próximo ano",
-        "labelNextDecade": "Proxima década",
+        "labelNextDecade": "Próxima década",
         "labelToday": "Hoje",
         "labelSelected": "Data selecionada",
         "labelNoDateSelected": "Nenhuma data selecionada",
