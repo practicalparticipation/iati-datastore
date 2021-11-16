@@ -5,6 +5,7 @@
     "heading": "IATI Datastore Classic",
     "strapline": "The classic version of the IATI Datastore, reloaded."
   },
+  "language": "Language",
   "accessText": "Access <code>{activities}</code> activities and <code>{transactions}</code> transactions.",
   "viewDocumentation": "Documentation",
   "viewAPI": "API",

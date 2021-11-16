@@ -12,8 +12,11 @@
           <b-nav-item :href="`${baseURL}/docs/`">{{ $t('viewDocumentation') }}</b-nav-item>
           <b-nav-item :href="`${baseURL}/api/`">{{ $t('viewAPI') }}</b-nav-item>
           <b-nav-text class="ml-2 mr-2">&#8226;</b-nav-text>
-          <b-nav-item :to="switchLocalePath('en')">EN</b-nav-item>
-          <b-nav-item :to="switchLocalePath('fr')">FR</b-nav-item>
+          <b-dropdown :text="$t('language')">
+            <b-dropdown-item :to="switchLocalePath('en')">EN</b-dropdown-item>
+            <b-dropdown-item :to="switchLocalePath('fr')">FR</b-dropdown-item>
+            <b-dropdown-item :to="switchLocalePath('pt')">PT</b-dropdown-item>
+          </b-dropdown>
         </b-navbar-nav>
         <b-navbar-toggle
           target="none"

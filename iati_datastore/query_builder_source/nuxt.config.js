@@ -60,6 +60,10 @@ export default {
       {
           'code': 'fr',
           'file': 'fr.json'
+      },
+      {
+          'code': 'pt',
+          'file': 'pt.json'
       }
     ],
     lazy: true,

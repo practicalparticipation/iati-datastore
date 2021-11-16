@@ -638,6 +638,19 @@ export default {
               label: `${item.code} - ${item.name}`
             }
           })
+        }).catch(error => {
+          if (error.response.status == '404') {
+            // Probably just means that the codelist doesn't exist for this locale
+            axios.get(`https://codelists.codeforiati.org/api/json/en/${codelist}.json`)
+            .then(response => {
+              this.codelists[codelist] = response.data.data.map(item => {
+                return {
+                  code: item.code,
+                  label: `${item.code} - ${item.name}`
+                }
+              })
+            })
+          }
         })
       })
       axios.get(`https://codelists.codeforiati.org/api/json/${this.$i18n.locale}/ReportingOrganisation.json`)
@@ -649,6 +662,20 @@ export default {
             type: publisher['codeforiati:organisation-type-code']
           }
         })
+      }).catch(error => {
+        if (error.response.status == '404') {
+          // Probably just means that the codelist doesn't exist for this locale
+          axios.get(`https://codelists.codeforiati.org/api/json/en/ReportingOrganisation.json`)
+          .then(response => {
+            this.codelists['ReportingOrg'] = response.data.data.map(publisher => {
+              return {
+                code: publisher.code,
+                label: `${publisher.code} - ${publisher.name}`,
+                type: publisher['codeforiati:organisation-type-code']
+              }
+            })
+          })
+        }
       })
     },
     updateParams() {
