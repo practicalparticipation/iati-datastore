@@ -9,9 +9,11 @@
             :title="$t('codeForIATIProject')" />
         </b-navbar-brand>
         <b-navbar-nav class="ml-auto">
-          <b-nav-item :to="switchLocalePath('en')">EN</b-nav-item>
-          <b-nav-item :to="switchLocalePath('fr')">FR</b-nav-item>
-          <b-nav-item :to="switchLocalePath('pt')">PT</b-nav-item>
+          <b-dropdown text="Language">
+            <b-dropdown-item :to="switchLocalePath('en')">EN</b-dropdown-item>
+            <b-dropdown-item :to="switchLocalePath('fr')">FR</b-dropdown-item>
+            <b-dropdown-item :to="switchLocalePath('pt')">PT</b-dropdown-item>
+          </b-dropdown>
         </b-navbar-nav>
         <b-navbar-toggle
           target="none"
