@@ -2,8 +2,8 @@
   "codeForIATIProject": "Um projeto de Code for IATI",
   "datastoreDowntimeNotice": "Você está usando o Datastore Classic durante o <a href=\"https://iatistandard.org/en/news/technical-notice-2-iatis-datastore-to-be-integrated-in-new-unified-single-platform/\"> tempo de inatividade do IATI Datastore oficial</a>? Gostaríamos de ouvir de você, para entender melhor os nossos usuários e as suas necessidades.<br />Por favor entre em contato com nós através <a href=\"mailto:hello@codeforiati.org\">hello@codeforiati.org</a>",
   "datastoreClassic": {
-      "heading": "IATI Datastore Clássico",
-      "strapline": "A versão clássica do IATI Datastore, reinventada."
+    "heading": "IATI Datastore Clássico",
+    "strapline": "A versão clássica do IATI Datastore, reinventada."
   },
   "accessText": "Acessar <code>{activities}</code> atividades e <code>{transactions}</code> transações.",
   "viewDocumentation": "Ver documentação",
@@ -16,6 +16,8 @@
     "unknown": "desconhecido",
     "queueData": "{itemsOnQueue} conjuntos de dados estão aguardando a atualização, dum total de {numDatasets} conjuntos. Avance e use os dados, ou espere um pouco até que as atualizações de hoje se tornem disponíveis.",
     "updatePctComplete": "Atualização diária {parsingComplete}% concluída",
+    "live": "Live",
+    "refresh": "Refresh",
     "timing": {
       "hoursAgo": "à uma hora | {hours} horas atrás",
       "minutesAgo": "à um minuto | {minutes} minutos atrás",
