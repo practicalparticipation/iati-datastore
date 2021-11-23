@@ -3,7 +3,7 @@ import os
 
 class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get(
-        'IATI_DATASTORE_DATABASE_URL', 'postgres:///iati-datastore')
+        'IATI_DATASTORE_DATABASE_URL', 'postgresql:///iati-datastore')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JSON_SORT_KEYS = False
     # Handle database disconnect error
