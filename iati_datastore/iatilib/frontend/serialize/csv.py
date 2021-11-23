@@ -2,9 +2,11 @@ from collections import OrderedDict
 from functools import partial
 import csv as unicodecsv
 import six
-from io import StringIO
+from io import StringIO, BytesIO
 from operator import attrgetter
 from iatilib import codelists
+from pyexcelerate import Workbook
+from openpyxl_copy.utils import get_column_letter
 
 
 def total(column):
@@ -419,7 +421,42 @@ class CSVSerializer(object):
             yield line(row)
 
 
-csv = CSVSerializer((
+class XLSXSerializer(object):
+    def __init__(self, fields, adapter=identity, client_filename='iati_datastore_classic.xlsx'):
+        self.file_mode = True
+        self.client_filename = client_filename
+        self.get_major_version = adapter(lambda x: x.major_version)
+        self.fields_by_major_version = {
+            major_version: FieldDict(fields, adapter=adapter)
+            for major_version, FieldDict in fielddict_by_major_version.items()}
+
+    def __call__(self, data, wrapped=True):
+        outfile = BytesIO()
+        # Create workbook
+        wb = Workbook()
+        ws = wb.new_sheet("data")
+        # Headers
+        headers = self.fields_by_major_version['1'].keys()
+        final_column = get_column_letter(len(headers))
+        ws.range("A1", final_column+"1").value = [headers]
+        # Data
+        row_count = 2
+        get_major_version = self.get_major_version
+        for obj in data.items:
+            row = [accessor(obj) for accessor in self.fields_by_major_version[get_major_version(obj)].values()]
+            ws.range("A"+str(row_count), final_column+str(row_count)).value = [row]
+            row_count += 1
+        # Save
+        wb.save(outfile)
+        # Return
+        outfile.seek(0)
+        return {
+            'file': outfile,
+            'client_filename': self.client_filename
+        }
+
+
+_activity_fields = (
     "iati-identifier",
     "hierarchy",
     "last-updated-datetime",
@@ -476,7 +513,11 @@ csv = CSVSerializer((
     u"total-Interest Repayment",
     u"total-Loan Repayment",
     u"total-Reimbursement",
-))
+)
+
+csv = CSVSerializer(_activity_fields)
+
+xlsx = XLSXSerializer(_activity_fields, client_filename='activities.xlsx')
 
 
 def adapt_activity(func):
@@ -499,7 +540,7 @@ def adapt_activity_other(func):
     return wrapper
 
 
-csv_activity_by_country = CSVSerializer((
+_activity_by_country_fields = (
     ("recipient-country-code", lambda r: r.CountryPercentage.country.value if r.CountryPercentage.country is not None else ""),
     ("recipient-country", lambda r: r.CountryPercentage.country.description.title() if r.CountryPercentage.country and r.CountryPercentage.country.description is not None else ""),
     ("recipient-country-percentage", lambda r: r.CountryPercentage.percentage if r.CountryPercentage.percentage is not None else ""),
@@ -555,7 +596,11 @@ csv_activity_by_country = CSVSerializer((
     u"total-Interest Repayment",
     u"total-Loan Repayment",
     u"total-Reimbursement",
-), adapter=adapt_activity_other)
+)
+
+csv_activity_by_country = CSVSerializer(_activity_by_country_fields, adapter=adapt_activity_other)
+
+xlsx_activity_by_country = XLSXSerializer(_activity_by_country_fields, adapter=adapt_activity_other, client_filename='activities_by_country.xlsx')
 
 
 csv_activity_by_sector = CSVSerializer((

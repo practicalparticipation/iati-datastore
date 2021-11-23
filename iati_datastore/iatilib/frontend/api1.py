@@ -3,7 +3,7 @@ from datetime import datetime
 import sqlalchemy as sa
 from flask import (current_app, request, Response, Blueprint,
                    jsonify, abort, render_template, make_response,
-                   url_for, stream_with_context)
+                   url_for, stream_with_context, send_file)
 from flask.views import MethodView
 from werkzeug.datastructures import MultiDict
 
@@ -310,9 +310,18 @@ class DataStoreView(MethodView):
                 valid_args.get("offset", 0),
                 valid_args.get("limit", 50),
             )
-        return Response(
-            stream_with_context(serializer(pagination, self.wrapped)),
-            mimetype=mimetype)
+        if hasattr(serializer, 'file_mode') and serializer.file_mode:
+            filedata = serializer(pagination, self.wrapped)
+            return send_file(
+                filedata['file'],
+                mimetype=mimetype,
+                attachment_filename=filedata['client_filename'],
+                as_attachment=True
+            )
+        else:
+            return Response(
+                stream_with_context(serializer(pagination, self.wrapped)),
+                mimetype=mimetype)
 
 
 class ActivityView(DataStoreView):
@@ -347,14 +356,36 @@ class DataStoreCSVView(DataStoreView):
         return Scrollination(items)
 
 
+class DataStoreXLSXView(DataStoreView):
+    def get(self, format="xlsx"):
+        return self.get_response("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+    def paginate(self, query, offset, limit):
+        items = query\
+            .order_by('iati_identifier')\
+            .limit(limit)\
+            .offset(offset)
+        return Scrollination(items)
+
+
 class ActivityCSVView(DataStoreCSVView):
     filter = staticmethod(dsfilter.activities_for_csv)
     serializer = staticmethod(serialize.csv)
 
 
+class ActivityXLSXView(DataStoreXLSXView):
+    filter = staticmethod(dsfilter.activities_for_csv)
+    serializer = staticmethod(serialize.xlsx)
+
+
 class ActivityByCountryView(DataStoreCSVView):
     filter = staticmethod(dsfilter.activities_by_country)
     serializer = staticmethod(serialize.csv_activity_by_country)
+
+
+class ActivityByCountryXLSXView(DataStoreXLSXView):
+    filter = staticmethod(dsfilter.activities_by_country)
+    serializer = staticmethod(serialize.xlsx_activity_by_country)
 
 
 class ActivityBySectorView(DataStoreCSVView):
@@ -404,6 +435,11 @@ api.add_url_rule(
 )
 
 api.add_url_rule(
+    '/access/activity.xlsx',
+    view_func=ActivityXLSXView.as_view('activity-xlsx-view'),
+)
+
+api.add_url_rule(
     '/access/activity.json',
     view_func=ActivityJSONView.as_view('activity-json-view'),
 )
@@ -416,6 +452,10 @@ api.add_url_rule(
 api.add_url_rule(
     '/access/activity/by_country.csv',
     view_func=ActivityByCountryView.as_view('activity_by_country'))
+
+api.add_url_rule(
+    '/access/activity/by_country.xlsx',
+    view_func=ActivityByCountryXLSXView.as_view('activity_by_country_xlsx'))
 
 api.add_url_rule(
     '/access/activity/by_sector.csv',
