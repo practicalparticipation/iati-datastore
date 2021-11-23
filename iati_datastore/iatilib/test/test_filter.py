@@ -426,10 +426,12 @@ class TestActivityFilter(AppTestCase):
         org_in = fac.OrganisationFactory.build(
             ref="GB-1",
             name="an org",
+            type=cl.OrganisationType.government,
         )
         org_out = fac.OrganisationFactory.build(
             ref="GB-2",
             name="another org",
+            type=cl.OrganisationType.foundation,
         )
         trans_in = fac.TransactionFactory.create(
             activity=fac.ActivityFactory.build(),
@@ -454,6 +456,11 @@ class TestActivityFilter(AppTestCase):
         self.assertIn(trans_in.activity, text.all())
         self.assertNotIn(trans_not.activity, text.all())
 
+        text = dsfilter.activities({
+            "transaction_provider-org.type": cl.OrganisationType.from_string(u"10")
+        })
+        self.assertIn(trans_in.activity, text.all())
+
         provider_activity_id = dsfilter.activities({
             "transaction_provider-org.provider-activity-id": u"GB-1-AAA"
         })
@@ -464,10 +471,12 @@ class TestActivityFilter(AppTestCase):
         org_in = fac.OrganisationFactory.build(
             ref="GB-1",
             name="an org",
+            type=cl.OrganisationType.government,
         )
         org_out = fac.OrganisationFactory.build(
             ref="GB-2",
             name="another org",
+            type=cl.OrganisationType.foundation,
         )
         trans_in = fac.TransactionFactory.create(
             activity=fac.ActivityFactory.build(),
@@ -488,6 +497,11 @@ class TestActivityFilter(AppTestCase):
 
         text = dsfilter.activities({
             "transaction_receiver-org.text": u"an org"
+        })
+        self.assertIn(trans_in.activity, text.all())
+
+        text = dsfilter.activities({
+            "transaction_receiver-org.type": cl.OrganisationType.from_string(u"10")
         })
         self.assertIn(trans_in.activity, text.all())
 

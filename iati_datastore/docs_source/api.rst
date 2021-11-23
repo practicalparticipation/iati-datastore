@@ -225,10 +225,34 @@ transaction_provider-org
 Returns activities containing at least one `transaction element <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/>`__ where the provider-org element matches your specified organisation identifier string.
 
 Parameters:
-    @transaction_provider-org: `Organisation identifier string <http://iatistandard.org/201/organisation-identifiers/>`__ for the organisation issuing who provided transaction funds
+    @transaction_provider-org: `Organisation identifier string <http://iatistandard.org/201/organisation-identifiers/>`__ for the organisation who provided transaction funds
 
 Example API call:
     `/api/1/access/activity.xml?transaction_provider-org=GB-GOV-1 </api/1/access/activity.xml?transaction_provider-org=GB-GOV-1>`__
+
+
+transaction_provider-org.text
+````````````````````````
+
+Returns activities containing at least one `transaction element <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/>`__ where the name of the provider-org matches your specified string.
+
+Parameters:
+    @transaction_provider-org.text: `Name of the organisation who provided transaction funds
+
+Example API call:
+    `/api/1/access/activity.xml?transaction_provider-org.text=Oxfam </api/1/access/activity.xml?transaction_provider-org.text=Oxfam>`__
+
+
+transaction_provider-org.type
+````````````````````````
+
+Returns activities containing at least one `transaction element <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/>`__ where funds have been provided by an organisation with the specified `Organisation Type <http://iatistandard.org/201/codelists/OrganisationType/>`__ codelist.
+
+Parameters:
+    @transaction_receiver-org.type: `Organisation type string <http://iatistandard.org/201/codelists/OrganisationType/>`__ for the organisation who provided transaction funds
+
+Example API call:
+    `/api/1/access/activity.xml?transaction_provider-org.type=10 </api/1/access/activity.xml?transaction_provider-org.type=10>`__
 
 
 transaction_provider-org.provider-activity-id
@@ -249,10 +273,34 @@ transaction_receiver-org
 Returns activities containing at least one `transaction element <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/>`__ where funds have been transferred to an organisation with the specified `Organisation identifier <http://iatistandard.org/201/organisation-identifiers/>`__ string.
 
 Parameters:
-    @transaction_receiver-org: `Organisation identifier string <http://iatistandard.org/201/organisation-identifiers/>`__ for the organisation issuing who received transaction funds
+    @transaction_receiver-org: `Organisation identifier string <http://iatistandard.org/201/organisation-identifiers/>`__ for the organisation who received transaction funds
 
 Example API call:
     `/api/1/access/activity.xml?transaction_receiver-org=GB-CHC-1108464 </api/1/access/activity.xml?transaction_receiver-org=GB-CHC-1108464>`__
+
+
+transaction_receiver-org.text
+````````````````````````
+
+Returns activities containing at least one `transaction element <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/>`__ where the name of the receiver-org matches your specified string.
+
+Parameters:
+    @transaction_receiver-org.text: `Name of the organisation who received transaction funds
+
+Example API call:
+    `/api/1/access/activity.xml?transaction_receiver-org.text=Oxfam </api/1/access/activity.xml?transaction_receiver-org.text=Oxfam>`__
+
+
+transaction_receiver-org.type
+````````````````````````
+
+Returns activities containing at least one `transaction element <http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/transaction/>`__ where funds have been transferred to an organisation with the specified `Organisation Type <http://iatistandard.org/201/codelists/OrganisationType/>`__ codelist.
+
+Parameters:
+    @transaction_receiver-org.type: `Organisation type string <http://iatistandard.org/201/codelists/OrganisationType/>`__ for the organisation who received transaction funds
+
+Example API call:
+    `/api/1/access/activity.xml?transaction_receiver-org.type=10 </api/1/access/activity.xml?transaction_receiver-org.type=10>`__
 
 
 transaction_receiver-org.receiver-activity-id

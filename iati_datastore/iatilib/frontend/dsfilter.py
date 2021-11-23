@@ -155,6 +155,13 @@ def _filter(query, args):
             )
         )
 
+    def transaction_provider_org_type(organisation_type):
+        return Activity.transactions.any(
+            Transaction.provider_org.has(
+                Organisation.type == organisation_type
+            )
+        )
+
     def transaction_provider_org_activity_id(activity_id):
         return Activity.transactions.any(
             Transaction.provider_org_activity_id == activity_id
@@ -164,6 +171,13 @@ def _filter(query, args):
         return Activity.transactions.any(
             Transaction.receiver_org.has(
                 Organisation.ref == organisation
+            )
+        )
+
+    def transaction_receiver_org_type(organisation_type):
+        return Activity.transactions.any(
+            Transaction.receiver_org.has(
+                Organisation.type == organisation_type
             )
         )
 
@@ -243,10 +257,12 @@ def _filter(query, args):
             'transaction_provider-org': transaction_provider_org,
             'transaction_provider-org.ref': transaction_provider_org,
             'transaction_provider-org.text': transaction_provider_org_name,
+            'transaction_provider-org.type': transaction_provider_org_type,
             'transaction_provider-org.provider-activity-id': transaction_provider_org_activity_id,
             'transaction_receiver-org': transaction_receiver_org,
             'transaction_receiver-org.ref': transaction_receiver_org,
             'transaction_receiver-org.text': transaction_receiver_org_name,
+            'transaction_receiver-org.type': transaction_receiver_org_type,
             'transaction_receiver-org.receiver-activity-id': transaction_receiver_org_activity_id,
             'start-date__gt': partial(date_condition, gt, Activity.start_actual, Activity.start_planned),
             'start-date__lt': partial(date_condition, lt, Activity.start_actual, Activity.start_planned),
