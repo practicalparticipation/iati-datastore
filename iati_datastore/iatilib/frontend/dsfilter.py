@@ -295,7 +295,7 @@ def activities_for_json(args):
     )
 
 def activities_for_csv(args):
-    # For performance reasons, eager lead some extra data we will use later for CSV's.
+    # For performance reasons, eager load some extra data we will use later for CSV's.
     return _filter(
         db.session.query(Activity).options(
             orm.selectinload(Activity.recipient_country_percentages),
