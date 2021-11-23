@@ -1,13 +1,9 @@
 import os
-from os import remove
-from os.path import dirname, realpath, join, getmtime
+from os.path import dirname, realpath, join
 import codecs
 import logging
 import datetime as dt
 import subprocess
-from tempfile import gettempdir
-from glob import glob
-from time import time
 
 import click
 from flask.cli import FlaskGroup, with_appcontext
@@ -112,18 +108,3 @@ def drop_database():
     """Drop all database tables."""
     click.confirm('Are you sure?', abort=True)
     db.drop_all()
-
-
-@cli.command()
-@click.option('-s', '--delete-after-seconds', "delete_after_seconds", type=int)
-def cleanup_temporary_files(delete_after_seconds=3600):
-    """Cleanup temporary files eg xlsx downloads"""
-    for path in glob(join(gettempdir(), 'iati-datastore-classic-temp-*')):
-        last_modified = getmtime(path)
-        diff = time() - last_modified
-        if diff > delete_after_seconds:
-            try:
-                remove(path)
-            except BaseException as err:
-                print("Got error trying to remove " + path)
-                print(err)
