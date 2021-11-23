@@ -2,12 +2,10 @@ from collections import OrderedDict
 from functools import partial
 import csv as unicodecsv
 import six
-from io import StringIO
+from io import StringIO, BytesIO
 from operator import attrgetter
 from iatilib import codelists
 from pyexcelerate import Workbook
-from tempfile import mkstemp, gettempdir
-from os import close
 from openpyxl_copy.utils import get_column_letter
 
 
@@ -433,10 +431,7 @@ class XLSXSerializer(object):
             for major_version, FieldDict in fielddict_by_major_version.items()}
 
     def __call__(self, data, wrapped=True):
-        # Get temporary filename
-        # Note these details must match what the cleanup command in console.py expects to find
-        (handler, filename) = mkstemp(prefix="iati-datastore-classic-temp-", suffix='.xlsx', dir=gettempdir())
-        close(handler)
+        outfile = BytesIO()
         # Create workbook
         wb = Workbook()
         ws = wb.new_sheet("data")
@@ -452,10 +447,11 @@ class XLSXSerializer(object):
             ws.range("A"+str(row_count), final_column+str(row_count)).value = [row]
             row_count += 1
         # Save
-        wb.save(filename)
+        wb.save(outfile)
         # Return
+        outfile.seek(0)
         return {
-            'server_filename': filename,
+            'file': outfile,
             'client_filename': self.client_filename
         }
 
@@ -521,7 +517,7 @@ _activity_fields = (
 
 csv = CSVSerializer(_activity_fields)
 
-xlsx = XLSXSerializer(_activity_fields, client_filename='iati_datastore_classic_activities.xlsx')
+xlsx = XLSXSerializer(_activity_fields, client_filename='activities.xlsx')
 
 
 def adapt_activity(func):
@@ -604,7 +600,7 @@ _activity_by_country_fields = (
 
 csv_activity_by_country = CSVSerializer(_activity_by_country_fields, adapter=adapt_activity_other)
 
-xlsx_activity_by_country = XLSXSerializer(_activity_by_country_fields, adapter=adapt_activity_other, client_filename='iati_datastore_classic_activities_by_country.xlsx')
+xlsx_activity_by_country = XLSXSerializer(_activity_by_country_fields, adapter=adapt_activity_other, client_filename='activities_by_country.xlsx')
 
 
 csv_activity_by_sector = CSVSerializer((

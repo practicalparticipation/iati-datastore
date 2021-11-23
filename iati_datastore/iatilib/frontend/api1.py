@@ -313,7 +313,7 @@ class DataStoreView(MethodView):
         if hasattr(serializer, 'file_mode') and serializer.file_mode:
             filedata = serializer(pagination, self.wrapped)
             return send_file(
-                filedata['server_filename'],
+                filedata['file'],
                 mimetype=mimetype,
                 attachment_filename=filedata['client_filename'],
                 as_attachment=True
