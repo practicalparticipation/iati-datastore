@@ -393,9 +393,19 @@ class ActivityBySectorView(DataStoreCSVView):
     serializer = staticmethod(serialize.csv_activity_by_sector)
 
 
+class ActivityBySectorXLSXView(DataStoreXLSXView):
+    filter = staticmethod(dsfilter.activities_by_sector)
+    serializer = staticmethod(serialize.xlsx_activity_by_sector)
+
+
 class TransactionsView(DataStoreCSVView):
     filter = staticmethod(dsfilter.transactions)
     serializer = staticmethod(serialize.transaction_csv)
+
+
+class TransactionsXLSXView(DataStoreXLSXView):
+    filter = staticmethod(dsfilter.transactions)
+    serializer = staticmethod(serialize.transaction_xlsx)
 
 
 class TransactionsByCountryView(DataStoreCSVView):
@@ -403,9 +413,19 @@ class TransactionsByCountryView(DataStoreCSVView):
     serializer = staticmethod(serialize.csv_transaction_by_country)
 
 
+class TransactionsByCountryXLSXView(DataStoreXLSXView):
+    filter = staticmethod(dsfilter.transactions_by_country)
+    serializer = staticmethod(serialize.xlsx_transaction_by_country)
+
+
 class TransactionsBySectorView(DataStoreCSVView):
     filter = staticmethod(dsfilter.transactions_by_sector)
     serializer = staticmethod(serialize.csv_transaction_by_sector)
+
+
+class TransactionsBySectorXLSXView(DataStoreXLSXView):
+    filter = staticmethod(dsfilter.transactions_by_sector)
+    serializer = staticmethod(serialize.xlsx_transaction_by_sector)
 
 
 class BudgetsView(DataStoreCSVView):
@@ -413,14 +433,29 @@ class BudgetsView(DataStoreCSVView):
     serializer = staticmethod(serialize.budget_csv)
 
 
+class BudgetsXLSXView(DataStoreXLSXView):
+    filter = staticmethod(dsfilter.budgets)
+    serializer = staticmethod(serialize.budget_xlsx)
+
+
 class BudgetsByCountryView(DataStoreCSVView):
     filter = staticmethod(dsfilter.budgets_by_country)
     serializer = staticmethod(serialize.csv_budget_by_country)
 
 
+class BudgetsByCountryXLSXView(DataStoreXLSXView):
+    filter = staticmethod(dsfilter.budgets_by_country)
+    serializer = staticmethod(serialize.xlsx_budget_by_country)
+
+
 class BudgetsBySectorView(DataStoreCSVView):
     filter = staticmethod(dsfilter.budgets_by_sector)
     serializer = staticmethod(serialize.csv_budget_by_sector)
+
+
+class BudgetsBySectorXLSXView(DataStoreXLSXView):
+    filter = staticmethod(dsfilter.budgets_by_sector)
+    serializer = staticmethod(serialize.xlsx_budget_by_sector)
 
 
 api.add_url_rule(
@@ -462,25 +497,54 @@ api.add_url_rule(
     view_func=ActivityBySectorView.as_view('activity_by_sector'))
 
 api.add_url_rule(
+    '/access/activity/by_sector.xlsx',
+    view_func=ActivityBySectorXLSXView.as_view('activity_by_sector_xlsx'))
+
+api.add_url_rule(
     '/access/transaction.csv',
     view_func=TransactionsView.as_view('transaction_list'))
+
+api.add_url_rule(
+    '/access/transaction.xlsx',
+    view_func=TransactionsXLSXView.as_view('transaction_list_xlsx'))
 
 api.add_url_rule(
     '/access/transaction/by_country.csv',
     view_func=TransactionsByCountryView.as_view('transaction_by_country'))
 
 api.add_url_rule(
+    '/access/transaction/by_country.xlsx',
+    view_func=TransactionsByCountryXLSXView.as_view('transaction_by_country_xlsx'))
+
+api.add_url_rule(
     '/access/transaction/by_sector.csv',
     view_func=TransactionsBySectorView.as_view('transaction_by_sector'))
+
+api.add_url_rule(
+    '/access/transaction/by_sector.xlsx',
+    view_func=TransactionsBySectorXLSXView.as_view('transaction_by_sector_xlsx'))
 
 api.add_url_rule(
     '/access/budget.csv',
     view_func=BudgetsView.as_view('budget_list'))
 
 api.add_url_rule(
+    '/access/budget.xlsx',
+    view_func=BudgetsXLSXView.as_view('budget_list_xlsx'))
+
+api.add_url_rule(
     '/access/budget/by_country.csv',
     view_func=BudgetsByCountryView.as_view('budget_by_country'))
+
+
+api.add_url_rule(
+    '/access/budget/by_country.xlsx',
+    view_func=BudgetsByCountryXLSXView.as_view('budget_by_country_xlsx'))
 
 api.add_url_rule(
     '/access/budget/by_sector.csv',
     view_func=BudgetsBySectorView.as_view('budget_by_sector'))
+
+api.add_url_rule(
+    '/access/budget/by_sector.xlsx',
+    view_func=BudgetsBySectorXLSXView.as_view('budget_by_sector_xlsx'))

@@ -603,7 +603,7 @@ csv_activity_by_country = CSVSerializer(_activity_by_country_fields, adapter=ada
 xlsx_activity_by_country = XLSXSerializer(_activity_by_country_fields, adapter=adapt_activity_other, client_filename='activities_by_country.xlsx')
 
 
-csv_activity_by_sector = CSVSerializer((
+_activity_by_sector_fields = (
     (u"sector-code", lambda r: r.SectorPercentage.sector.value if r.SectorPercentage.sector is not None else ""),
     (u"sector", lambda r: r.SectorPercentage.sector.description.title() if r.SectorPercentage.sector and r.SectorPercentage.sector.description is not None else ""),
     (u"sector-percentage", lambda r: r.SectorPercentage.percentage if r.SectorPercentage.percentage else ""),
@@ -659,7 +659,11 @@ csv_activity_by_sector = CSVSerializer((
     u"total-Interest Repayment",
     u"total-Loan Repayment",
     u"total-Reimbursement",
-    ), adapter=adapt_activity_other)
+)
+
+csv_activity_by_sector = CSVSerializer(_activity_by_sector_fields, adapter=adapt_activity_other)
+
+xlsx_activity_by_sector = XLSXSerializer(_activity_by_sector_fields, adapter=adapt_activity_other, client_filename='activities_by_sector.xlsx')
 
 common_transaction_csv = (
     (u'transaction_ref', lambda t: t.ref),
@@ -691,13 +695,13 @@ common_transaction_csv = (
     # (u'reporting-org', lambda t: t.activity.reporting_org_ref),
 )
 
-transaction_csv = CSVSerializer((
+_transaction_fields = (
     (u'transaction-type', transaction_type),
     (u'transaction-date', transaction_date),
     (u"default-currency", default_currency),
     (u"transaction-value", transaction_value),
-    ) + common_transaction_csv +
-    ("iati-identifier",
+    ) + common_transaction_csv + (
+    "iati-identifier",
      "hierarchy",
      "last-updated-datetime",
      "default-language",
@@ -744,7 +748,12 @@ transaction_csv = CSVSerializer((
      u"default-flow-type-code",
      u"default-aid-type-code",
      u"default-tied-status-code",
-     ), adapter=adapt_activity)
+    )
+
+
+transaction_csv = CSVSerializer(_transaction_fields, adapter=adapt_activity)
+
+transaction_xlsx = XLSXSerializer(_transaction_fields, adapter=adapt_activity, client_filename='transactions.xlsx')
 
 
 def trans(func):
@@ -761,7 +770,7 @@ def trans_activity(func):
     return wrapper
 
 
-csv_transaction_by_country = CSVSerializer((
+_transaction_by_country_fields = (
     (u"recipient-country-code", lambda r: r.CountryPercentage.country.value if r.CountryPercentage.country is not None else ""),
     (u"recipient-country", lambda r: r.CountryPercentage.country.description.title() if (r.CountryPercentage.country is not None and r.CountryPercentage.country.description is not None) else ""),
     (u"recipient-country-percentage", lambda r: r.CountryPercentage.percentage),
@@ -769,8 +778,8 @@ csv_transaction_by_country = CSVSerializer((
     (u'transaction-date', trans(transaction_date)),
     (u"default-currency", trans(default_currency)),
     (u'transaction-value', trans(transaction_value)),
-    ) + tuple([(i[0], trans(i[1])) for i in common_transaction_csv]) +
-    ("iati-identifier",
+    ) + tuple([(i[0], trans(i[1])) for i in common_transaction_csv]) + (
+    "iati-identifier",
      "hierarchy",
      "last-updated-datetime",
      "default-language",
@@ -814,11 +823,14 @@ csv_transaction_by_country = CSVSerializer((
      u"default-flow-type-code",
      u"default-aid-type-code",
      u"default-tied-status-code",
-     ),
-    adapter=trans_activity)
+     )
+
+csv_transaction_by_country = CSVSerializer(_transaction_by_country_fields, adapter=trans_activity)
+
+xlsx_transaction_by_country = XLSXSerializer(_transaction_by_country_fields, adapter=trans_activity, client_filename='transactions_by_country.xlsx')
 
 
-csv_transaction_by_sector = CSVSerializer((
+_transaction_by_sector_fields = (
     (u"sector-code", lambda r: r.SectorPercentage.sector.value if r.SectorPercentage.sector is not None else ""),
     (u"sector", lambda r: r.SectorPercentage.sector.description.title() if (r.SectorPercentage.sector is not None and r.SectorPercentage.sector.description is not None) else ""),
     (u"sector-percentage", lambda r: r.SectorPercentage.percentage),
@@ -828,8 +840,8 @@ csv_transaction_by_sector = CSVSerializer((
     (u'transaction-date', trans(transaction_date)),
     (u"default-currency", trans(default_currency)),
     (u'transaction-value', trans(transaction_value)),
-    ) + tuple([(i[0], trans(i[1])) for i in common_transaction_csv]) +
-    ("iati-identifier",
+    ) + tuple([(i[0], trans(i[1])) for i in common_transaction_csv]) + (
+    "iati-identifier",
      "hierarchy",
      "last-updated-datetime",
      "default-language",
@@ -871,11 +883,14 @@ csv_transaction_by_sector = CSVSerializer((
      u"default-flow-type-code",
      u"default-aid-type-code",
      u"default-tied-status-code",
-     ),
-    adapter=trans_activity)
+     )
 
 
-budget_csv = CSVSerializer((
+csv_transaction_by_sector = CSVSerializer(_transaction_by_sector_fields, adapter=trans_activity)
+
+xlsx_transaction_by_sector = XLSXSerializer(_transaction_by_sector_fields, adapter=trans_activity, client_filename='transactions_by_sector.xlsx')
+
+_budget_fields = (
     (u'budget-period-start-date', period_start_date),
     (u'budget-period-end-date', period_end_date),
     (u"budget-value", budget_value),
@@ -889,10 +904,13 @@ budget_csv = CSVSerializer((
     u"sector-code",
     u"sector",
     u"sector-percentage",
-), adapter=adapt_activity)
+)
 
+budget_csv = CSVSerializer(_budget_fields, adapter=adapt_activity)
 
-csv_budget_by_country = CSVSerializer((
+budget_xlsx = XLSXSerializer(_budget_fields, adapter=adapt_activity, client_filename='budgets.xlsx')
+
+_budget_by_country_fields = (
     (u"recipient-country-code", lambda r: r.CountryPercentage.country.value if r.CountryPercentage.country is not None else ""),
     (u"recipient-country", lambda r: r.CountryPercentage.country.description.title() if (r.CountryPercentage.country is not None and r.CountryPercentage.country.description is not None) else ""),
     (u"recipient-country-percentage", lambda r: r.CountryPercentage.percentage),
@@ -906,10 +924,14 @@ csv_budget_by_country = CSVSerializer((
     u"sector-code",
     u"sector",
     u"sector-percentage",
-), adapter=trans_activity)
+)
+
+csv_budget_by_country = CSVSerializer(_budget_by_country_fields, adapter=trans_activity)
+
+xlsx_budget_by_country = XLSXSerializer(_budget_by_country_fields, adapter=trans_activity, client_filename='budgets_by_country.xlsx')
 
 
-csv_budget_by_sector = CSVSerializer((
+_budget_by_sector_fields = (
     (u"sector-code", lambda r: r.SectorPercentage.sector.value if r.SectorPercentage.sector is not None else ""),
     (u"sector", lambda r: r.SectorPercentage.sector.description.title() if (r.SectorPercentage.sector is not None and r.SectorPercentage.sector.description is not None) else ""),
     (u"sector-percentage", lambda r: r.SectorPercentage.percentage),
@@ -920,4 +942,9 @@ csv_budget_by_sector = CSVSerializer((
     u"iati-identifier",
     u"title",
     u"description",
-), adapter=trans_activity)
+)
+
+csv_budget_by_sector = CSVSerializer(_budget_by_sector_fields, adapter=trans_activity)
+
+xlsx_budget_by_sector = XLSXSerializer(_budget_by_sector_fields, adapter=trans_activity, client_filename='budgets_by_sector.xlsx')
+

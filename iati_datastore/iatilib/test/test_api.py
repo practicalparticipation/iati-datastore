@@ -278,6 +278,20 @@ class TestEmptyDb_TransactionCSV(ClientTestCase):
         resp = self.client.get(self.url)
         self.assertEquals("text/csv; charset=utf-8", resp.content_type)
 
+class TestEmptyDb_TransactionXLSX(ClientTestCase):
+    """
+    XLSX for empty db
+    """
+    url = '/api/1/access/transaction.xlsx'
+
+    def test_http_ok(self):
+        resp = self.client.get(self.url)
+        self.assertEquals(200, resp.status_code)
+
+    def test_content_type(self):
+        resp = self.client.get(self.url)
+        self.assertEquals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", resp.content_type)
+
 
 class TestEmptyDb_BudgetCSV(ClientTestCase):
     """
@@ -292,6 +306,21 @@ class TestEmptyDb_BudgetCSV(ClientTestCase):
     def test_content_type(self):
         resp = self.client.get(self.url)
         self.assertEquals("text/csv; charset=utf-8", resp.content_type)
+
+
+class TestEmptyDb_BudgetXLSX(ClientTestCase):
+    """
+    XLSX for empty db
+    """
+    url = '/api/1/access/budget.xlsx'
+
+    def test_http_ok(self):
+        resp = self.client.get(self.url)
+        self.assertEquals(200, resp.status_code)
+
+    def test_content_type(self):
+        resp = self.client.get(self.url)
+        self.assertEquals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", resp.content_type)
 
 
 def fixture_filename(fix_name):
@@ -389,6 +418,22 @@ class TestManyActivities(ClientTestCase):
             reader = csv.DictReader(StringIO(resp.get_data(as_text=True)))
             self.assertEquals(2, len(list(reader)))
 
+    def test_xlsx_activity_count(self):
+        load_fix("many_activities.xml")
+        resp = self.client.get('/api/1/access/activity.xlsx')
+        # write response to temporary file
+        (handler, filename) = mkstemp(prefix="iati-datastore-classic-tests-", suffix='.xlsx')
+        os.write(handler, resp.get_data())
+        os.close(handler)
+        # open workbook
+        workbook = openpyxl.load_workbook(filename=filename)
+        # check it
+        worksheet = workbook.active
+        self.assertEquals(3, worksheet.max_row)
+        # cleanup
+        workbook.close()
+        os.remove(filename)
+
 
 class TestPagination(ClientTestCase):
     def test_invalid_page(self):
@@ -446,6 +491,13 @@ class TestActivityBySectorView(ClientTestCase, ApiViewMixin):
     extension = 'csv'
     filter = 'iatilib.frontend.api1.ActivityBySectorView.filter'
     serializer = 'iatilib.frontend.api1.ActivityBySectorView.serializer'
+
+
+class TestActivityBySectorXLSXView(ClientTestCase, ApiViewMixin):
+    base_url = '/api/1/access/activity/by_sector.xlsx'
+    extension = 'xlsx'
+    filter = 'iatilib.frontend.api1.ActivityBySectorXLSXView.filter'
+    serializer = 'iatilib.frontend.api1.ActivityBySectorXLSXView.serializer'
 
 
 class TestActivityByCountryView(ClientTestCase, ApiViewMixin):
@@ -581,11 +633,170 @@ class CommonTransactionTests(object):
         self.assertEquals(u'2', output[1][i])
 
 
+class CommonTransactionXLSXTests(object):
+    def _test(
+        self, load_fixture_filename, row_header,
+        asserts_equals_by_row={}, assert_none_rows=[], asserts_equals_date_by_row={}
+    ):
+        load_fix(load_fixture_filename)
+        resp = self.client.get(self.base_url)
+        # write response to temporary file
+        (handler, filename) = mkstemp(prefix="iati-datastore-classic-tests-", suffix='.xlsx')
+        os.write(handler, resp.get_data())
+        os.close(handler)
+        # open workbook
+        workbook = openpyxl.load_workbook(filename=filename)
+        # find column index
+        worksheet = workbook.active
+        header_row = worksheet[1]
+        # (this value will be zero based, when we look up columns later it is 1-based, so +1)
+        column = [i.value for i in header_row].index(row_header) + 1
+        # asserts
+        for row, value in asserts_equals_by_row.items():
+            self.assertEquals(
+                value,
+                worksheet.cell(row, column).value
+            )
+        for row in assert_none_rows:
+            self.assertEquals(
+                None,
+                worksheet.cell(row, column).value
+            )
+        for row, value in asserts_equals_date_by_row.items():
+            self.assertEquals(
+                value,
+                str(worksheet.cell(row, column).value.date())
+            )
+        # cleanup
+        workbook.close()
+        os.remove(filename)
+
+    def test_reporting_org(self):
+        self._test(
+            "transaction_ref.xml",
+            'reporting-org-ref',
+            asserts_equals_by_row={2: u'GB-CHC-285776'}
+        )
+
+    def test_ref_output(self):
+        self._test(
+            "transaction_ref.xml",
+            'transaction_ref',
+            asserts_equals_by_row={2: u'36258'},
+            assert_none_rows=[3]
+        )
+
+    def test_transaction_value_currency(self):
+        self._test(
+            "transaction_provider.xml",
+            'transaction_value_currency',
+            asserts_equals_by_row={2: u'GBP'}
+        )
+
+    def test_transaction_value_value_date(self):
+        self._test(
+            "transaction_provider.xml",
+            'transaction_value_value-date',
+            asserts_equals_date_by_row={2: u'2011-08-19'}
+        )
+
+    def test_provider_org_ref_output(self):
+        self._test(
+            "transaction_provider.xml",
+            'transaction_provider-org_ref',
+            asserts_equals_by_row={2: u'GB-1-201242-101'}
+        )
+
+    def test_provider_org_output(self):
+        self._test(
+            "transaction_provider.xml",
+            'transaction_provider-org',
+            asserts_equals_by_row={2: u'DFID'}
+        )
+
+    def test_provider_org_activity_id_output(self):
+        self._test(
+            "provider-activity-id.xml",
+            'transaction_provider-org_provider-activity-id',
+            asserts_equals_by_row={2: u'GB-1-202907'}
+        )
+
+    def test_receiver_org_ref_output(self):
+        self._test(
+            "transaction_provider.xml",
+            'transaction_receiver-org_ref',
+            asserts_equals_by_row={2: u'GB-CHC-313139'}
+        )
+
+    def test_receiver_org_output(self):
+        self._test(
+            "provider-activity-id.xml",
+            'transaction_receiver-org',
+            asserts_equals_by_row={2: u'Bond'}
+        )
+
+    def test_receiver_org_activity_id_output(self):
+        self._test(
+            "provider-activity-id.xml",
+            'transaction_receiver-org_receiver-activity-id',
+            asserts_equals_by_row={2: u'GB-CHC-1068839-dfid_ag_11-13'}
+        )
+
+    def test_description(self):
+        self._test(
+            "transaction_provider.xml",
+            'transaction_description',
+            asserts_equals_by_row={2: u'Funds received from DFID for activities in Aug- Sept 2011'}
+        )
+
+    def test_flow_type(self):
+        self._test(
+            "transaction_fields_code_lists.xml",
+            'transaction_flow-type_code',
+            asserts_equals_by_row={2: u'30'}
+        )
+
+    def test_finance_type(self):
+        self._test(
+            "transaction_fields_code_lists.xml",
+            'transaction_finance-type_code',
+            asserts_equals_by_row={2: u'110'}
+        )
+
+    def test_aid_type(self):
+        self._test(
+            "transaction_fields_code_lists.xml",
+            'transaction_aid-type_code',
+            asserts_equals_by_row={2: u'B01'}
+        )
+
+    def test_tied_status(self):
+        self._test(
+            "transaction_fields_code_lists.xml",
+            'transaction_tied-status_code',
+            asserts_equals_by_row={2: u'5'}
+        )
+
+    def test_disbursement_channel_status(self):
+        self._test(
+            "transaction_fields_code_lists.xml",
+            'transaction_disbursement-channel_code',
+            asserts_equals_by_row={2: u'2'}
+        )
+
+
 class TestTransactionView(ClientTestCase, ApiViewMixin, CommonTransactionTests):
     base_url = '/api/1/access/transaction.csv'
     extension = 'csv'
     filter = 'iatilib.frontend.api1.TransactionsView.filter'
     serializer = 'iatilib.frontend.api1.TransactionsView.serializer'
+
+
+class TestTransactionXLSXView(ClientTestCase, ApiViewMixin, CommonTransactionXLSXTests):
+    base_url = '/api/1/access/transaction.xlsx'
+    extension = 'xlsx'
+    filter = 'iatilib.frontend.api1.TransactionsXLSXView.filter'
+    serializer = 'iatilib.frontend.api1.TransactionsXLSXView.serializer'
 
 
 class TestTransactionByCountryView(ClientTestCase, ApiViewMixin, CommonTransactionTests):
@@ -595,6 +806,13 @@ class TestTransactionByCountryView(ClientTestCase, ApiViewMixin, CommonTransacti
     serializer = 'iatilib.frontend.api1.TransactionsByCountryView.serializer'
 
 
+class TestTransactionByCountryXLSXView(ClientTestCase, ApiViewMixin, CommonTransactionXLSXTests):
+    base_url = '/api/1/access/transaction/by_country.xlsx'
+    extension = 'xlsx'
+    filter = 'iatilib.frontend.api1.TransactionsByCountryXLSXView.filter'
+    serializer = 'iatilib.frontend.api1.TransactionsByCountryXLSXView.serializer'
+
+
 class TestTransactionBySectorView(ClientTestCase, ApiViewMixin, CommonTransactionTests):
     base_url = '/api/1/access/transaction/by_sector.csv'
     extension = 'csv'
@@ -602,10 +820,23 @@ class TestTransactionBySectorView(ClientTestCase, ApiViewMixin, CommonTransactio
     serializer = 'iatilib.frontend.api1.TransactionsBySectorView.serializer'
 
 
+class TestTransactionBySectorXLSXView(ClientTestCase, ApiViewMixin, CommonTransactionXLSXTests):
+    base_url = '/api/1/access/transaction/by_sector.xlsx'
+    extension = 'xlsx'
+    filter = 'iatilib.frontend.api1.TransactionsBySectorXLSXView.filter'
+    serializer = 'iatilib.frontend.api1.TransactionsBySectorXLSXView.serializer'
+
+
 class TestBudgetView(ClientTestCase):
     base_url = '/api/1/access/budget.csv'
     filter = 'iatilib.frontend.api1.dsfilter.budgets'
     serializer = 'iatilib.frontend.api1.serialize.budget_csv'
+
+
+class TestBudgetXLSXView(ClientTestCase):
+    base_url = '/api/1/access/budget.xlsk'
+    filter = 'iatilib.frontend.api1.dsfilter.budgets'
+    serializer = 'iatilib.frontend.api1.serialize.budget_xlsx'
 
 
 class TestBudgetByCountryView(ClientTestCase, ApiViewMixin):
@@ -615,8 +846,22 @@ class TestBudgetByCountryView(ClientTestCase, ApiViewMixin):
     serializer = 'iatilib.frontend.api1.BudgetsByCountryView.serializer'
 
 
+class TestBudgetByCountryXLSXView(ClientTestCase, ApiViewMixin):
+    base_url = '/api/1/access/budget/by_country.xlsx'
+    extension = 'xlsx'
+    filter = 'iatilib.frontend.api1.BudgetsByCountryXLSXView.filter'
+    serializer = 'iatilib.frontend.api1.BudgetsByCountryXLSXView.serializer'
+
+
 class TestBudgetBySectorView(ClientTestCase, ApiViewMixin):
     base_url = '/api/1/access/budget/by_sector.csv'
     extension = 'csv'
     filter = 'iatilib.frontend.api1.BudgetsBySectorView.filter'
     serializer = 'iatilib.frontend.api1.BudgetsBySectorView.serializer'
+
+
+class TestBudgetBySectorXLSXView(ClientTestCase, ApiViewMixin):
+    base_url = '/api/1/access/budget/by_sector.xlsx'
+    extension = 'xlsx'
+    filter = 'iatilib.frontend.api1.BudgetsBySectorXLSXView.filter'
+    serializer = 'iatilib.frontend.api1.BudgetsBySectorXLSXView.serializer'
