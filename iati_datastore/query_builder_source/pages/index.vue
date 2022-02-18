@@ -6,7 +6,7 @@
           <b-jumbotron
             :header="$t('datastoreClassic.heading')"
             :lead="$t('datastoreClassic.strapline')"
-            class="mb-0 mt-0 pb-2 text-center"
+            class="mb-0 mt-0 pb-3 text-center"
             bg-variant="dark"
             text-variant="light"
             >
@@ -63,7 +63,7 @@
           </b-jumbotron>
         </b-col>
       </b-row>
-      <b-row class="pb-2">
+      <b-row class="pb-3">
         <b-col class="text-center">
           <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/TfdO5PIKcl0?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </b-col>
