@@ -627,7 +627,27 @@ export default {
       return parseFloat(number).toLocaleString()
     },
     reset() {
-      this.filters = {}
+      this.filters = {
+        'iati-identifier': null,
+        'title': null,
+        'description': null,
+        'activity-status': null,
+        'reporting-org': [],
+        'reporting-org.type': [],
+        'recipient-country': [],
+        'recipient-region': [],
+        'sector': [],
+        'policy-marker.code': [],
+        'policy-marker.significance': [],
+        'start-date__lt': null,
+        'start-date__gt': null,
+        'end-date__lt': null,
+        'end-date__gt': null
+      }
+      this.format = 'xml'
+      this.breakdown = 'activity'
+      this.grouping = ''
+      this.stream = '50'
     },
     async loadHealthData() {
       await this.$axios.get(`api/1/about/`)
