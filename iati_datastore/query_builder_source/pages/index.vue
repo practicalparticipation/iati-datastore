@@ -1,64 +1,73 @@
 <template>
   <div>
     <b-container class="bg-dark ml-0 mr-0" fluid>
-      <b-jumbotron
-        :header="$t('datastoreClassic.heading')"
-        :lead="$t('datastoreClassic.strapline')"
-        class="mb-0 mt-0 text-center"
-        bg-variant="dark"
-        text-variant="light"
-        >
-        <b-container>
-          <template v-if="busy">
-            <b-spinner :label="$t('health.checkingDatastoreStatus')" variant="secondary"></b-spinner>
-            <br />
-            <p class="text-center">{{ $t('health.checkingDatastoreStatus') }}...</p>
-          </template>
-          <template v-else>
-            <p class="lead" v-html="$t('accessText', {
-                activities: formatNumber(this.healthData.indexed_activities),
-                transactions: formatNumber(this.healthData.indexed_transactions)})">
-            </p>
-            <hr />
-            <h5>
-              <b-row>
-                <b-col class="bg-success p-2" v-if="healthData.ok == true" md="6">
-                  {{ $t('health.datastoreOperational') }}
-                </b-col>
-                <b-col class="bg-danger p-2" v-else md="6">
-                  {{ $t('health.datastoreProblems') }}
-                </b-col>
-                <b-col class="bg-secondary p-2" md="6" v-if="healthData.items_on_queue>0">
-                  <b-spinner small type="grow" label="Parsing..." class="mr-2" style="vertical-align: middle;"></b-spinner>
-                  <span
-                    v-b-tooltip.hover
-                    :title="$t('health.queueData', {
-                      itemsOnQueue: this.healthData.items_on_queue,
-                      numDatasets: this.healthData.num_datasets })">
-                    {{ $t('health.updatePctComplete', { parsingComplete: this.parsing_complete} )}}
-                    <b-btn
-                      :variant="refreshLinkVariant"
-                      @click.prevent="refreshHealthData"
-                      class="refresh-link"
-                      size="sm">{{ refreshLinkText }}</b-btn>
-                  </span>
-                </b-col>
-                <b-col class="bg-secondary p-2" md="6" v-else>
-                  <span v-if="this.healthData.status_data.last_parsed=='unknown'">
-                    {{ $t('health.lastUpdated') }} {{ $t('health.unknown') }}
-                  </span>
-                  <span
-                    v-else
-                    v-b-tooltip.hover
-                    :title="this.healthData.status_data.last_parsed">
-                    {{ $t('health.lastUpdated') }} {{ last_updated_ago }}
-                  </span>
-                </b-col>
-              </b-row>
-            </h5>
-          </template>
-        </b-container>
-      </b-jumbotron>
+      <b-row>
+        <b-col>
+          <b-jumbotron
+            :header="$t('datastoreClassic.heading')"
+            :lead="$t('datastoreClassic.strapline')"
+            class="mb-0 mt-0 pb-2 text-center"
+            bg-variant="dark"
+            text-variant="light"
+            >
+            <b-container>
+              <template v-if="busy">
+                <b-spinner :label="$t('health.checkingDatastoreStatus')" variant="secondary"></b-spinner>
+                <br />
+                <p class="text-center">{{ $t('health.checkingDatastoreStatus') }}...</p>
+              </template>
+              <template v-else>
+                <p class="lead" v-html="$t('accessText', {
+                    activities: formatNumber(this.healthData.indexed_activities),
+                    transactions: formatNumber(this.healthData.indexed_transactions)})">
+                </p>
+                <hr />
+                <h5>
+                  <b-row>
+                    <b-col class="bg-success p-2" v-if="healthData.ok == true" md="6">
+                      {{ $t('health.datastoreOperational') }}
+                    </b-col>
+                    <b-col class="bg-danger p-2" v-else md="6">
+                      {{ $t('health.datastoreProblems') }}
+                    </b-col>
+                    <b-col class="bg-secondary p-2" md="6" v-if="healthData.items_on_queue>0">
+                      <b-spinner small type="grow" label="Parsing..." class="mr-2" style="vertical-align: middle;"></b-spinner>
+                      <span
+                        v-b-tooltip.hover
+                        :title="$t('health.queueData', {
+                          itemsOnQueue: this.healthData.items_on_queue,
+                          numDatasets: this.healthData.num_datasets })">
+                        {{ $t('health.updatePctComplete', { parsingComplete: this.parsing_complete} )}}
+                        <b-btn
+                          :variant="refreshLinkVariant"
+                          @click.prevent="refreshHealthData"
+                          class="refresh-link"
+                          size="sm">{{ refreshLinkText }}</b-btn>
+                      </span>
+                    </b-col>
+                    <b-col class="bg-secondary p-2" md="6" v-else>
+                      <span v-if="this.healthData.status_data.last_parsed=='unknown'">
+                        {{ $t('health.lastUpdated') }} {{ $t('health.unknown') }}
+                      </span>
+                      <span
+                        v-else
+                        v-b-tooltip.hover
+                        :title="this.healthData.status_data.last_parsed">
+                        {{ $t('health.lastUpdated') }} {{ last_updated_ago }}
+                      </span>
+                    </b-col>
+                  </b-row>
+                </h5>
+              </template>
+            </b-container>
+          </b-jumbotron>
+        </b-col>
+      </b-row>
+      <b-row class="pb-2">
+        <b-col class="text-center">
+          <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/TfdO5PIKcl0?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </b-col>
+      </b-row>
     </b-container>
     <b-container class="bg-light p-4">
       <b-row>
