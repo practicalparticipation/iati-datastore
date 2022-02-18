@@ -351,7 +351,7 @@
             </b-col>
             <b-col
               md="8"
-              :class="format!='csv' ? 'text-muted' : null">
+              :class="!['csv', 'xlsx'].includes(format) ? 'text-muted' : null">
               <b-card
                 :header="$t('outputFormat.csvOptions.label')"
                 header-tag="h4"
@@ -361,24 +361,24 @@
                   <b-col>
                     <b-form-group
                       :label="$t('outputFormat.csvOptions.chooseBreakdown.label')"
-                      :disabled="format!='csv'">
+                      :disabled="!['csv', 'xlsx'].includes(format)">
                       <b-radio-group
                         stacked
                         v-model="breakdown"
                         :options="breakdownOptions"
-                        :disabled="format!='csv'">
+                        :disabled="!['csv', 'xlsx'].includes(format)">
                       </b-radio-group>
                     </b-form-group>
                   </b-col>
                   <b-col>
                     <b-form-group
                       :label="$t('outputFormat.csvOptions.repeatRows.label')"
-                      :disabled="format!='csv'">
+                      :disabled="!['csv', 'xlsx'].includes(format)">
                       <b-radio-group
                         stacked
                         v-model="grouping"
                         :options="groupingOptions"
-                        :disabled="format!='csv'">
+                        :disabled="!['csv', 'xlsx'].includes(format)">
                       </b-radio-group>
                     </b-form-group>
                   </b-col>
@@ -387,7 +387,7 @@
               <b-tooltip
                 target="csv-options"
                 ref="tooltip"
-                :disabled="format=='csv'">
+                :disabled="['csv', 'xlsx'].includes(format)">
                 {{ $t('outputFormat.csvOptions.csvOnlyNote') }}
               </b-tooltip>
             </b-col>
@@ -504,6 +504,10 @@ export default {
         {
           'value': 'csv',
           'text': 'CSV'
+        },
+        {
+          'value': 'xlsx',
+          'text': 'XLSX'
         }
       ],
       breakdown: 'activity',
@@ -738,7 +742,7 @@ export default {
     },
     format: {
       handler: function(newFormat) {
-        if (newFormat != 'csv') {
+        if (!['csv', 'xlsx'].includes(newFormat)) {
           this.grouping = ''
           this.breakdown = 'activity'
         }
