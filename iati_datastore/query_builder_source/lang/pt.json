@@ -75,8 +75,8 @@
       ]
     },
     "csvOptions": {
-      "label": "Opções CSV",
-      "csvOnlyNote": "Opções somente disponíveis para extrato em CSV.",
+      "label": "Opções CSV / XLSX",
+      "csvOnlyNote": "Opções somente disponíveis para extrato em CSV e XLSX.",
       "chooseBreakdown": {
         "label": "Escolha os detalhes/breakdown",
         "options": [
