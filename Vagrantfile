@@ -7,7 +7,7 @@ Vagrant.configure(2) do |config|
         app.vm.box = "ubuntu/focal64"
 
         app.vm.network "forwarded_port", guest: 5000, host: 5000
-
+        app.vm.network "forwarded_port", guest: 5555, host: 5555
 
         app.vm.synced_folder ".", "/vagrant",  :owner=> 'ubuntu', :group=>'users', :mount_options => ['dmode=777', 'fmode=777']
 
