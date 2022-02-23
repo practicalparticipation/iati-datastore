@@ -337,7 +337,15 @@ def activities_by_sector(args):
 
 
 def transactions(args):
-    return _filter(Transaction.query.join(Activity), args)
+    # For performance reasons, eager load some extra data we will use later for CSV's.
+    return _filter(
+        db.session.query(Transaction).join(Activity).options(
+            orm.selectinload(Transaction.recipient_country_percentages),
+            orm.selectinload(Transaction.recipient_region_percentages),
+            orm.selectinload(Transaction.sector_percentages),
+        ),
+        args
+    )
 
 
 def transactions_by_country(args):
