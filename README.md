@@ -111,6 +111,65 @@ iati crawler status
 # A local API is available at: http://127.0.0.1:5000
 ```
 
+### Python Profiling
+
+If you want to profile some of the code, follow these additional instructions:
+
+Edit `iati_datastore/iatilib/frontend/app.py`, and add an import and change the return of `create_app` (Do not check these changes in!):
+
+```
+from werkzeug.middleware.profiler import ProfilerMiddleware
+
+def create_app(config_object='iatilib.config.Config'):
+    ... as usual ....
+    return  ProfilerMiddleware(app, profile_dir='/vagrant/profiles')
+```
+
+Run:
+
+```
+mkdir -p profiles
+pip install snakeviz
+iati run --host 0.0.0.0
+```
+
+In another window run:
+
+```
+snakeviz  -H 0.0.0.0 -p 5555 -s   /vagrant/profiles/
+```
+
+Go to a URL as normal.
+
+You should see files appear in the `profiles` directory.
+
+Go to http://127.0.0.1:5555/snakeviz/%2Fvagrant%2Fprofiles and you can browse them with pretty graphs.
+
+To turn this off, just undo your changes to `iati_datastore/iatilib/frontend/app.py`.
+
+### Database Logging
+
+As root, create and edit the file `/etc/postgresql/12/main/conf.d/log.conf` and put in:
+
+```
+log_min_duration_statement = 0
+```
+
+Restart Postgres:
+
+```
+sudo /etc/init.d/postgresql restart
+```
+
+Open a new window and see queries made as other tasks are carried out:
+
+```
+sudo tail -f /var/log/postgresql/postgresql-12-main.log
+```
+
+Note if you do something like a data import this will include A LOT of queries - make sure you turn this off when you don't need this any more!
+
+To turn this off, just delete the config file you created and restart postgres again.
 
 Deploying with nginx
 --------------------
